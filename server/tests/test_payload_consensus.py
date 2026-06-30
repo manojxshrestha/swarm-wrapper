@@ -135,9 +135,7 @@ class TestFailClosed:
         assert not passed, "Unknown class (no payloads) must fail closed"
 
     def test_dns_failure_fails(self, srv):
-        passed, successes, total, results = srv._check_consensus(
-            "curl --connect-timeout 3 https://nonexistent-domain-xyz123456.example/", "sqli"
-        )
+        passed, successes, total, results = srv._check_consensus("curl --connect-timeout 3 https://nonexistent-domain-xyz123456.example/", "sqli")
         assert not passed, "Unreachable host must fail consensus"
         assert successes == 0
 

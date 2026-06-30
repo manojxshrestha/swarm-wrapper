@@ -66,6 +66,7 @@ class TestStateManager:
     def test_wal_append_only(self, state_dir):
         """C-15: WAL uses append-only (JSON Lines), not read-all-rewrite."""
         from state_manager import _wal_path
+
         create_checkpoint("append-eng", "tester", "CP1")
         create_checkpoint("append-eng", "tester", "CP2")
         wal_path = _wal_path("append-eng")
@@ -75,6 +76,7 @@ class TestStateManager:
         assert len(lines) >= 2, f"Expected >=2 lines, got {len(lines)} in {content!r}"
         # Verify entries are valid JSON
         import json
+
         for line in lines:
             obj = json.loads(line)
             assert "action" in obj
@@ -82,14 +84,20 @@ class TestStateManager:
     def test_wal_backward_compat_json_array(self, state_dir):
         """C-15: get_wal handles old JSON array format gracefully."""
         from state_manager import _wal_path, get_wal
+
         wal_path = _wal_path("compat-eng")
         wal_path.parent.mkdir(parents=True, exist_ok=True)
         # Write old format: JSON array
         import json as _json
-        wal_path.write_text(_json.dumps([
-            {"action": "checkpoint", "checkpoint_id": "old-cp-1"},
-            {"action": "checkpoint", "checkpoint_id": "old-cp-2"},
-        ]))
+
+        wal_path.write_text(
+            _json.dumps(
+                [
+                    {"action": "checkpoint", "checkpoint_id": "old-cp-1"},
+                    {"action": "checkpoint", "checkpoint_id": "old-cp-2"},
+                ]
+            )
+        )
         wal = get_wal("compat-eng")
         assert len(wal) == 2
         assert wal[0]["action"] == "checkpoint"

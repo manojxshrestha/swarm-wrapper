@@ -50,7 +50,4 @@ def test_modules_import_without_fcntl():
         text=True,
         timeout=60,
     )
-    assert "IMPORT_OK" in result.stdout, (
-        f"Modules failed to import without fcntl.\n"
-        f"stdout: {result.stdout}\nstderr: {result.stderr}"
-    )
+    assert "IMPORT_OK" in result.stdout, f"Modules failed to import without fcntl.\n" f"stdout: {result.stdout}\nstderr: {result.stderr}"

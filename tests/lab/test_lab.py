@@ -66,10 +66,11 @@ def lab():
 def test_consensus_confirms_planted_vuln(lab):
     import server
 
-    # juice-shop reflects the search term unescaped → reflected XSS.
-    cmd = f'curl -s "{JUICE}/#/search?q=__PAYLOAD__"'
-    passed, successes, total, results = server._check_consensus(cmd, "xss")
-    assert passed, f"consensus should confirm reflected XSS on juice-shop: {results}"
+    # juice-shop has error-based SQLi in the REST search endpoint (SQLite).
+    # The bare single-quote triggers "SQLITE_ERROR" which the oracle detects.
+    cmd = f'curl -s "{JUICE}/rest/products/search?q=__PAYLOAD__"'
+    passed, successes, total, results = server._check_consensus(cmd, "sqli", extra_payloads=["'"])
+    assert passed, f"consensus should confirm SQLi on juice-shop: {results}"
 
 
 def test_no_false_positive_on_benign(lab):

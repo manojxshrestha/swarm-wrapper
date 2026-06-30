@@ -45,6 +45,7 @@ class TestLoadFindings:
     def test_loads_from_sqlite(self, temp_db, monkeypatch):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
         from context_compression import _load_findings
+
         findings = _load_findings("test-eng-1")
         assert len(findings) == 3
         titles = {f["title"] for f in findings}
@@ -55,6 +56,7 @@ class TestLoadFindings:
     def test_normalizes_column_names(self, temp_db, monkeypatch):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
         from context_compression import _load_findings
+
         findings = _load_findings("test-eng-1")
         for f in findings:
             assert "id" in f, f"Missing 'id' in {f}"
@@ -66,18 +68,21 @@ class TestLoadFindings:
     def test_returns_empty_for_unknown_engagement(self, temp_db, monkeypatch):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
         from context_compression import _load_findings
+
         findings = _load_findings("nonexistent-eng")
         assert findings == []
 
     def test_returns_empty_when_db_unavailable(self, monkeypatch):
         monkeypatch.setattr("findings_db.get_db", lambda: (_ for _ in ()).throw(Exception("DB error")))
         from context_compression import _load_findings
+
         findings = _load_findings("any-eng")
         assert findings == []
 
     def test_severity_counts_in_summary(self, temp_db, monkeypatch, tmp_path):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
         from context_compression import configure, get_engagement_summary
+
         configure(tmp_path, lambda p, d: None, lambda e, d: None)
         summary = get_engagement_summary("test-eng-1")
         assert "Total" in summary and "3" in summary.split("Total")[-1][:5]
@@ -86,6 +91,7 @@ class TestLoadFindings:
     def test_load_findings_returns_sqlite_data(self, temp_db, monkeypatch):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
         from context_compression import _load_findings
+
         findings = _load_findings("test-eng-1")
         assert len(findings) == 3
         assert findings[0]["id"].startswith("FINDING-")

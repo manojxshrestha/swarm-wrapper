@@ -963,11 +963,7 @@ def mark_browser_verified(
     # Validate the artifact up front so the agent gets clear feedback.
     artifact_ok = _FindingsDB._is_valid_screenshot(screenshot_path)
     if screenshot_path and not artifact_ok:
-        return (
-            f"Screenshot path not usable as evidence: `{screenshot_path}`\n"
-            "It must be an existing, non-empty image file (.png/.jpg/.jpeg/.webp/.gif).\n"
-            "Run browser_screenshot() and pass the saved path."
-        )
+        return f"Screenshot path not usable as evidence: `{screenshot_path}`\n" "It must be an existing, non-empty image file (.png/.jpg/.jpeg/.webp/.gif).\n" "Run browser_screenshot() and pass the saved path."
 
     _fdb.mark_browser_verified(
         engagement_id=engagement_id,
@@ -989,7 +985,7 @@ def mark_browser_verified(
         ]
     else:
         lines += [
-            "**Recorded for audit only** — NOT eligible for `confidence=\"confirmed\"` until a",
+            '**Recorded for audit only** — NOT eligible for `confidence="confirmed"` until a',
             "real screenshot artifact is supplied via `screenshot_path` (see browser_screenshot()).",
         ]
     return "\n".join(lines)

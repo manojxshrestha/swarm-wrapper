@@ -164,14 +164,12 @@ class FindingsDB:
             """)
             # L5: name columns explicitly instead of SELECT * (which silently
             # breaks if the legacy column order ever differs).
-            conn.execute(
-                """INSERT INTO credentials_new
+            conn.execute("""INSERT INTO credentials_new
                    (id, engagement_id, host_id, username, secret, secret_type,
                     domain, access_level, valid, source, notes)
                    SELECT id, engagement_id, host_id, username, secret, secret_type,
                           domain, access_level, valid, source, notes
-                   FROM credentials"""
-            )
+                   FROM credentials""")
             conn.execute("DROP TABLE credentials")
             conn.execute("ALTER TABLE credentials_new RENAME TO credentials")
             conn.execute("PRAGMA foreign_keys = ON")
@@ -237,16 +235,14 @@ class FindingsDB:
         # Phase 5: Migration 4→5 — confidence_log records WHY each finding got
         # its confidence (which signals/oracles fired), for human audit.
         if current_version == 4:
-            conn.execute(
-                """CREATE TABLE IF NOT EXISTS confidence_log (
+            conn.execute("""CREATE TABLE IF NOT EXISTS confidence_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     engagement_id TEXT NOT NULL,
                     finding_ref TEXT NOT NULL DEFAULT '',
                     confidence TEXT NOT NULL DEFAULT '',
                     signals_json TEXT NOT NULL DEFAULT '{}',
                     created_at TEXT NOT NULL
-                )"""
-            )
+                )""")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_conflog_eng ON confidence_log(engagement_id)")
             conn.execute(
                 "INSERT INTO schema_version (version, applied_at) VALUES (?, ?)",
@@ -949,7 +945,7 @@ class FindingsDB:
         text = f"{title} {test_id} {description}".lower()
         classes = []
         for vuln_class, keywords in self._vuln_class_keywords.items():
-            if any(re.search(rf'\b{re.escape(kw)}\b', text) for kw in keywords):
+            if any(re.search(rf"\b{re.escape(kw)}\b", text) for kw in keywords):
                 classes.append(vuln_class)
         return sorted(set(classes))
 

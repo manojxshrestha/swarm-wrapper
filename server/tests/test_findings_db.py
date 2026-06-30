@@ -139,10 +139,14 @@ class TestConfidenceLogPhase5:
     def test_confidence_log_written_and_surfaced(self, db, tmp_path):
         db.init_engagement(engagement_id="cl", client="c")
         db.add_vuln(
-            "cl", title="Reflected XSS in q", severity="High",
+            "cl",
+            title="Reflected XSS in q",
+            severity="High",
             affected_url="https://t/x",
             evidence="payload reflected unescaped in the page body here",
-            confidence="version_based", consensus_passed=True, reproduced=True,
+            confidence="version_based",
+            consensus_passed=True,
+            reproduced=True,
         )
         log = db.get_confidence_log("cl")
         assert len(log) == 1
@@ -257,14 +261,17 @@ class TestFindingsDB:
         """C-7: Verify concurrent FindingsDB init doesn't corrupt schema."""
         import tempfile
         import threading
+
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "race.db")
             errors = []
+
             def create_db_only():
                 try:
                     FindingsDB(db_path).close()
                 except Exception as e:
                     errors.append(str(e))
+
             threads = [threading.Thread(target=create_db_only) for _ in range(10)]
             for t in threads:
                 t.start()
@@ -280,10 +287,13 @@ class TestFindingsDB:
         """C-7: Schema version and columns should be correct after concurrent init."""
         import tempfile
         import threading
+
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "migrate.db")
+
             def create_db():
                 FindingsDB(db_path).close()
+
             threads = [threading.Thread(target=create_db) for _ in range(5)]
             for t in threads:
                 t.start()
@@ -332,11 +342,13 @@ class TestFindingsDB:
         """C-9: close() must close connections from ALL threads, not just caller's."""
         import tempfile
         import threading
+
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "leak.db")
             fdb = FindingsDB(db_path)
 
             results = {}
+
             def get_conn_in_thread(tid):
                 conn = fdb._get_conn()
                 conn.execute("SELECT 1")

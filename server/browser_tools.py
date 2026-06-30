@@ -47,6 +47,7 @@ except ImportError:  # pragma: no cover - platform-specific
         def _flock(fileobj) -> None:
             pass
 
+
 _SERVER_DIR = Path(__file__).parent
 _REPO_ROOT = _SERVER_DIR.parent
 _ENGAGEMENTS_DIR = _REPO_ROOT / "engagements"

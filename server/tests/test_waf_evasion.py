@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 @pytest.fixture(scope="module")
 def waf():
     import waf_evasion
+
     return waf_evasion
 
 
@@ -18,29 +19,21 @@ class TestCleanExternalSig:
     """Verify _clean_external_sig filters junk markers correctly."""
 
     def test_rejects_empty_markers(self, waf):
-        sig = {"headers": [], "server": [], "body_patterns": [],
-               "block_page_markers": [], "status_codes": []}
+        sig = {"headers": [], "server": [], "body_patterns": [], "block_page_markers": [], "status_codes": []}
         assert waf._clean_external_sig(sig) is None
 
     def test_rejects_only_stopwords(self, waf):
-        sig = {"headers": [], "server": [], "body_patterns": [],
-               "block_page_markers": ["blocked", "page", "server", "error", "body"],
-               "status_codes": []}
+        sig = {"headers": [], "server": [], "body_patterns": [], "block_page_markers": ["blocked", "page", "server", "error", "body"], "status_codes": []}
         assert waf._clean_external_sig(sig) is None
 
     def test_keeps_multi_word_phrases(self, waf):
-        sig = {"headers": [], "server": [], "body_patterns": [],
-               "block_page_markers": ["ray id", "cf-browser-verification"],
-               "status_codes": []}
+        sig = {"headers": [], "server": [], "body_patterns": [], "block_page_markers": ["ray id", "cf-browser-verification"], "status_codes": []}
         result = waf._clean_external_sig(sig)
         assert result is not None
         assert "ray id" in result["block_page_markers"]
 
     def test_filters_stopwords_keeps_real(self, waf):
-        sig = {"headers": [], "server": [], "body_patterns": [],
-               "block_page_markers": ["powered", "blockpage", "body", "contains",
-                                      "qianxin-waf", "header", "url", "wzws-ray"],
-               "status_codes": []}
+        sig = {"headers": [], "server": [], "body_patterns": [], "block_page_markers": ["powered", "blockpage", "body", "contains", "qianxin-waf", "header", "url", "wzws-ray"], "status_codes": []}
         result = waf._clean_external_sig(sig)
         assert result is not None
         markers = result["block_page_markers"]
@@ -50,9 +43,7 @@ class TestCleanExternalSig:
             assert junk not in markers, f"'{junk}' should have been filtered"
 
     def test_keeps_three_char_specific(self, waf):
-        sig = {"headers": ["x-amz-"], "server": [], "body_patterns": [],
-               "block_page_markers": ["aws", "request blocked"],
-               "status_codes": [403]}
+        sig = {"headers": ["x-amz-"], "server": [], "body_patterns": [], "block_page_markers": ["aws", "request blocked"], "status_codes": [403]}
         result = waf._clean_external_sig(sig)
         assert result is not None
         assert "aws" in result["block_page_markers"]

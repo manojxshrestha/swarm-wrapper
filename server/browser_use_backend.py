@@ -40,6 +40,7 @@ except ImportError:  # pragma: no cover - platform-specific
         def _flock(fileobj) -> None:
             pass
 
+
 # Ensure Chromium can find NSS/NSPR libraries (same as browser_driver.py)
 _lib_path = os.path.expanduser("~/.local/lib")
 if os.path.isdir(_lib_path):

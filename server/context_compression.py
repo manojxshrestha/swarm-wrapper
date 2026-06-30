@@ -95,13 +95,15 @@ def _load_findings(engagement_id: str) -> list[dict]:
         rows = db.list_vulns(engagement_id=engagement_id)
         result = []
         for r in rows:
-            result.append({
-                "id": r.get("finding_ref", f"#{r.get('id', '?')}"),
-                "title": r.get("title", "Unknown"),
-                "severity": r.get("severity", "?"),
-                "url": r.get("affected_url", ""),
-                "timestamp": r.get("created_at", ""),
-            })
+            result.append(
+                {
+                    "id": r.get("finding_ref", f"#{r.get('id', '?')}"),
+                    "title": r.get("title", "Unknown"),
+                    "severity": r.get("severity", "?"),
+                    "url": r.get("affected_url", ""),
+                    "timestamp": r.get("created_at", ""),
+                }
+            )
         return result
     except Exception:
         return []
