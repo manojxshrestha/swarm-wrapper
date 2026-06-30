@@ -66,8 +66,14 @@ def lab():
 def test_consensus_confirms_planted_vuln(lab):
     import server
 
+    # Probe the actual responses first for debugging
+    for payload in ["'", "test"]:
+        cmd = f'curl -s -i "{JUICE}/rest/products/search?q={payload}"'
+        resp = server._run_curl(cmd)
+        body_snippet = (resp.get("body", "") or "")[:300]
+        print(f"\n[probe] payload={payload!r} status={resp.get('status')} body={body_snippet!r}")
+
     # juice-shop has error-based SQLi in the REST search endpoint (SQLite).
-    # The bare single-quote triggers "SQLITE_ERROR" which the oracle detects.
     cmd = f'curl -s "{JUICE}/rest/products/search?q=__PAYLOAD__"'
     passed, successes, total, results = server._check_consensus(cmd, "sqli", extra_payloads=["'"])
     assert passed, f"consensus should confirm SQLi on juice-shop: {results}"
