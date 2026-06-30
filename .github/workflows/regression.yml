@@ -1,0 +1,64 @@
+# FP Regression Testing — replay known FALSE_POSITIVE verdicts on every push
+#
+# Extracts all FALSE_POSITIVE findings from the exploitation queues,
+# replays them against the target, and fails if regression rate > 1%.
+#
+# Trigger: on push to main, or manually via workflow_dispatch
+
+name: FP Regression
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      engagement_id:
+        description: "Engagement ID to test (empty = all engagements)"
+        required: false
+        default: ""
+      threshold:
+        description: "Max allowed FP regression rate %"
+        required: false
+        default: "1.0"
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Extract FALSE_POSITIVE test cases
+        run: |
+          python scripts/regression/extract_kills.py "${{ github.event.inputs.engagement_id || '' }}" \
+            > /tmp/fp_test_cases.json
+          cat /tmp/fp_test_cases.json
+
+      - name: Run regression tests
+        id: regression
+        continue-on-error: true
+        run: |
+          python scripts/regression/run_regression.py \
+            /tmp/fp_test_cases.json \
+            --threshold "${{ github.event.inputs.threshold || '1.0' }}" \
+            --timeout 30 \
+            --output /tmp/regression_results.json
+
+      - name: Upload regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-results
+          path: /tmp/regression_results.json
+
+      - name: Check regression verdict
+        if: steps.regression.outcome == 'failure'
+        run: |
+          echo "❌ FP REGRESSION DETECTED"
+          echo "New changes introduced false positives. Review regression results artifact."
+          exit 1

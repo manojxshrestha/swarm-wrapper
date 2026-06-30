@@ -1,0 +1,78 @@
+# Build & dist
+build/
+dist/
+
+# Config
+configs/*.yaml
+!configs/example-config.yaml
+!configs/config.yaml
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
+.opencode/node_modules/
+venv/
+.venv/
+browser-use-env/
+
+# Temp & cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.playwright-mcp/
+.playwright-mcp/
+.wrangler/
+*.swo
+*.swp
+*.log
+
+# OS
+.DS_Store
+
+# Secrets
+*.key
+*.p12
+*.pem
+*.crt
+*.der
+
+# Engagement artifacts (plan, notes, temp scripts, debug output)
+plan.md
+debug_*.html
+scripts/*-signup.py
+scripts/temp_email.py
+engagements/
+engagements/runtime/
+runtime/
+engagements/*/issues/
+server/data/
+
+# Recon data
+/recon/
+manual_recon/*
+scripts/wordlists/
+
+# Tools
+/tools/
+scripts/tools/filter.sh
+
+# Server test artifacts (curled cookie jars, canary tests, ad-hoc probes)
+server/[0-9]*
+server/test[0-9]*
+server/*C4n*
+server/*c4n*
+server/CANARY-REFLECTION
+server/E
+server/P
+server/EVILREFLECTMARKER123
+server/__NEXT_DATA__*
+server/import sys*
+server/"buildId"*
+server/csrf*
+scripts/tools/waymore/

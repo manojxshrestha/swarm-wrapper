@@ -1,0 +1,32 @@
+Swarm — Offensive Security MCP Platform
+Copyright (c) 2026 Manoj Shrestha
+
+All rights reserved.
+
+This software and associated documentation files (the "Software") are proprietary
+and confidential. Unauthorized copying, distribution, modification, or use of
+this Software, via any medium, is strictly prohibited without prior written
+permission from the copyright holder.
+
+The Software is provided "AS IS", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability, fitness
+for a particular purpose, and noninfringement. In no event shall the copyright
+holder be liable for any claim, damages, or other liability arising from the
+use of the Software.
+
+For commercial licensing inquiries, contact: https://github.com/manojxshrestha/swarm
+
+---
+
+Third-Party Components
+
+This project includes third-party content under separate licenses:
+
+- **knowledge/payloads/** — PayloadsAllTheThings by Swisskyrepo (MIT License).
+  Copyright (c) 2019 Swissky. See knowledge/payloads/LICENSE.
+  
+- **knowledge/waf/** — ModSecurity Core Rule Set documentation, WAF knowledge base,
+  and related research papers. Each file retains its original license.
+
+- **knowledge/wstg/** — OWASP Web Security Testing Guide v4.2 (CC BY-SA 4.0).
+  See https://owasp.org/www-project-web-security-testing-guide/

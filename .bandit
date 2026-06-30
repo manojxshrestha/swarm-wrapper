@@ -1,0 +1,10 @@
+[bandit]
+# Swarm is a penetration testing tool — some patterns bandit flags
+# (subprocess import, binding to all interfaces, test credentials,
+# random without crypto) are deliberate design choices.
+#
+# DANGEROUS checks (B113, B301, B303, B305, B307, B310, B324,
+# B403, B501, B602, B603, B604, B606, B607) are NOT skipped.
+# Each site that requires these patterns MUST use # nosec with
+# a justification comment.
+skips: B101,B104,B105,B106,B107,B108,B110,B112,B311,B404,B608,B610

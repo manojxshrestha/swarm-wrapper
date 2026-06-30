@@ -1,0 +1,97 @@
+#!/bin/bash
+# =============================================================================
+# Subdomain Takeover Scanner — wrap dnsReaper / subjack with sane defaults
+#
+# Reference for fingerprints:
+#   https://github.com/EdOverflow/can-i-take-over-xyz
+#
+# Usage:
+#   ./tools/takeover_scanner.sh <subdomains-file>
+#   ./tools/takeover_scanner.sh <domain>                # auto: recon/<domain>/subdomains/all_subdomains.txt
+#   ./tools/takeover_scanner.sh --recon <recon-dir>     # uses <recon-dir>/subdomains/all.txt
+# =============================================================================
+
+set -euo pipefail
+
+source "$(dirname "$0")/_env.sh"
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; MAG='\033[0;35m'; NC='\033[0m'
+log()  { echo -e "${CYAN}[*]${NC} $1"; }
+ok()   { echo -e "${GREEN}[+]${NC} $1"; }
+warn() { echo -e "${YELLOW}[!]${NC} $1"; }
+hit()  { echo -e "${MAG}[TAKEOVER]${NC} $1"; }
+err()  { echo -e "${RED}[-]${NC} $1" >&2; }
+
+INPUT=""; DOMAIN=""
+BASE_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --recon) shift; INPUT="${1:-}/subdomains/all.txt"; DOMAIN="${1:-}" ;;
+    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+    *)
+      INPUT="$1"
+      # If it looks like a domain (has dot, no path separators), save it
+      if echo "$1" | grep -q '\.' && ! echo "$1" | grep -q '/'; then
+        DOMAIN="$1"
+      fi
+      ;;
+  esac
+  shift
+done
+
+# If INPUT isn't a file, try as a domain name (look in standard recon path)
+if [ -n "$INPUT" ] && [ ! -f "$INPUT" ]; then
+  ORIG_DOMAIN="$INPUT"
+  DOMAIN_FILE="${RECON_BASE}/$INPUT/subdomains/all_subdomains.txt"
+  if [ -f "$DOMAIN_FILE" ]; then
+    INPUT="$DOMAIN_FILE"
+    DOMAIN="$ORIG_DOMAIN"
+  fi
+fi
+
+[ -z "$INPUT" ] || [ ! -s "$INPUT" ] && { err "subdomains file required and non-empty"; exit 2; }
+
+if [ -n "$DOMAIN" ]; then
+  OUT_DIR="${TAKEOVER_OUT_DIR:-${RECON_BASE}/$DOMAIN/takeover}"
+else
+  OUT_DIR="${TAKEOVER_OUT_DIR:-${RECON_BASE}/default/takeover}"
+fi
+mkdir -p "$OUT_DIR"
+
+# subjack (fast Go scanner)
+if _have subjack; then
+  log "subjack on $(wc -l < "$INPUT" | tr -d ' ') subdomains..."
+  subjack -w "$INPUT" -t 20 -ssl -o "$OUT_DIR/subjack.txt" 2>/dev/null || true
+  if [ -s "$OUT_DIR/subjack.txt" ]; then
+    n=$(wc -l < "$OUT_DIR/subjack.txt" | tr -d ' ')
+    [ "$n" -gt 0 ] && hit "subjack: $n candidate(s)" || ok "subjack: clean"
+  fi
+fi
+
+# Last-resort fingerprint-grep fallback when no scanner is installed
+if ! _have subjack; then
+  warn "No takeover scanner installed — running curl-based fingerprint grep (low signal)"
+  : > "$OUT_DIR/fingerprint_grep.txt"
+  # Just a handful of the most common fingerprints — extend as needed.
+  while IFS= read -r host; do
+    [ -z "$host" ] && continue
+    body=$(curl -sk --max-time 5 "https://$host" 2>/dev/null || true)
+    case "$body" in
+      *"There isn't a GitHub Pages site here"*)        echo "$host  github" >> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"NoSuchBucket"*)                                 echo "$host  s3"     >> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"Heroku | No such app"*)                         echo "$host  heroku" >> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"The specified bucket does not exist"*)          echo "$host  s3"     >> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"Sorry, this shop is currently unavailable"*)    echo "$host  shopify">> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"project not found"*)                            echo "$host  surge"  >> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"You're Almost There"*)                          echo "$host  pantheon">> "$OUT_DIR/fingerprint_grep.txt" ;;
+      *"Do you want to register"*".wordpress.com"*)     echo "$host  wpcom"  >> "$OUT_DIR/fingerprint_grep.txt" ;;
+    esac
+  done < "$INPUT"
+  n=$(wc -l < "$OUT_DIR/fingerprint_grep.txt" | tr -d ' ')
+  [ "$n" -gt 0 ] && hit "fingerprint grep: $n candidate(s)" || ok "fingerprint grep: clean"
+fi
+
+ok "Done. Output → $OUT_DIR/"
+echo "Reference: https://github.com/EdOverflow/can-i-take-over-xyz for claim instructions"

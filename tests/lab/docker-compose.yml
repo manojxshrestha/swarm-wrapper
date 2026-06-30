@@ -1,0 +1,23 @@
+# End-to-end lab targets for Swarm (Phase 1).
+#   juiceshop → intentionally vulnerable app (planted bugs to find)
+#   httpbin   → benign control (must yield zero false positives)
+services:
+  juiceshop:
+    image: bkimminich/juice-shop:latest
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/rest/admin/application-version"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  httpbin:
+    image: kennethreitz/httpbin:latest
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:80/status/200"]
+      interval: 5s
+      timeout: 3s
+      retries: 30

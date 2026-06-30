@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "description": "Known false positive signatures for auto-skip during hunting.",
+    "version": 1,
+    "updated": "2026-06-23T00:00:00Z"
+  },
+  "signatures": [
+    {
+      "id": "FP-001",
+      "pattern": "request_method: POST, path: /login, body_contains: 'password'",
+      "response_fingerprint": "HTTP 429 Too Many Requests",
+      "vuln_class": "brute_force",
+      "reason": "Rate limiting block is a security feature, not a vulnerability",
+      "reported_by": "initial"
+    },
+    {
+      "id": "FP-002",
+      "pattern": "header: X-CSRF-Token, value: *",
+      "response_fingerprint": "HTTP 403 Forbidden, body_contains: 'CSRF token'",
+      "vuln_class": "csrf",
+      "reason": "CSRF token mismatch is authentication, not vulnerability confirmation",
+      "reported_by": "initial"
+    },
+    {
+      "id": "FP-003",
+      "pattern": "path: /robots.txt",
+      "response_fingerprint": "HTTP 200, body_contains: 'Disallow: /'",
+      "vuln_class": "source_leak",
+      "reason": "Robots.txt exposure is informational, not a vulnerability",
+      "reported_by": "initial"
+    },
+    {
+      "id": "FP-004",
+      "pattern": "header: Server, value: *",
+      "response_fingerprint": "HTTP 200, header: Server",
+      "vuln_class": "information_disclosure",
+      "reason": "Server header version disclosure requires chaining to be exploitable",
+      "reported_by": "initial"
+    },
+    {
+      "id": "FP-005",
+      "pattern": "path: /.env",
+      "response_fingerprint": "HTTP 403 Forbidden, body_contains: 'blocked' or body_empty",
+      "vuln_class": "source_leak",
+      "reason": "403 on /.env indicates WAF block, not exposure",
+      "reported_by": "initial"
+    },
+    {
+      "id": "FP-006",
+      "pattern": "path: /favicon.ico",
+      "response_fingerprint": "HTTP 200, content_type: image/*",
+      "vuln_class": "information_disclosure",
+      "reason": "Favicon hash matching is OSINT, not a vulnerability",
+      "reported_by": "initial"
+    }
+  ]
+}
