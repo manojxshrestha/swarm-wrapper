@@ -67,7 +67,9 @@ def test_consensus_confirms_planted_vuln(lab):
     import server
 
     # vuln server returns SQLITE_ERROR when a single-quote is injected.
-    cmd = f'curl -s "{VULN}/sqli?q=__PAYLOAD__"'
+    # NOTE: no __PAYLOAD__ marker here — we let _inject_payload_into_url
+    # URL-encode the payload so curl sends valid HTTP.
+    cmd = f'curl -s "{VULN}/sqli?q="'
     passed, successes, total, results = server._check_consensus(cmd, "sqli")
     assert passed, f"consensus should confirm SQLi on vuln server: {results}"
 
