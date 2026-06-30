@@ -13,6 +13,7 @@ import re
 import threading
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -62,15 +63,22 @@ except ImportError:  # pragma: no cover - platform-specific
             pass
 
 
-def _locked(fn):
+from collections.abc import Callable
+from typing import Any
+
+
+def _locked(fn: Callable[..., str]) -> Callable[..., str]:
     """Decorator: run a mutating tool under the engagement's tree lock so the
     whole load→modify→save sequence is atomic (M3)."""
     import functools
 
     @functools.wraps(fn)
-    def wrapper(engagement_id, *args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> str:
+        engagement_id = args[0] if args else kwargs.get("engagement_id", "")
         with _tree_lock(engagement_id):
-            return fn(engagement_id, *args, **kwargs)
+            return fn(*args, **kwargs)
+
+    return wrapper
 
     return wrapper
 

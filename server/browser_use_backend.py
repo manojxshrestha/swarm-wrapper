@@ -306,7 +306,7 @@ def close_browser() -> str:
     return "closed"
 
 
-def _is_dialog_msg(raw: str) -> bool:
+def _is_dialog_msg(raw: str | bytes) -> bool:
     """True if a raw CDP message is a Page.javascriptDialogOpening event."""
     try:
         return json.loads(raw).get("method") == "Page.javascriptDialogOpening"
