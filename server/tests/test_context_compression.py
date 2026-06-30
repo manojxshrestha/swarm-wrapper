@@ -2,14 +2,13 @@
 
 import json
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from findings_db import FindingsDB, get_default_db_path
+from findings_db import FindingsDB
 
 
 @pytest.fixture
@@ -76,9 +75,10 @@ class TestLoadFindings:
         findings = _load_findings("any-eng")
         assert findings == []
 
-    def test_severity_counts_in_summary(self, temp_db, monkeypatch):
+    def test_severity_counts_in_summary(self, temp_db, monkeypatch, tmp_path):
         monkeypatch.setattr("findings_db.get_default_db_path", lambda: temp_db)
-        from context_compression import get_engagement_summary
+        from context_compression import configure, get_engagement_summary
+        configure(tmp_path, lambda p, d: None, lambda e, d: None)
         summary = get_engagement_summary("test-eng-1")
         assert "Total" in summary and "3" in summary.split("Total")[-1][:5]
         assert "findings logged" in summary
@@ -101,7 +101,7 @@ class TestLoadFindings:
         stale_file = stale_dir / "test-eng-1.json"
         stale_file.write_text(json.dumps([]))
 
-        from context_compression import configure, compress_phase_context, _load_findings
+        from context_compression import _load_findings, configure
 
         # Configure with tmp_path so it would read from stale file if it still used JSON
         configure(tmp_path, lambda p, d: None, lambda e, d: None)

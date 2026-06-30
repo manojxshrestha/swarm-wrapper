@@ -282,7 +282,7 @@ def load_state(engagement_id: str) -> dict:
 
 def _append_wal_entry(engagement_id: str, entry: dict) -> None:
     """Append an entry to the write-ahead log for crash recovery.
-    
+
     Uses JSON Lines format (one entry per line) for O(1) append instead
     of the old read-all → append → write-all (O(n)) approach.
     """
@@ -303,7 +303,7 @@ def get_wal(engagement_id: str) -> list[dict]:
         return []
     entries = []
     try:
-        with open(wal_file, "r", encoding="utf-8") as f:
+        with open(wal_file, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line:

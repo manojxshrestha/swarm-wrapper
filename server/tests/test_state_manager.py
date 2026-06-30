@@ -65,7 +65,7 @@ class TestStateManager:
 
     def test_wal_append_only(self, state_dir):
         """C-15: WAL uses append-only (JSON Lines), not read-all-rewrite."""
-        from state_manager import get_wal, _wal_path
+        from state_manager import _wal_path
         create_checkpoint("append-eng", "tester", "CP1")
         create_checkpoint("append-eng", "tester", "CP2")
         wal_path = _wal_path("append-eng")
@@ -81,7 +81,7 @@ class TestStateManager:
 
     def test_wal_backward_compat_json_array(self, state_dir):
         """C-15: get_wal handles old JSON array format gracefully."""
-        from state_manager import get_wal, _wal_path
+        from state_manager import _wal_path, get_wal
         wal_path = _wal_path("compat-eng")
         wal_path.parent.mkdir(parents=True, exist_ok=True)
         # Write old format: JSON array

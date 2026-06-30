@@ -255,7 +255,8 @@ class TestFindingsDB:
 
     def test_schema_migration_race_concurrent_init(self):
         """C-7: Verify concurrent FindingsDB init doesn't corrupt schema."""
-        import tempfile, threading
+        import tempfile
+        import threading
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "race.db")
             errors = []
@@ -265,8 +266,10 @@ class TestFindingsDB:
                 except Exception as e:
                     errors.append(str(e))
             threads = [threading.Thread(target=create_db_only) for _ in range(10)]
-            for t in threads: t.start()
-            for t in threads: t.join()
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
             assert not errors, f"Schema init race errors: {errors}"
             fdb = FindingsDB(db_path)
             cur = fdb._get_conn().execute("SELECT COUNT(*) FROM schema_version")
@@ -275,14 +278,17 @@ class TestFindingsDB:
 
     def test_schema_migration_race_migrates_correctly(self):
         """C-7: Schema version and columns should be correct after concurrent init."""
-        import tempfile, threading
+        import tempfile
+        import threading
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "migrate.db")
             def create_db():
                 FindingsDB(db_path).close()
             threads = [threading.Thread(target=create_db) for _ in range(5)]
-            for t in threads: t.start()
-            for t in threads: t.join()
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
             fdb = FindingsDB(db_path)
             cur = fdb._get_conn().execute("SELECT MAX(version) FROM schema_version")
             row = cur.fetchone()
@@ -324,7 +330,8 @@ class TestFindingsDB:
 
     def test_close_closes_all_thread_connections(self):
         """C-9: close() must close connections from ALL threads, not just caller's."""
-        import tempfile, threading
+        import tempfile
+        import threading
         with tempfile.TemporaryDirectory() as tmp:
             db_path = os.path.join(tmp, "leak.db")
             fdb = FindingsDB(db_path)
@@ -336,8 +343,10 @@ class TestFindingsDB:
                 results[tid] = id(conn)
 
             threads = [threading.Thread(target=get_conn_in_thread, args=(i,)) for i in range(5)]
-            for t in threads: t.start()
-            for t in threads: t.join()
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
 
             assert len(fdb._all_conns) >= 5, f"Expected >= 5 conns, got {len(fdb._all_conns)}"
             fdb.close()

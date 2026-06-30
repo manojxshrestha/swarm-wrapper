@@ -8,7 +8,6 @@ the tools did. These tests drive the tool wrappers past their import lines.
 """
 
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
