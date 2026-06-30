@@ -1,16 +1,18 @@
 # End-to-end lab targets for Swarm (Phase 1).
-#   juiceshop → intentionally vulnerable app (planted bugs to find)
-#   httpbin   → benign control (must yield zero false positives)
+#   vuln   → intentionally vulnerable server (planted bugs to find)
+#   httpbin → benign control (must yield zero false positives)
 services:
-  juiceshop:
-    image: bkimminich/juice-shop:latest
+  vuln:
+    build:
+      context: .
+      dockerfile: Dockerfile.vuln
     ports:
-      - "3000:3000"
+      - "3000:8000"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/rest/admin/application-version"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/safe?q=ok')"]
       interval: 5s
       timeout: 3s
-      retries: 30
+      retries: 10
 
   httpbin:
     image: kennethreitz/httpbin:latest

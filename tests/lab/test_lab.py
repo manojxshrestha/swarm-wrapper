@@ -1,5 +1,5 @@
 """End-to-end lab test (Phase 1): run the REAL Swarm verification engine against
-a live vulnerable app (juice-shop) and a benign control (httpbin).
+a live vulnerable app (vuln) and a benign control (httpbin).
 
 Skips cleanly when docker is unavailable, so the unit suite stays green. In CI
 (make lab-test / the lab job) docker IS present and these run for real.
@@ -21,7 +21,7 @@ import pytest
 _HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(_HERE.parent.parent / "server"))
 
-JUICE = "http://127.0.0.1:3000"
+VULN = "http://127.0.0.1:3000"
 HTTPBIN = "http://127.0.0.1:8080"
 
 
@@ -54,9 +54,9 @@ def lab():
     if dc is None:
         pytest.skip("docker/compose not available — lab test skipped")
     compose = str(_HERE / "docker-compose.yml")
-    subprocess.run(dc + ["-f", compose, "up", "-d"], check=True)
+    subprocess.run(dc + ["-f", compose, "up", "-d", "--build"], check=True)
     try:
-        if not _wait(f"{JUICE}/rest/admin/application-version") or not _wait(f"{HTTPBIN}/status/200"):
+        if not _wait(f"{VULN}/safe?q=ok") or not _wait(f"{HTTPBIN}/status/200"):
             pytest.fail("lab targets did not become healthy in time")
         yield
     finally:
@@ -66,17 +66,10 @@ def lab():
 def test_consensus_confirms_planted_vuln(lab):
     import server
 
-    # Probe the actual responses first for debugging
-    for payload in ["'", "test"]:
-        cmd = f'curl -s -i "{JUICE}/rest/products/search?q={payload}"'
-        resp = server._run_curl(cmd)
-        body_snippet = (resp.get("body", "") or "")[:300]
-        print(f"\n[probe] payload={payload!r} status={resp.get('status')} body={body_snippet!r}")
-
-    # juice-shop has error-based SQLi in the REST search endpoint (SQLite).
-    cmd = f'curl -s "{JUICE}/rest/products/search?q=__PAYLOAD__"'
-    passed, successes, total, results = server._check_consensus(cmd, "sqli", extra_payloads=["'"])
-    assert passed, f"consensus should confirm SQLi on juice-shop: {results}"
+    # vuln server returns SQLITE_ERROR when a single-quote is injected.
+    cmd = f'curl -s "{VULN}/sqli?q=__PAYLOAD__"'
+    passed, successes, total, results = server._check_consensus(cmd, "sqli")
+    assert passed, f"consensus should confirm SQLi on vuln server: {results}"
 
 
 def test_no_false_positive_on_benign(lab):
