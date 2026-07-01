@@ -680,17 +680,34 @@ Swarm works best paired with Burp Suite's MCP server:
 
 See [`docs/burp-flow.md`](docs/burp-flow.md) for the complete per-phase Burp testing workflow and MCP tool reference (proxy, repeater, intruder, collaborator, scanner, organizer).
 
-### Test
+### CI / Test
+
+All CI checks run via GitHub Actions (`.github/workflows/`). Four parallel jobs:
+
+| Job | What it checks | How to run locally |
+|-----|---------------|-------------------|
+| **Lint** | `ruff check`, `black --check`, `mypy` | `cd server && ruff check . && black --check . && mypy server.py` |
+| **Unit tests** | `pytest tests/` (156 tests + coverage) | `cd server && python3 -m pytest tests/ -v --tb=short` |
+| **Lab + Benchmark** | End-to-end consensus oracles against Docker targets | `cd tests/lab && docker compose up -d --build && cd ../.. && python3 -m pytest tests/lab/ -v --tb=short` |
+| **FP Regression** | Benchmark only (benign targets yield zero false positives) | `python3 -m pytest tests/lab/ -k "no_false" -v --tb=short` |
+
+Lab targets run in Docker:
+- **`vuln`** — intentionally vulnerable Python server (`tests/lab/vuln_server.py`) exposing SQLi (`/sqli`), XSS (`/xss`), and a safe control endpoint (`/safe`)
+- **`httpbin`** — benign control (must produce zero false positives)
 
 ```bash
-# Run MCP server tests (81 total)
-cd server && venv/bin/python3 -m pytest tests/ -v --tb=short
+# Run all checks (requires Docker for lab tests)
+cd server
+ruff check .
+black --check .
+mypy server.py
+python3 -m pytest tests/ -v --tb=short
+cd ../tests/lab && docker compose up -d --build && cd ../..
+python3 -m pytest tests/lab/ -v --tb=short
+docker compose -f tests/lab/docker-compose.yml down -v
 
-# Count the installed agents (should be 118 — created by setup.sh)
-ls ~/.config/opencode/agents/*.md 2>/dev/null | wc -l
-
-# Spot-check a few agents loaded
-ls ~/.config/opencode/agents/ | grep -E '^(autopilot|exploit|hunt-xss|hunt-rce|m365-entra-attack)\.md$'
+# Quick check — unit tests only (no Docker needed)
+cd server && python3 -m pytest tests/ -v --tb=short
 ```
 
 ### Your first hunt
