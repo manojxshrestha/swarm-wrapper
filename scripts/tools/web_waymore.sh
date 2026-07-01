@@ -41,6 +41,16 @@ log_ok "waymore: $NWAY URLs"
 
 # ── Dedup with uro ──────────────────────────────────────────────────
 log_info "Deduping waymore URLs with uro ..."
+if ! command -v uro &>/dev/null; then
+  log_info "uro not found — installing via pipx..."
+  pipx install uro 2>/dev/null || {
+    log_warn "uro install failed — skipping dedup"
+    cp "$OUT_DIR/wayurls.txt" "$OUT_DIR/waygauurls.txt"
+    NWAYGAU=$NWAY
+    log_ok "waygauurls.txt: $NWAYGAU URLs (no dedup)"
+    exit 0
+  }
+fi
 uro < "$OUT_DIR/wayurls.txt" 2>/dev/null | sort -u > "$OUT_DIR/waygauurls.txt"
 NWAYGAU=$(wc -l < "$OUT_DIR/waygauurls.txt" 2>/dev/null | tr -d ' ')
 NWAYGAU=${NWAYGAU:-0}
