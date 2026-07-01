@@ -3,12 +3,12 @@
 Full-path commands for every phase script, sub-tool, agent, and external binary.
 
 Base paths:
-- **Phase scripts**: `/home/pwn/swarm/scripts/tools/phase-<name>.sh`
-- **Sub-tool scripts**: `/home/pwn/swarm/scripts/tools/<tool>.sh`
-- **Supporting scripts**: `/home/pwn/swarm/scripts/<script>.sh`
-- **Agents**: `/home/pwn/swarm/.opencode/agents/<agent>.md`
-- **Docs**: `/home/pwn/swarm/docs/phases/<name>.md`
-- **Output**: `$RECON_BASE/<domain>` (default: `/home/pwn/swarm/engagements/recon/<domain>`)
+- **Phase scripts**: `$SWARM_HOME/scripts/tools/phase-<name>.sh`
+- **Sub-tool scripts**: `$SWARM_HOME/scripts/tools/<tool>.sh`
+- **Supporting scripts**: `$SWARM_HOME/scripts/<script>.sh`
+- **Agents**: `$SWARM_HOME/.opencode/agents/<agent>.md`
+- **Docs**: `$SWARM_HOME/docs/phases/<name>.md`
+- **Output**: `$RECON_BASE/<domain>` (default: `$SWARM_HOME/engagements/recon/<domain>`)
 
 ---
 
@@ -33,9 +33,9 @@ Base paths:
 
 ## Phase 0: Orchestrator
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-orchestrator.sh`
+**Script:** `$SWARM_HOME/scripts/tools/phase-orchestrator.sh`
 **Agent:** *(none)*
-**Doc:** `/home/pwn/swarm/docs/pipeline.md`
+**Doc:** `$SWARM_HOME/docs/pipeline.md`
 
 ### Sub-tool scripts called
 None — pure shell scaffolding.
@@ -45,7 +45,7 @@ None — pure shell scaffolding.
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-orchestrator.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-orchestrator.sh <domain> [output_dir]
 ```
 
 ### What it does
@@ -55,12 +55,12 @@ Creates engagement directory tree (`scope/`, `intel/`, `recon/`, `crawl/`, `subd
 
 ## Phase 1: Scope
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-scope.sh`
-**Agent:** `@scope` — `/home/pwn/swarm/.opencode/agents/scope.md`
-**Doc:** `/home/pwn/swarm/docs/phases/scope.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-scope.sh`
+**Agent:** `@scope` — `$SWARM_HOME/.opencode/agents/scope.md`
+**Doc:** `$SWARM_HOME/docs/phases/scope.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/tools/phase_gate.sh` (called by pipeline.sh after phase)
+- `$SWARM_HOME/scripts/tools/phase_gate.sh` (called by pipeline.sh after phase)
 
 ### External binaries invoked
 - `curl` (connectivity check to `https://<domain>`)
@@ -68,7 +68,7 @@ Creates engagement directory tree (`scope/`, `intel/`, `recon/`, `crawl/`, `subd
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-scope.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-scope.sh <domain> [output_dir]
 ```
 
 ### What it does
@@ -88,12 +88,12 @@ phase_gate_check(engagement_id, phase_completed=0)
 
 ## Phase 2: Auth
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-auth.sh`
-**Agent:** `@auth` — `/home/pwn/swarm/.opencode/agents/auth.md`
-**Doc:** `/home/pwn/swarm/docs/phases/auth.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-auth.sh`
+**Agent:** `@auth` — `$SWARM_HOME/.opencode/agents/auth.md`
+**Doc:** `$SWARM_HOME/docs/phases/auth.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/tools/auto_auth.py` — Playwright browser auth (signup→verify→login→cookie capture)
+- `$SWARM_HOME/scripts/tools/auto_auth.py` — Playwright browser auth (signup→verify→login→cookie capture)
 
 ### External binaries invoked
 - `curl -sI` (WAF header detection)
@@ -103,12 +103,12 @@ phase_gate_check(engagement_id, phase_completed=0)
 ### Command
 ```bash
 # Standard
-bash /home/pwn/swarm/scripts/tools/phase-auth.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-auth.sh <domain> [output_dir]
 
 # With pre-set credentials (skips auto-auth)
-BBHUNT_COOKIE="session=abc123" bash /home/pwn/swarm/scripts/tools/phase-auth.sh <domain>
-BBHUNT_BEARER="eyJ..." bash /home/pwn/swarm/scripts/tools/phase-auth.sh <domain>
-BBHUNT_AUTH_HEADERS="X-Api-Key: xxx" bash /home/pwn/swarm/scripts/tools/phase-auth.sh <domain>
+BBHUNT_COOKIE="session=abc123" bash $SWARM_HOME/scripts/tools/phase-auth.sh <domain>
+BBHUNT_BEARER="eyJ..." bash $SWARM_HOME/scripts/tools/phase-auth.sh <domain>
+BBHUNT_AUTH_HEADERS="X-Api-Key: xxx" bash $SWARM_HOME/scripts/tools/phase-auth.sh <domain>
 ```
 
 ### Alternate manual auth approach
@@ -145,9 +145,9 @@ nohup bash -c "python3 '<phase-script-dir>/auto_auth.py' '$TARGET' --output-dir 
 
 ## Phase 3: Intel
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-intel.sh`
-**Agent:** `@pintel` — `/home/pwn/swarm/.opencode/agents/pintel.md`
-**Doc:** `/home/pwn/swarm/docs/phases/pintel.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-intel.sh`
+**Agent:** `@pintel` — `$SWARM_HOME/.opencode/agents/pintel.md`
+**Doc:** `$SWARM_HOME/docs/phases/pintel.md`
 
 ### Sub-tool scripts called
 - `/home/pwn/.local/bin/msftrecon/msftrecon/msftrecon.py` (via venv) — M365/Azure tenant discovery
@@ -162,7 +162,7 @@ nohup bash -c "python3 '<phase-script-dir>/auto_auth.py' '$TARGET' --output-dir 
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-intel.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-intel.sh <domain> [output_dir]
 ```
 
 ### Output files
@@ -232,9 +232,9 @@ PYTHONWARNINGS=ignore python3 "$HOME/.local/bin/cloud_enum/cloud_enum.py" \
 
 ## Phase 3b: OSINT (standalone)
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-osint.sh`
-**Agent:** `@osint` — `/home/pwn/swarm/.opencode/agents/osint.md`
-**Doc:** `/home/pwn/swarm/docs/phases/osint.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-osint.sh`
+**Agent:** `@osint` — `$SWARM_HOME/.opencode/agents/osint.md`
+**Doc:** `$SWARM_HOME/docs/phases/osint.md`
 
 ### Sub-tool scripts called
 None — uses theHarvester directly.
@@ -244,7 +244,7 @@ None — uses theHarvester directly.
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-osint.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-osint.sh <domain> [output_dir]
 ```
 
 ### What it does
@@ -256,26 +256,26 @@ Runs theHarvester with two source sets:
 
 ## Phase 4: Recon
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-recon.sh`
-**Agent:** `@recon` — `/home/pwn/swarm/.opencode/agents/recon.md`
-**Doc:** `/home/pwn/swarm/docs/phases/recon.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-recon.sh`
+**Agent:** `@recon` — `$SWARM_HOME/.opencode/agents/recon.md`
+**Doc:** `$SWARM_HOME/docs/phases/recon.md`
 
 ### Sub-tool scripts called (all via `nohup` in parallel)
 
 | Script | Full Path |
 |--------|-----------|
-| subdomain_enum.sh | `/home/pwn/swarm/scripts/tools/subdomain_enum.sh` |
-| web_gospider.sh | `/home/pwn/swarm/scripts/tools/web_gospider.sh` |
-| web_katana.sh | `/home/pwn/swarm/scripts/tools/web_katana.sh` |
-| web_waymore.sh | `/home/pwn/swarm/scripts/tools/web_waymore.sh` |
-| extracturls.sh | `/home/pwn/swarm/scripts/tools/extracturls.sh` |
-| dns_bruteforce.sh | `/home/pwn/swarm/scripts/tools/dns_bruteforce.sh` |
-| param_extract.sh | `/home/pwn/swarm/scripts/tools/param_extract.sh` |
-| cariddi_scan.sh | `/home/pwn/swarm/scripts/tools/cariddi_scan.sh` |
-| vhost_fuzz.sh | `/home/pwn/swarm/scripts/tools/vhost_fuzz.sh` |
-| zone_transfer.sh | `/home/pwn/swarm/scripts/tools/zone_transfer.sh` |
-| github_dork.sh | `/home/pwn/swarm/scripts/tools/github_dork.sh` |
-| s3_buckets.sh | `/home/pwn/swarm/scripts/tools/s3_buckets.sh` |
+| subdomain_enum.sh | `$SWARM_HOME/scripts/tools/subdomain_enum.sh` |
+| web_gospider.sh | `$SWARM_HOME/scripts/tools/web_gospider.sh` |
+| web_katana.sh | `$SWARM_HOME/scripts/tools/web_katana.sh` |
+| web_waymore.sh | `$SWARM_HOME/scripts/tools/web_waymore.sh` |
+| extracturls.sh | `$SWARM_HOME/scripts/tools/extracturls.sh` |
+| dns_bruteforce.sh | `$SWARM_HOME/scripts/tools/dns_bruteforce.sh` |
+| param_extract.sh | `$SWARM_HOME/scripts/tools/param_extract.sh` |
+| cariddi_scan.sh | `$SWARM_HOME/scripts/tools/cariddi_scan.sh` |
+| vhost_fuzz.sh | `$SWARM_HOME/scripts/tools/vhost_fuzz.sh` |
+| zone_transfer.sh | `$SWARM_HOME/scripts/tools/zone_transfer.sh` |
+| github_dork.sh | `$SWARM_HOME/scripts/tools/github_dork.sh` |
+| s3_buckets.sh | `$SWARM_HOME/scripts/tools/s3_buckets.sh` |
 
 ### External binaries invoked (by sub-tools)
 
@@ -305,31 +305,31 @@ Runs theHarvester with two source sets:
 ### Command
 ```bash
 # Full recon (all sub-tools in parallel)
-bash /home/pwn/swarm/scripts/tools/phase-recon.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-recon.sh <domain> [output_dir]
 
 # Root-only mode (skip subdomain enumeration)
-bash /home/pwn/swarm/scripts/tools/phase-recon.sh <domain> --root-only
+bash $SWARM_HOME/scripts/tools/phase-recon.sh <domain> --root-only
 
 # Skip specific tools
-SKIP_LIST="gospider,katana" bash /home/pwn/swarm/scripts/tools/phase-recon.sh <domain>
+SKIP_LIST="gospider,katana" bash $SWARM_HOME/scripts/tools/phase-recon.sh <domain>
 ```
 
 ### Standalone sub-tool commands (run individually)
 ```bash
-bash /home/pwn/swarm/scripts/tools/subdomain_enum.sh <domain>
-bash /home/pwn/swarm/scripts/tools/dns_bruteforce.sh <domain>
-bash /home/pwn/swarm/scripts/tools/web_waymore.sh <domain>
-bash /home/pwn/swarm/scripts/tools/web_gospider.sh <domain>
-bash /home/pwn/swarm/scripts/tools/web_katana.sh <domain>
-bash /home/pwn/swarm/scripts/tools/extracturls.sh -f /path/to/crawl -d <domain>
-bash /home/pwn/swarm/scripts/tools/param_extract.sh <domain>
-bash /home/pwn/swarm/scripts/tools/cariddi_scan.sh <domain>
-bash /home/pwn/swarm/scripts/tools/bypass_403.sh <domain>
-bash /home/pwn/swarm/scripts/tools/vhost_fuzz.sh <domain>
-bash /home/pwn/swarm/scripts/tools/zone_transfer.sh <domain>
-bash /home/pwn/swarm/scripts/tools/github_dork.sh <domain>
-bash /home/pwn/swarm/scripts/tools/s3_buckets.sh <domain>
-bash /home/pwn/swarm/scripts/tools/cloud_recon.sh --keyword <company>
+bash $SWARM_HOME/scripts/tools/subdomain_enum.sh <domain>
+bash $SWARM_HOME/scripts/tools/dns_bruteforce.sh <domain>
+bash $SWARM_HOME/scripts/tools/web_waymore.sh <domain>
+bash $SWARM_HOME/scripts/tools/web_gospider.sh <domain>
+bash $SWARM_HOME/scripts/tools/web_katana.sh <domain>
+bash $SWARM_HOME/scripts/tools/extracturls.sh -f /path/to/crawl -d <domain>
+bash $SWARM_HOME/scripts/tools/param_extract.sh <domain>
+bash $SWARM_HOME/scripts/tools/cariddi_scan.sh <domain>
+bash $SWARM_HOME/scripts/tools/bypass_403.sh <domain>
+bash $SWARM_HOME/scripts/tools/vhost_fuzz.sh <domain>
+bash $SWARM_HOME/scripts/tools/zone_transfer.sh <domain>
+bash $SWARM_HOME/scripts/tools/github_dork.sh <domain>
+bash $SWARM_HOME/scripts/tools/s3_buckets.sh <domain>
+bash $SWARM_HOME/scripts/tools/cloud_recon.sh --keyword <company>
 ```
 
 ### What it does
@@ -364,9 +364,9 @@ nohup bash -c "bash '<phase-script-dir>/<script>.sh' '$TARGET'" > "<logfile>" 2>
 
 ## Phase 5: Surface
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-surface.sh`
-**Agent:** `@surface` — `/home/pwn/swarm/.opencode/agents/surface.md`
-**Doc:** `/home/pwn/swarm/docs/phases/surface.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-surface.sh`
+**Agent:** `@surface` — `$SWARM_HOME/.opencode/agents/surface.md`
+**Doc:** `$SWARM_HOME/docs/phases/surface.md`
 
 ### Sub-tool scripts called
 None — pure shell text processing.
@@ -376,7 +376,7 @@ None — pure shell text processing.
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-surface.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-surface.sh <domain> [output_dir]
 ```
 
 ### MCP calls (via @surface agent)
@@ -388,7 +388,7 @@ phase_gate_check(engagement_id, phase_completed=5)
 ```
 
 ### Scoring engine
-`/home/pwn/swarm/server/endpoint_priority.py:64-164` — 7-factor risk scoring
+`$SWARM_HOME/server/endpoint_priority.py:64-164` — 7-factor risk scoring
 
 ### What it does
 Collects all URLs from 7 recon sources, deduplicates, classifies into Tier 0 (public+input), Tier 1 (auth+input), Tier 2 (infrastructure). Produces `surface/endpoint_map_ranked.txt`.
@@ -397,21 +397,21 @@ Collects all URLs from 7 recon sources, deduplicates, classifies into Tier 0 (pu
 
 ## Phase 6: Hunt
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-hunt.sh`
-**Agent:** `@hunt` — `/home/pwn/swarm/.opencode/agents/hunt.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-hunt.sh`
+**Agent:** `@hunt` — `$SWARM_HOME/.opencode/agents/hunt.md`
 **Sub-agents:** 56 `@hunt-*` agents + `@hunt-dispatch`
-**Doc:** `/home/pwn/swarm/docs/phases/hunt.md`
+**Doc:** `$SWARM_HOME/docs/phases/hunt.md`
 
 ### Layer A — Sub-tool scripts called (via `nohup` in parallel)
 
 | Script | Full Path |
 |--------|-----------|
-| param_extract.sh | `/home/pwn/swarm/scripts/tools/param_extract.sh` |
-| param-x8.sh | `/home/pwn/swarm/scripts/tools/param-x8.sh` |
-| secrets_hunter.sh | `/home/pwn/swarm/scripts/tools/secrets_hunter.sh` |
-| auto_secrets.sh | `/home/pwn/swarm/scripts/tools/auto_secrets.sh` |
-| vhost_fuzz.sh | `/home/pwn/swarm/scripts/tools/vhost_fuzz.sh` |
-| bypass_403.sh | `/home/pwn/swarm/scripts/tools/bypass_403.sh` |
+| param_extract.sh | `$SWARM_HOME/scripts/tools/param_extract.sh` |
+| param-x8.sh | `$SWARM_HOME/scripts/tools/param-x8.sh` |
+| secrets_hunter.sh | `$SWARM_HOME/scripts/tools/secrets_hunter.sh` |
+| auto_secrets.sh | `$SWARM_HOME/scripts/tools/auto_secrets.sh` |
+| vhost_fuzz.sh | `$SWARM_HOME/scripts/tools/vhost_fuzz.sh` |
+| bypass_403.sh | `$SWARM_HOME/scripts/tools/bypass_403.sh` |
 
 ### External binaries invoked (by sub-tools)
 
@@ -426,23 +426,23 @@ Collects all URLs from 7 recon sources, deduplicates, classifies into Tier 0 (pu
 
 ### Layer B — Batch test script
 ```bash
-bash /home/pwn/swarm/scripts/payloads/hunt.sh <engagement-id>
-bash /home/pwn/swarm/scripts/payloads/hunt.sh <engagement-id> --deep
+bash $SWARM_HOME/scripts/payloads/hunt.sh <engagement-id>
+bash $SWARM_HOME/scripts/payloads/hunt.sh <engagement-id> --deep
 ```
 
 ### Command
 ```bash
 # Standard — passive param extraction + secrets + vhost + 403
-bash /home/pwn/swarm/scripts/tools/phase-hunt.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-hunt.sh <domain> [output_dir]
 
 # With active parameter discovery (slower)
-bash /home/pwn/swarm/scripts/tools/phase-hunt.sh <domain> --active-param
+bash $SWARM_HOME/scripts/tools/phase-hunt.sh <domain> --active-param
 
 # Root-only mode
-bash /home/pwn/swarm/scripts/tools/phase-hunt.sh <domain> --root-only
+bash $SWARM_HOME/scripts/tools/phase-hunt.sh <domain> --root-only
 
 # Skip specific checks
-bash /home/pwn/swarm/scripts/tools/phase-hunt.sh <domain> --skip vhost
+bash $SWARM_HOME/scripts/tools/phase-hunt.sh <domain> --skip vhost
 ```
 
 ### Wrapper expansion (Phase 6 — Hunt)
@@ -487,25 +487,25 @@ nohup bash -c "bash '<phase-script-dir>/<script>.sh' <args>" > "<logfile>" 2>&1 
 ### Standalone sub-tool commands
 ```bash
 # OOB listener (start before blind testing)
-bash /home/pwn/swarm/scripts/tools/oob_listener.sh start
+bash $SWARM_HOME/scripts/tools/oob_listener.sh start
 
 # Automated SQLi
-bash /home/pwn/swarm/scripts/tools/auto_sqli.sh <domain>
+bash $SWARM_HOME/scripts/tools/auto_sqli.sh <domain>
 
 # Automated XSS
-bash /home/pwn/swarm/scripts/tools/auto_xss.sh <domain>
+bash $SWARM_HOME/scripts/tools/auto_xss.sh <domain>
 
 # AI-driven directory bruteforce
-bash /home/pwn/swarm/scripts/tools/dir_bruteforce.sh --url https://<domain> --intent api
+bash $SWARM_HOME/scripts/tools/dir_bruteforce.sh --url https://<domain> --intent api
 
 # VHost fuzzing (standalone)
-bash /home/pwn/swarm/scripts/tools/vhost_fuzz.sh <domain>
+bash $SWARM_HOME/scripts/tools/vhost_fuzz.sh <domain>
 
 # 403 bypass (standalone)
-bash /home/pwn/swarm/scripts/tools/bypass_403.sh <domain> --quick
+bash $SWARM_HOME/scripts/tools/bypass_403.sh <domain> --quick
 
 # Stop OOB listener
-bash /home/pwn/swarm/scripts/tools/oob_listener.sh stop
+bash $SWARM_HOME/scripts/tools/oob_listener.sh stop
 ```
 
 ### MCP calls (via @hunt agent)
@@ -525,12 +525,12 @@ phase_gate_check(engagement_id, phase_completed=6)
 
 ## Phase 7: Deepthink
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-deepthink.sh`
-**Agent:** `@deepthink` — `/home/pwn/swarm/.opencode/agents/deepthink.md`
-**Doc:** `/home/pwn/swarm/docs/phases/deepthink.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-deepthink.sh`
+**Agent:** `@deepthink` — `$SWARM_HOME/.opencode/agents/deepthink.md`
+**Doc:** `$SWARM_HOME/docs/phases/deepthink.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/findings.sh` — SQLite findings CLI
+- `$SWARM_HOME/scripts/findings.sh` — SQLite findings CLI
 
 ### External binaries invoked
 - `python3` (embedded queries)
@@ -539,10 +539,10 @@ phase_gate_check(engagement_id, phase_completed=6)
 ### Command
 ```bash
 # New signature (with engagement ID)
-bash /home/pwn/swarm/scripts/tools/phase-deepthink.sh <engagement_id> <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-deepthink.sh <engagement_id> <domain> [output_dir]
 
 # Old signature (no engagement ID)
-bash /home/pwn/swarm/scripts/tools/phase-deepthink.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-deepthink.sh <domain> [output_dir]
 ```
 
 ### MCP calls (via @deepthink agent)
@@ -564,12 +564,12 @@ Conditional phase — only runs when HUNT yields zero findings or tools fail. Qu
 
 ## Phase 8: Exploit
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-exploit.sh`
-**Agent:** `@exploit` — `/home/pwn/swarm/.opencode/agents/exploit.md`
-**Doc:** `/home/pwn/swarm/docs/phases/exploit.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-exploit.sh`
+**Agent:** `@exploit` — `$SWARM_HOME/.opencode/agents/exploit.md`
+**Doc:** `$SWARM_HOME/docs/phases/exploit.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/findings.sh` — SQLite findings CLI
+- `$SWARM_HOME/scripts/findings.sh` — SQLite findings CLI
 
 ### External binaries invoked
 - `python3` (embedded queries)
@@ -577,10 +577,10 @@ Conditional phase — only runs when HUNT yields zero findings or tools fail. Qu
 ### Command
 ```bash
 # New signature (with engagement ID)
-bash /home/pwn/swarm/scripts/tools/phase-exploit.sh <engagement_id> <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-exploit.sh <engagement_id> <domain> [output_dir]
 
 # Old signature
-bash /home/pwn/swarm/scripts/tools/phase-exploit.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-exploit.sh <domain> [output_dir]
 ```
 
 ### MCP calls (via @exploit agent)
@@ -609,21 +609,21 @@ phase_gate_check(engagement_id, phase_completed=8)
 
 ## Phase 9: Search
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-search.sh`
-**Agent:** `@search` — `/home/pwn/swarm/.opencode/agents/search.md`
-**Doc:** `/home/pwn/swarm/docs/phases/search.md`
+**Script:** `$SWARM_HOME/scripts/tools/phase-search.sh`
+**Agent:** `@search` — `$SWARM_HOME/.opencode/agents/search.md`
+**Doc:** `$SWARM_HOME/docs/phases/search.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/findings.sh` — SQLite findings CLI
+- `$SWARM_HOME/scripts/findings.sh` — SQLite findings CLI
 
 ### External binaries invoked
 - `python3` (embedded queries)
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-search.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-search.sh <domain> [output_dir]
 # or
-bash /home/pwn/swarm/scripts/tools/phase-search.sh <engagement_id> <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-search.sh <engagement_id> <domain> [output_dir]
 ```
 
 ### MCP calls (via @search agent)
@@ -645,13 +645,13 @@ validate_poc(engagement_id, command, ...)
 
 ## Phase 10: Capture
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-capture.sh`
+**Script:** `$SWARM_HOME/scripts/tools/phase-capture.sh`
 **Agent:** `@capture` + `@evidence-hygiene`
-**Doc:** `/home/pwn/swarm/docs/phases/capture.md`
+**Doc:** `$SWARM_HOME/docs/phases/capture.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/generate_poc_report.sh <engagement_id> all --domain <domain>`
-- `/home/pwn/swarm/scripts/findings.sh` (via embedded Python DB query)
+- `$SWARM_HOME/scripts/generate_poc_report.sh <engagement_id> all --domain <domain>`
+- `$SWARM_HOME/scripts/findings.sh` (via embedded Python DB query)
 
 ### External binaries invoked
 - `python3` (summary generation, DB queries)
@@ -659,10 +659,10 @@ validate_poc(engagement_id, command, ...)
 ### Command
 ```bash
 # New signature (engagement_id + domain)
-bash /home/pwn/swarm/scripts/tools/phase-capture.sh <engagement_id> <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-capture.sh <engagement_id> <domain> [output_dir]
 
 # Old signature (domain only)
-bash /home/pwn/swarm/scripts/tools/phase-capture.sh <domain> [output_dir] [--engagement-id X]
+bash $SWARM_HOME/scripts/tools/phase-capture.sh <domain> [output_dir] [--engagement-id X]
 ```
 
 ### MCP calls (via @capture agent)
@@ -689,9 +689,9 @@ burp_get_collaborator_interactions()
 
 ## Phase 11: Validate
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-validate.sh`
+**Script:** `$SWARM_HOME/scripts/tools/phase-validate.sh`
 **Agent:** `@validate` + `@triage-validation`
-**Doc:** `/home/pwn/swarm/docs/phases/validate.md`
+**Doc:** `$SWARM_HOME/docs/phases/validate.md`
 
 ### Sub-tool scripts called
 None — pure shell text assembly.
@@ -701,7 +701,7 @@ None — pure shell text assembly.
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-validate.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-validate.sh <domain> [output_dir]
 ```
 
 ### MCP calls (via @validate agent)
@@ -731,21 +731,21 @@ Missing headers, introspection alone, clickjacking alone, self-XSS, open redirec
 
 ## Phase 12: Report
 
-**Script:** `/home/pwn/swarm/scripts/tools/phase-report.sh`
+**Script:** `$SWARM_HOME/scripts/tools/phase-report.sh`
 **Agent:** `@report` + `@report-writing` / `@bugcrowd-reporting` / `@redteam-report-template`
-**Doc:** `/home/pwn/swarm/docs/phases/report.md`
+**Doc:** `$SWARM_HOME/docs/phases/report.md`
 
 ### Sub-tool scripts called
-- `/home/pwn/swarm/scripts/findings.sh` — SQLite findings CLI
+- `$SWARM_HOME/scripts/findings.sh` — SQLite findings CLI
 
 ### External binaries invoked
 - `cat`, `find`
 
 ### Command
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase-report.sh <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-report.sh <domain> [output_dir]
 # or
-bash /home/pwn/swarm/scripts/tools/phase-report.sh <engagement_id> <domain> [output_dir]
+bash $SWARM_HOME/scripts/tools/phase-report.sh <engagement_id> <domain> [output_dir]
 ```
 
 ### MCP calls (via @report agent)
@@ -763,60 +763,60 @@ generate_report(engagement_id, target, tester, platform)
 ### Pipeline orchestrator
 ```bash
 # Run all 12 phases
-bash /home/pwn/swarm/scripts/pipeline.sh <domain>
+bash $SWARM_HOME/scripts/pipeline.sh <domain>
 
 # Run phases 3-6
-bash /home/pwn/swarm/scripts/pipeline.sh <domain> 3-6
+bash $SWARM_HOME/scripts/pipeline.sh <domain> 3-6
 
 # Run single phase
-bash /home/pwn/swarm/scripts/pipeline.sh <domain> 4
+bash $SWARM_HOME/scripts/pipeline.sh <domain> 4
 
 # Resume from last checkpoint
-bash /home/pwn/swarm/scripts/pipeline.sh <domain> --resume
+bash $SWARM_HOME/scripts/pipeline.sh <domain> --resume
 
 # Skip slow tools
-SKIP_LIST=gospider,katana bash /home/pwn/swarm/scripts/pipeline.sh <domain> 4
+SKIP_LIST=gospider,katana bash $SWARM_HOME/scripts/pipeline.sh <domain> 4
 
 # Set per-phase timeout (seconds)
-PIPELINE_TIMEOUT=1200 bash /home/pwn/swarm/scripts/pipeline.sh <domain>
+PIPELINE_TIMEOUT=1200 bash $SWARM_HOME/scripts/pipeline.sh <domain>
 ```
 
 ### Phase gate
 ```bash
-bash /home/pwn/swarm/scripts/tools/phase_gate.sh <phase-num> <domain>
+bash $SWARM_HOME/scripts/tools/phase_gate.sh <phase-num> <domain>
 ```
 
 ### Environment validation
 ```bash
-bash /home/pwn/swarm/scripts/tools/validate-env.sh
+bash $SWARM_HOME/scripts/tools/validate-env.sh
 ```
 
 ### Findings database CLI
 ```bash
-bash /home/pwn/swarm/scripts/findings.sh init <engagement-id>
-bash /home/pwn/swarm/scripts/findings.sh add vuln <engagement-id> <title> --severity S
-bash /home/pwn/swarm/scripts/findings.sh list vulns <engagement-id>
-bash /home/pwn/swarm/scripts/findings.sh stats <engagement-id>
-bash /home/pwn/swarm/scripts/findings.sh export <engagement-id>
-bash /home/pwn/swarm/scripts/findings.sh handoff <engagement-id>
+bash $SWARM_HOME/scripts/findings.sh init <engagement-id>
+bash $SWARM_HOME/scripts/findings.sh add vuln <engagement-id> <title> --severity S
+bash $SWARM_HOME/scripts/findings.sh list vulns <engagement-id>
+bash $SWARM_HOME/scripts/findings.sh stats <engagement-id>
+bash $SWARM_HOME/scripts/findings.sh export <engagement-id>
+bash $SWARM_HOME/scripts/findings.sh handoff <engagement-id>
 ```
 
 ### Todo export
 ```bash
-bash /home/pwn/swarm/scripts/tools/todo-export.sh <domain>
+bash $SWARM_HOME/scripts/tools/todo-export.sh <domain>
 ```
 
 ### PoC report generator
 ```bash
-bash /home/pwn/swarm/scripts/generate_poc_report.sh <engagement-id> all --domain <domain>
-bash /home/pwn/swarm/scripts/generate_poc_report.sh <engagement-id> <finding-id> --domain <domain>
+bash $SWARM_HOME/scripts/generate_poc_report.sh <engagement-id> all --domain <domain>
+bash $SWARM_HOME/scripts/generate_poc_report.sh <engagement-id> <finding-id> --domain <domain>
 ```
 
 ### Environment variables (pre-set)
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `RECON_BASE` | Output directory base | `/home/pwn/swarm/engagements/recon` |
+| `RECON_BASE` | Output directory base | `$SWARM_HOME/engagements/recon` |
 | `SKIP_LIST` | Comma-separated tools to skip | *(empty)* |
 | `PIPELINE_TIMEOUT` | Per-phase timeout (seconds) | *(none)* |
 | `BBHUNT_COOKIE` | Pre-set session cookie | *(none)* |
@@ -1008,44 +1008,44 @@ Every script in `scripts/` and `scripts/tools/` and how it executes external too
 
 ```bash
 # Phase 0: Orchestrator
-bash /home/pwn/swarm/scripts/tools/phase-orchestrator.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-orchestrator.sh <domain>
 
 # Phase 1: Scope
-bash /home/pwn/swarm/scripts/tools/phase-scope.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-scope.sh <domain>
 
 # Phase 2: Auth
-bash /home/pwn/swarm/scripts/tools/phase-auth.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-auth.sh <domain>
 
 # Phase 3: Intel
-bash /home/pwn/swarm/scripts/tools/phase-intel.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-intel.sh <domain>
 
 # Phase 3b: OSINT (optional)
-bash /home/pwn/swarm/scripts/tools/phase-osint.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-osint.sh <domain>
 
 # Phase 4: Recon
-bash /home/pwn/swarm/scripts/tools/phase-recon.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-recon.sh <domain>
 
 # Phase 5: Surface
-bash /home/pwn/swarm/scripts/tools/phase-surface.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-surface.sh <domain>
 
 # Phase 6: Hunt
-bash /home/pwn/swarm/scripts/tools/phase-hunt.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-hunt.sh <domain>
 
 # Phase 7: Deepthink
-bash /home/pwn/swarm/scripts/tools/phase-deepthink.sh <engagement_id> <domain>
+bash $SWARM_HOME/scripts/tools/phase-deepthink.sh <engagement_id> <domain>
 
 # Phase 8: Exploit
-bash /home/pwn/swarm/scripts/tools/phase-exploit.sh <engagement_id> <domain>
+bash $SWARM_HOME/scripts/tools/phase-exploit.sh <engagement_id> <domain>
 
 # Phase 9: Search
-bash /home/pwn/swarm/scripts/tools/phase-search.sh <engagement_id> <domain>
+bash $SWARM_HOME/scripts/tools/phase-search.sh <engagement_id> <domain>
 
 # Phase 10: Capture
-bash /home/pwn/swarm/scripts/tools/phase-capture.sh <engagement_id> <domain>
+bash $SWARM_HOME/scripts/tools/phase-capture.sh <engagement_id> <domain>
 
 # Phase 11: Validate
-bash /home/pwn/swarm/scripts/tools/phase-validate.sh <domain>
+bash $SWARM_HOME/scripts/tools/phase-validate.sh <domain>
 
 # Phase 12: Report
-bash /home/pwn/swarm/scripts/tools/phase-report.sh <engagement_id> <domain>
+bash $SWARM_HOME/scripts/tools/phase-report.sh <engagement_id> <domain>
 ```
