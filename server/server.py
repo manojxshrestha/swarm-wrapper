@@ -624,6 +624,11 @@ def _get_findings_from_sqlite(engagement_id: str) -> list[dict]:
                 "confidence": v.get("confidence", "version_based"),
                 "cvss": v.get("cvss", 0.0),
                 "poc_token": v.get("poc_token", ""),
+                "poc_output": v.get("poc_output", ""),
+                "reproduced": bool(v.get("reproduced", 0)),
+                "consensus_passed": bool(v.get("consensus_passed", 0)),
+                "baseline_anomaly": bool(v.get("baseline_anomaly", 0)),
+                "independent_engine": False,
             }
         )
     return findings
@@ -4160,7 +4165,9 @@ def generate_report(
         if poc_token:
             eid_safe = _sanitize_id(engagement_id)
             poc_link = f"| **PoC Report** | `{poc_token}` (see `engagements/{eid_safe}/evidence/`) |"
-        return [
+        poc_out = f.get("poc_output", "")
+        poc_output_fence, _ = _safe_code_fence(poc_out) if poc_out else ("", False)
+        lines = [
             f"### {f['id']}: {f['title']}",
             "",
             "| Attribute | Detail |",
@@ -4171,6 +4178,9 @@ def generate_report(
             f"| **Affected URL** | {f['affected_url']} |",
             f"| **Affected Parameter** | {f.get('affected_parameter', 'N/A')} |",
             (poc_link if poc_link else ""),
+            f"| **Reproducible** | {'✅ Reproduced' if f.get('reproduced') else '❌ Not Reproduced'} |",
+            f"| **Consensus** | {'🧠 Passed' if f.get('consensus_passed') else '❌ Failed'} |",
+            f"| **Baseline Anomaly** | {'⚠️ Yes' if f.get('baseline_anomaly') else '✅ No'} |",
             "",
             "#### Description",
             "",
@@ -4181,14 +4191,33 @@ def generate_report(
             evidence_fence,
             f"{f['evidence']}",
             evidence_fence,
+        ]
+        if poc_out:
+            lines.extend([
+                "",
+                "#### Reproduction Steps",
+                "",
+                poc_output_fence,
+                poc_out,
+                poc_output_fence,
+            ])
+        lines.extend([
             "",
             "#### Remediation",
             "",
             f"{f['remediation']}",
             "",
+            "#### Validation Summary",
+            "",
+            f"- **Reproduced**: {f.get('reproduced', False)}",
+            f"- **Consensus Passed**: {f.get('consensus_passed', False)}",
+            f"- **Baseline Anomaly**: {f.get('baseline_anomaly', False)}",
+            f"- **Independent Engine**: {f.get('independent_engine', False)}",
+            "",
             "---",
             "",
-        ]
+        ])
+        return lines
 
     def _render_domain_section(domain_name: str, domain_findings: list[dict]) -> list[str]:
         out = [f"### Domain: {domain_name}\n"]

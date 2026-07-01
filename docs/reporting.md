@@ -85,9 +85,12 @@ Findings sorted by severity: **Critical → High → Medium → Low → Informat
   Per finding:
   - ID, Title
   - Severity, Confidence, WSTG Reference, Affected URL, Parameter, PoC Link
+  - Reproducible, Consensus, Baseline Anomaly badges (attribute table)
   - Description
   - Evidence (code-fenced HTTP request/response)
+  - Reproduction Steps (code-fenced `poc_output` — only if validated PoC exists)
   - Remediation
+  - Validation Summary: reproduced, consensus_passed, baseline_anomaly, independent_engine
 
 ### Additional Candidates (Version-Based / Speculative)
   Same format, severities capped
