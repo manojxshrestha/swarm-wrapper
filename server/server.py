@@ -4193,30 +4193,34 @@ def generate_report(
             evidence_fence,
         ]
         if poc_out:
-            lines.extend([
+            lines.extend(
+                [
+                    "",
+                    "#### Reproduction Steps",
+                    "",
+                    poc_output_fence,
+                    poc_out,
+                    poc_output_fence,
+                ]
+            )
+        lines.extend(
+            [
                 "",
-                "#### Reproduction Steps",
+                "#### Remediation",
                 "",
-                poc_output_fence,
-                poc_out,
-                poc_output_fence,
-            ])
-        lines.extend([
-            "",
-            "#### Remediation",
-            "",
-            f"{f['remediation']}",
-            "",
-            "#### Validation Summary",
-            "",
-            f"- **Reproduced**: {f.get('reproduced', False)}",
-            f"- **Consensus Passed**: {f.get('consensus_passed', False)}",
-            f"- **Baseline Anomaly**: {f.get('baseline_anomaly', False)}",
-            f"- **Independent Engine**: {f.get('independent_engine', False)}",
-            "",
-            "---",
-            "",
-        ])
+                f"{f['remediation']}",
+                "",
+                "#### Validation Summary",
+                "",
+                f"- **Reproduced**: {f.get('reproduced', False)}",
+                f"- **Consensus Passed**: {f.get('consensus_passed', False)}",
+                f"- **Baseline Anomaly**: {f.get('baseline_anomaly', False)}",
+                f"- **Independent Engine**: {f.get('independent_engine', False)}",
+                "",
+                "---",
+                "",
+            ]
+        )
         return lines
 
     def _render_domain_section(domain_name: str, domain_findings: list[dict]) -> list[str]:
