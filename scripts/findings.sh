@@ -344,8 +344,7 @@ cmd_doctor() {
         "hydra:hydra:Phase 3 - Brute force"
         "wafw00f:wafw00f:Phase 0 - WAF detection"
         "waymore:waymore:Phase 0 - URL collection"
-        "arjun:arjun:Phase 0 - Parameter discovery"
-        "identYwaf:identYwaf:Phase 0 - WAF identification"
+
         "smuggler:smuggler:Phase 4 - Request smuggling"
         "sstimap:sstimap:Phase 4 - SSTI detection"
         "corscanner:corscanner:Phase 2 - CORS testing"

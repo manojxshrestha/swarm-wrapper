@@ -286,20 +286,6 @@ if ! $QUICK; then
     fi
   fi
 
-  # identYwaf
-  IDENT_DIR="$TOOLS_DIR/identYwaf"
-  if command -v identYwaf &>/dev/null; then
-    ok "identYwaf — already installed"
-  else
-    info "Installing identYwaf..."
-    if git clone --depth 1 https://github.com/stamparm/identYwaf.git "$IDENT_DIR" 2>/dev/null; then
-      ln -sf "$IDENT_DIR/identYwaf.py" "$TOOLS_DIR/identYwaf" 2>/dev/null
-      ok "identYwaf installed"
-    else
-      warn "identYwaf install failed"
-    fi
-  fi
-
   # ── Security scanner tools (git clone + venv, same pattern as msftrecon) ──
   install_scanner_repo() {
     local name="$1"
@@ -747,7 +733,7 @@ header "PHASE 11: Verification"
 if ! $QUICK; then
   info "Checking core tools..."
   # tool list for command -v check (standalone binaries)
-  for tool in subfinder dnsx httpx ffuf gf gau katana nuclei dalfox crlfuzz anew jq trufflehog interactsh-client identYwaf naabu; do
+  for tool in subfinder dnsx httpx ffuf gf gau katana nuclei dalfox crlfuzz anew jq trufflehog interactsh-client naabu; do
     if command -v "$tool" &>/dev/null; then
       ok "$tool — found"
     else
