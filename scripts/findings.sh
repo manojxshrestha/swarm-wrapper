@@ -343,12 +343,8 @@ cmd_doctor() {
         "commix:commix:Phase 4 - Command injection"
         "hydra:hydra:Phase 3 - Brute force"
         "wafw00f:wafw00f:Phase 0 - WAF detection"
-        "arjun:arjun:Phase 0 - Parameter discovery"
-        "corscanner:corscanner:Phase 2 - CORS testing"
-        "smuggler:smuggler:Phase 4 - Request smuggling"
         "crlfuzz:crlfuzz:Phase 4 - CRLF injection"
         "nikto:nikto:Phase 0 - Web server scan"
-        "wapiti:wapiti:Phase 0 - Web vuln scan"
         "urless:urless:Phase 0 - URL filtering"
         "jwt_tool:jwt_tool:Phase 4 - JWT testing"
     )
