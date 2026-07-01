@@ -268,6 +268,7 @@ Runs theHarvester with two source sets:
 | web_gospider.sh | `/home/pwn/swarm/scripts/tools/web_gospider.sh` |
 | web_katana.sh | `/home/pwn/swarm/scripts/tools/web_katana.sh` |
 | web_waymore.sh | `/home/pwn/swarm/scripts/tools/web_waymore.sh` |
+| extracturls.sh | `/home/pwn/swarm/scripts/tools/extracturls.sh` |
 | dns_bruteforce.sh | `/home/pwn/swarm/scripts/tools/dns_bruteforce.sh` |
 | param_extract.sh | `/home/pwn/swarm/scripts/tools/param_extract.sh` |
 | cariddi_scan.sh | `/home/pwn/swarm/scripts/tools/cariddi_scan.sh` |
@@ -289,6 +290,7 @@ Runs theHarvester with two source sets:
 | `katana` | web_katana.sh |
 | `waymore` | web_waymore.sh |
 | `uro` | web_waymore.sh |
+| `httpx` | extracturls.sh |
 | `puredns` / `massdns` | dns_bruteforce.sh |
 | `gf` | param_extract.sh |
 | `cariddi` | cariddi_scan.sh |
@@ -319,6 +321,7 @@ bash /home/pwn/swarm/scripts/tools/dns_bruteforce.sh <domain>
 bash /home/pwn/swarm/scripts/tools/web_waymore.sh <domain>
 bash /home/pwn/swarm/scripts/tools/web_gospider.sh <domain>
 bash /home/pwn/swarm/scripts/tools/web_katana.sh <domain>
+bash /home/pwn/swarm/scripts/tools/extracturls.sh -f /path/to/crawl -d <domain>
 bash /home/pwn/swarm/scripts/tools/param_extract.sh <domain>
 bash /home/pwn/swarm/scripts/tools/cariddi_scan.sh <domain>
 bash /home/pwn/swarm/scripts/tools/bypass_403.sh <domain>
@@ -330,11 +333,11 @@ bash /home/pwn/swarm/scripts/tools/cloud_recon.sh --keyword <company>
 ```
 
 ### What it does
-Orchestrates 11 recon sub-tools in parallel via `nohup`. Passive subdomain enum, active crawling, DNS bruteforce, parameter extraction with GF patterns, secrets scanning, vhost fuzzing, zone transfer, GitHub dorking, S3 bucket scanning.
+Orchestrates 12 recon sub-tools (8 parallel + sequential sub-phases). Passive subdomain enum, active crawling, URL extraction/filtering, DNS bruteforce, parameter extraction with GF patterns, secrets scanning, vhost fuzzing, zone transfer, GitHub dorking, S3 bucket scanning.
 
 ### Wrapper expansion (Phase 4 — Recon)
 
-All 11 sub-tool calls follow the same pattern:
+All sub-tool calls follow the same pattern:
 
 **Replaced:** `run_bg "<name>" "<logfile>" "bash '<script>.sh' '$TARGET'"`
 **Expanded:**
@@ -348,6 +351,7 @@ nohup bash -c "bash '<phase-script-dir>/<script>.sh' '$TARGET'" > "<logfile>" 2>
 | `web_gospider.sh` | `$CRAWL_DIR/gospider.log` |
 | `web_katana.sh` | `$CRAWL_DIR/katana.log` |
 | `web_waymore.sh` | `$CRAWL_DIR/waymore.log` |
+| `extracturls.sh` | `$CRAWL_DIR/extracturls.log` |
 | `dns_bruteforce.sh` | `$OUT_DIR/dns_bruteforce.log` |
 | `param_extract.sh` | `$OUT_DIR/param_extract.log` |
 | `cariddi_scan.sh` | `$OUT_DIR/cariddi_scan.log` |

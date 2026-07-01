@@ -60,7 +60,23 @@ bash "$HOME/swarm/scripts/tools/param_extract.sh" <target>
 
 **Output:** `crawl/` directory with merged URL lists, `params/` with GF-filtered candidates.
 
-### Step 3: Secrets Scan + Directory Bruteforce
+### Step 3: URL Extraction + Alive Probing
+
+```bash
+bash "$HOME/swarm/scripts/tools/extracturls.sh" -f "$RECON_BASE/<target>/crawl" -d <target>
+```
+
+| Script | Tool | What it finds |
+|--------|------|---------------|
+| `extracturls.sh` | grep + httpx (venv) | Strips static assets (fonts, images, sourcemaps) from crawl output; probes remaining URLs with httpx to confirm they're alive |
+
+**Output:**
+- `crawl/allsubsurls.txt` — deduplicated, scoped URLs with static assets filtered out
+- `crawl/alivesubsurls.txt` — httpx-verified subset of `allsubsurls.txt` (only when httpx available)
+
+**Note:** Run automatically by `phase-recon.sh` after all 3 crawlers finish. Also sets `EXTRACT_URLS_RAN=true` for downstream phases. Phase 5 (surface) prefers these filtered files over raw crawl output when available.
+
+### Step 4: Secrets Scan + Directory Bruteforce
 
 ```bash
 bash "$HOME/swarm/scripts/tools/cariddi_scan.sh" <target>
@@ -104,7 +120,7 @@ bash "$HOME/swarm/scripts/tools/cariddi_scan.sh" <target>
 - `results_summary.md` — Overview with hit counts
 - `evidence/<host>/scan_meta.json` — Run metadata (stopped reason, WAF)
 
-### Step 4: 403 Bypass + Vhost Fuzzing
+### Step 5: 403 Bypass + Vhost Fuzzing
 
 ```bash
 bash "$HOME/swarm/scripts/tools/bypass_403.sh" <target>
@@ -116,7 +132,7 @@ bash "$HOME/swarm/scripts/tools/vhost_fuzz.sh" <target>
 | `bypass_403.sh` | curl + bypass matrix | Tests header/method/encoding tricks against 401/403 endpoints |
 | `vhost_fuzz.sh` | ffuf | Discovers hidden virtual hosts via Host header fuzzing |
 
-### Step 5: Zone Transfer + Takeover Scanner
+### Step 6: Zone Transfer + Takeover Scanner
 
 ```bash
 bash "$HOME/swarm/scripts/tools/zone_transfer.sh" <target>
@@ -128,7 +144,7 @@ bash "$HOME/swarm/scripts/tools/takeover_scanner.sh" <target>
 | `zone_transfer.sh` | dig + host + nslookup | Tests DNS zone transfer on all name servers |
 | `takeover_scanner.sh` | subjack + curl fingerprint | Detects dangling DNS — subdomain takeover candidates |
 
-### Step 6: Cloud Recon + Secrets Validation + S3 Buckets
+### Step 7: Cloud Recon + Secrets Validation + S3 Buckets
 
 ```bash
 bash "$HOME/swarm/scripts/tools/cloud_recon.sh" --keyword <keyword>
@@ -150,9 +166,8 @@ Tools installed as Python packages run in isolated venvs. Activation is handled 
 
 | Tool | Venv Path | Activated By |
 |------|-----------|--------------|
-| `waymore` | `$REPO_DIR/tools/waymore/venv/` | `web_waymore.sh` (checks venv bin first) |
-| `cloud_enum` | `$HOME/.local/bin/cloud_enum/venv/` | `cloud_recon.sh` (sources activate) |
-| `cloud_enum` | same | `s3_buckets.sh` (direct venv python path) |
+| `waymore` | `$REPO_DIR/tools/waymore/{venv,.venv}/` | `web_waymore.sh` (checks venv/ then .venv/) |
+| `cloud_enum` | `$TOOLS_DIR/cloud_enum/{venv,.venv}/` | `cloud_recon.sh`, `phase-intel.sh`, `s3_buckets.sh` (check venv/ then .venv/) |
 
 Go binaries (subfinder, assetfinder, httpx, dnsx, gospider, katana, cariddi, ffuf, puredns, subjack, s3scanner) need no venv — installed at `~/go/bin/`.
 
@@ -175,7 +190,10 @@ $RECON_BASE/<target>/
 │   ├── waygauurls.txt             # waymore + gau URLs
 │   ├── gospider.txt               # gospider crawl
 │   ├── katana.txt                 # katana crawl
-│   └── merged-crawl.txt           # deduplicated (uro)
+│   ├── merged-crawl.txt           # deduplicated (uro)
+│   ├── extracturls.log            # extracturls.sh run log
+│   ├── allsubsurls.txt            # static-filtered scoped URLs (extracturls.sh)
+│   └── alivesubsurls.txt          # httpx-verified alive URLs (extracturls.sh)
 ├── params/
 │   ├── paramurls.txt              # URLs with query params
 │   ├── gf_xss.txt                 # XSS candidates
