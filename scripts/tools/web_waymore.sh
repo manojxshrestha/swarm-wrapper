@@ -23,6 +23,7 @@ mkdir -p "$OUT_DIR"
 # ── Setup waymore venv ──────────────────────────────────────────────
 WAYMORE_DIR="$BASE_DIR/tools/waymore"
 WAYMORE_ACTIVATE="$WAYMORE_DIR/venv/bin/activate"
+[ ! -f "$WAYMORE_ACTIVATE" ] && WAYMORE_ACTIVATE="$WAYMORE_DIR/.venv/bin/activate"
 
 if [ ! -f "$WAYMORE_ACTIVATE" ]; then
   log_err "waymore not found — run: bash scripts/setup/install.sh"
@@ -41,17 +42,17 @@ log_ok "waymore: $NWAY URLs"
 
 # ── Dedup with uro ──────────────────────────────────────────────────
 log_info "Deduping waymore URLs with uro ..."
-if ! command -v uro &>/dev/null; then
+if command -v uro &>/dev/null; then
+  uro < "$OUT_DIR/wayurls.txt" 2>/dev/null | sort -u > "$OUT_DIR/waygauurls.txt"
+else
   log_info "uro not found — installing via pipx..."
-  pipx install uro 2>/dev/null || {
-    log_warn "uro install failed — skipping dedup"
-    cp "$OUT_DIR/wayurls.txt" "$OUT_DIR/waygauurls.txt"
-    NWAYGAU=$NWAY
-    log_ok "waygauurls.txt: $NWAYGAU URLs (no dedup)"
-    exit 0
+  pipx install uro 2>/dev/null && {
+    uro < "$OUT_DIR/wayurls.txt" 2>/dev/null | sort -u > "$OUT_DIR/waygauurls.txt"
+  } || {
+    log_warn "uro not available — using sort -u"
+    sort -u "$OUT_DIR/wayurls.txt" > "$OUT_DIR/waygauurls.txt"
   }
 fi
-uro < "$OUT_DIR/wayurls.txt" 2>/dev/null | sort -u > "$OUT_DIR/waygauurls.txt"
 NWAYGAU=$(wc -l < "$OUT_DIR/waygauurls.txt" 2>/dev/null | tr -d ' ')
 NWAYGAU=${NWAYGAU:-0}
 log_ok "waygauurls.txt: $NWAYGAU URLs"

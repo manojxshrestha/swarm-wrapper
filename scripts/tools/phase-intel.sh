@@ -30,11 +30,15 @@ GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC
 
 export PATH="$HOME/go/bin:/usr/local/bin:$HOME/.local/bin:$PATH"
 
-# ── venv paths ──────────────────────────────────────────────────────
-_MSFTRECON_ACTIVATE="$HOME/.local/bin/msftrecon/venv/bin/activate"
-_SCOPIFY_ACTIVATE="$HOME/.local/bin/Scopify/venv/bin/activate"
-_SPOOFY_ACTIVATE="$HOME/.local/bin/Spoofy/venv/bin/activate"
-_CLOUD_ENUM_ACTIVATE="$HOME/.local/bin/cloud_enum/venv/bin/activate"
+# ── venv paths (check venv/ then .venv/ — uv venv defaults to .venv/) ──
+_MSFTRECON_ACTIVATE="$TOOLS_DIR/msftrecon/venv/bin/activate"
+[ ! -f "$_MSFTRECON_ACTIVATE" ] && _MSFTRECON_ACTIVATE="$TOOLS_DIR/msftrecon/.venv/bin/activate"
+_SCOPIFY_ACTIVATE="$TOOLS_DIR/Scopify/venv/bin/activate"
+[ ! -f "$_SCOPIFY_ACTIVATE" ] && _SCOPIFY_ACTIVATE="$TOOLS_DIR/Scopify/.venv/bin/activate"
+_SPOOFY_ACTIVATE="$TOOLS_DIR/Spoofy/venv/bin/activate"
+[ ! -f "$_SPOOFY_ACTIVATE" ] && _SPOOFY_ACTIVATE="$TOOLS_DIR/Spoofy/.venv/bin/activate"
+_CLOUD_ENUM_ACTIVATE="$TOOLS_DIR/cloud_enum/venv/bin/activate"
+[ ! -f "$_CLOUD_ENUM_ACTIVATE" ] && _CLOUD_ENUM_ACTIVATE="$TOOLS_DIR/cloud_enum/.venv/bin/activate"
 
 # ── Handle --install flag ──────────────────────────────────────────────
 if [ "${1:-}" = "--install" ]; then
@@ -77,7 +81,11 @@ run_domain_info() {
     log_step "domain_info — WHOIS, M365/Azure tenant, Scopify"
 
     check_tool whois || return 0
-    whois "$TARGET" 2>/dev/null | tee -a "$INTEL_DIR/domain_info_general.txt" || true
+    local whois_target
+    if command -v unfurl &>/dev/null; then
+        whois_target="$(unfurl format %r <<< "$TARGET" 2>/dev/null || true)"
+    fi
+    whois "${whois_target:-$TARGET}" 2>/dev/null | tee -a "$INTEL_DIR/domain_info_general.txt" || true
     if [ -s "$INTEL_DIR/domain_info_general.txt" ]; then
         log_ok "WHOIS data saved"
     else
