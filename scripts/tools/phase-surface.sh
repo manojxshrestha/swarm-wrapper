@@ -31,6 +31,20 @@ for src in "$OUT_DIR/crawl/merged-crawl.txt" "$OUT_DIR/subdomains/live_urls.txt"
 done
 
 sort -u "$URL_FILE" -o "$URL_FILE"
+
+# Prefer extracturls.sh output if available (filters static assets + confirms alive)
+if [ -s "$OUT_DIR/crawl/allsubsurls.txt" ]; then
+  ALIVE_URLS="$OUT_DIR/crawl/alivesubsurls.txt"
+  if [ -s "$ALIVE_URLS" ]; then
+    cp "$ALIVE_URLS" "$URL_FILE"
+    log_ok "Using httpx-verified alive URLs ($(wc -l < "$ALIVE_URLS") URLs)"
+  else
+    cp "$OUT_DIR/crawl/allsubsurls.txt" "$URL_FILE"
+    log_ok "Using filtered URLs (no httpx — $(wc -l < "$OUT_DIR/crawl/allsubsurls.txt") URLs)"
+  fi
+  TOTAL_URLS=$(wc -l < "$URL_FILE")
+fi
+
 TOTAL_URLS=$(wc -l < "$URL_FILE")
 log_ok "Collected $TOTAL_URLS unique URLs"
 

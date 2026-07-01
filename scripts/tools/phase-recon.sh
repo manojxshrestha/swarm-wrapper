@@ -160,9 +160,23 @@ fi
 log_info ""
 
 # ------------------------------------------------------------------
-# Sub-phase 4c: Recon Modules (7 parallel)
+# Sub-phase 4c: URL extraction + filtering via extracturls.sh
 # ------------------------------------------------------------------
-log_info "── Sub-phase 4c: Recon Modules (7 parallel) ──"
+if [ -f "$SCRIPT_DIR/extracturls.sh" ]; then
+  log_info "── Sub-phase 4c: URL Extraction & Filtering ──"
+  log_info "  Script: extracturls.sh"
+  nohup bash "$SCRIPT_DIR/extracturls.sh" -f "$CRAWL_DIR" -d "$TARGET" \
+    > "$CRAWL_DIR/extracturls.log" 2>&1 &
+  _extract_pid=$!
+  wait "$_extract_pid" 2>/dev/null && log_ok "  extracturls.sh: OK" || log_warn "  extracturls.sh: failed (exit $?)"
+  log_info ""
+  export EXTRACT_URLS_RAN=true
+fi
+
+# ------------------------------------------------------------------
+# Sub-phase 4d: Recon Modules (7 parallel)
+# ------------------------------------------------------------------
+log_info "── Sub-phase 4d: Recon Modules (7 parallel) ──"
 log_info "  dns_bruteforce → scripts/tools/dns_bruteforce.sh"
 log_info "  param_extract  → scripts/tools/param_extract.sh"
 log_info "  cariddi_scan   → scripts/tools/cariddi_scan.sh"
