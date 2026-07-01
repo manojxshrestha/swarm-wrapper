@@ -28,8 +28,17 @@ if [ -f "$WAYMORE_DIR/venv/bin/waymore" ]; then
 elif command -v waymore &>/dev/null; then
   WAYMORE_BIN="waymore"
 else
-  log_err "waymore not found — install: cd $WAYMORE_DIR && uv venv && source venv/bin/activate && pip install waymore"
-  exit 1
+  log_info "waymore not found — installing..."
+  mkdir -p "$WAYMORE_DIR"
+  uv venv "$WAYMORE_DIR/venv" 2>/dev/null
+  uv pip install --python "$WAYMORE_DIR/venv/bin/python" waymore 2>/dev/null
+  if [ -f "$WAYMORE_DIR/venv/bin/waymore" ]; then
+    WAYMORE_BIN="$WAYMORE_DIR/venv/bin/waymore"
+    log_ok "waymore installed"
+  else
+    log_err "waymore install failed — manual: cd $WAYMORE_DIR && uv venv && source venv/bin/activate && pip install waymore"
+    exit 1
+  fi
 fi
 
 # ── Waymore ─────────────────────────────────────────────────────────

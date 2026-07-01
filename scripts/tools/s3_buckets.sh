@@ -42,9 +42,19 @@ run_cloud_enum() {
     local cloud_enum_script="$TOOLS_DIR/cloud_enum/cloud_enum.py"
 
     if [ ! -x "$cloud_enum_venv" ] || [ ! -f "$cloud_enum_script" ]; then
-        log_warn "cloud_enum not installed — run ./tools/phase-intel.sh --install"
-        log_info "Fallback: trying s3scanner on subdomains only"
-        return 1
+        log_info "cloud_enum not found — installing..."
+        git clone --filter="blob:none" https://github.com/initstring/cloud_enum.git "$TOOLS_DIR/cloud_enum" 2>/dev/null
+        if [ -f "$TOOLS_DIR/cloud_enum/requirements.txt" ]; then
+            uv venv "$TOOLS_DIR/cloud_enum/venv" 2>/dev/null || true
+            uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
+                -r "$TOOLS_DIR/cloud_enum/requirements.txt" 2>/dev/null || \
+            uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
+                dnspython requests requests-futures 2>/dev/null || true
+        fi
+        if [ ! -x "$cloud_enum_venv" ] || [ ! -f "$cloud_enum_script" ]; then
+            log_warn "cloud_enum install failed — fallback: s3scanner only"
+            return 1
+        fi
     fi
 
     local company_name
