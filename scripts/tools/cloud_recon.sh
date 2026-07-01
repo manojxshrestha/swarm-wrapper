@@ -75,17 +75,6 @@ cloud_enum_path="$TOOLS_DIR/cloud_enum/cloud_enum.py"
 cloud_enum_activate="$TOOLS_DIR/cloud_enum/venv/bin/activate"
 
 if [ -n "$KEYWORD" ] && [ "$S3_ONLY" = "0" ]; then
-  if [ ! -f "$cloud_enum_activate" ] && [ ! -f "$cloud_enum_path" ] && ! _have cloud_enum; then
-    log "cloud_enum not found — installing..."
-    git clone --filter="blob:none" https://github.com/initstring/cloud_enum.git "$TOOLS_DIR/cloud_enum" 2>/dev/null
-    if [ -f "$TOOLS_DIR/cloud_enum/requirements.txt" ]; then
-      uv venv "$TOOLS_DIR/cloud_enum/venv" 2>/dev/null || true
-      uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
-        -r "$TOOLS_DIR/cloud_enum/requirements.txt" 2>/dev/null || \
-      uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
-        dnspython requests requests-futures 2>/dev/null || true
-    fi
-  fi
   if [ -f "$cloud_enum_activate" ] && [ -f "$cloud_enum_path" ]; then
     log "cloud_enum sweep across AWS/Azure/GCP (venv)..."
     (source "$cloud_enum_activate" && python3 "$cloud_enum_path" \

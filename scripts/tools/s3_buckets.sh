@@ -38,23 +38,12 @@ log_info "Output: $CLOUD_DIR"
 run_cloud_enum() {
     log_step "cloud_enum — bucket enumeration from subdomains"
 
-    local cloud_enum_venv="$TOOLS_DIR/cloud_enum/venv/bin/python"
+    local cloud_enum_activate="$TOOLS_DIR/cloud_enum/venv/bin/activate"
     local cloud_enum_script="$TOOLS_DIR/cloud_enum/cloud_enum.py"
 
-    if [ ! -x "$cloud_enum_venv" ] || [ ! -f "$cloud_enum_script" ]; then
-        log_info "cloud_enum not found — installing..."
-        git clone --filter="blob:none" https://github.com/initstring/cloud_enum.git "$TOOLS_DIR/cloud_enum" 2>/dev/null
-        if [ -f "$TOOLS_DIR/cloud_enum/requirements.txt" ]; then
-            uv venv "$TOOLS_DIR/cloud_enum/venv" 2>/dev/null || true
-            uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
-                -r "$TOOLS_DIR/cloud_enum/requirements.txt" 2>/dev/null || \
-            uv pip install --python "$TOOLS_DIR/cloud_enum/venv/bin/python" \
-                dnspython requests requests-futures 2>/dev/null || true
-        fi
-        if [ ! -x "$cloud_enum_venv" ] || [ ! -f "$cloud_enum_script" ]; then
-            log_warn "cloud_enum install failed — fallback: s3scanner only"
-            return 1
-        fi
+    if [ ! -f "$cloud_enum_activate" ] || [ ! -f "$cloud_enum_script" ]; then
+        log_warn "cloud_enum not found — run: bash scripts/setup/install.sh"
+        return 1
     fi
 
     local company_name
@@ -70,15 +59,18 @@ run_cloud_enum() {
 
     log_info "Running cloud_enum with keywords: $company_name, $TARGET, ${TARGET%%.*}"
 
-    env PYTHONWARNINGS=ignore "$cloud_enum_venv" "$cloud_enum_script" \
-        -k "$company_name" \
-        -k "$TARGET" \
-        -k "${TARGET%%.*}" \
-        -t 20 \
-        -m "$mutations" \
-        -b "$brute" \
-        -qs \
-        -f json -l "$CLOUD_DIR/cloud_enum_results.jsonl" 2>/dev/null
+    (
+        source "$cloud_enum_activate"
+        PYTHONWARNINGS=ignore python3 "$cloud_enum_script" \
+            -k "$company_name" \
+            -k "$TARGET" \
+            -k "${TARGET%%.*}" \
+            -t 20 \
+            -m "$mutations" \
+            -b "$brute" \
+            -qs \
+            -f json -l "$CLOUD_DIR/cloud_enum_results.jsonl" 2>/dev/null
+    )
 
     local json_count=0
     if [ -f "$CLOUD_DIR/cloud_enum_results.jsonl" ]; then

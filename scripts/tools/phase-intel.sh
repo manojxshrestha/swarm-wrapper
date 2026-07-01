@@ -64,29 +64,11 @@ check_tool() {
 check_repo_tool() {
     local repo="$1"
     local script_path="$TOOLS_DIR/$repo/$2"
-    local github_path="${3:-}"
     if [ -f "$script_path" ] || [ -f "$TOOLS_DIR/$repo/venv/bin/activate" ]; then
         return 0
     fi
-    if [ -n "$github_path" ]; then
-        log_info "$repo not found — installing..."
-        mkdir -p "$TOOLS_DIR"
-        git clone --filter="blob:none" "https://github.com/$github_path.git" "$TOOLS_DIR/$repo" 2>/dev/null
-        if [ -f "$TOOLS_DIR/$repo/requirements.txt" ]; then
-            uv venv "$TOOLS_DIR/$repo/venv" 2>/dev/null || true
-            uv pip install --python "$TOOLS_DIR/$repo/venv/bin/python" \
-                -r "$TOOLS_DIR/$repo/requirements.txt" 2>/dev/null || \
-            uv pip install --python "$TOOLS_DIR/$repo/venv/bin/python" \
-                dnspython requests requests-futures 2>/dev/null || true
-        fi
-        if [ -f "$script_path" ] || [ -f "$TOOLS_DIR/$repo/venv/bin/activate" ]; then
-            log_ok "$repo installed"
-            return 0
-        fi
-        log_warn "$repo install failed — manual: bash scripts/setup/install.sh"
-        return 1
-    fi
     log_warn "$repo not found at $TOOLS_DIR/$repo — skipping"
+    log_info "  Install: bash scripts/setup/install.sh"
     return 1
 }
 
@@ -104,7 +86,7 @@ run_domain_info() {
 
     : > "$INTEL_DIR/azure_tenant_domains.txt"
 
-    if check_repo_tool "msftrecon" "msftrecon/msftrecon.py" "Arcanum-Sec/msftrecon"; then
+    if check_repo_tool "msftrecon" "msftrecon/msftrecon.py"; then
         local msftrecon_script="$TOOLS_DIR/msftrecon/msftrecon/msftrecon.py"
         if [ -f "$msftrecon_script" ]; then
             local msftrecon_out
@@ -128,7 +110,7 @@ run_domain_info() {
         fi
     fi
 
-    if check_repo_tool "Scopify" "scopify.py" "Arcanum-Sec/Scopify"; then
+    if check_repo_tool "Scopify" "scopify.py"; then
         if ! command -v unfurl &>/dev/null; then
             log_warn "unfurl not found — skipping Scopify"
             return 0
@@ -150,7 +132,7 @@ run_domain_info() {
 run_spoof() {
     log_step "spoof — SPF/DMARC spoofability check"
 
-    check_repo_tool "Spoofy" "spoofy.py" "MattKeeley/Spoofy" || return 0
+    check_repo_tool "Spoofy" "spoofy.py" || return 0
 
     local spoofy_script="$TOOLS_DIR/Spoofy/spoofy.py"
 
@@ -174,7 +156,7 @@ run_spoof() {
 run_cloud_enum() {
     log_step "cloud_enum_scan — Cloud storage bucket enumeration"
 
-    check_repo_tool "cloud_enum" "cloud_enum.py" "initstring/cloud_enum" || return 0
+    check_repo_tool "cloud_enum" "cloud_enum.py" || return 0
 
     local cloud_enum_script="$TOOLS_DIR/cloud_enum/cloud_enum.py"
 

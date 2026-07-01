@@ -22,28 +22,19 @@ mkdir -p "$OUT_DIR"
 
 # ── Setup waymore venv ──────────────────────────────────────────────
 WAYMORE_DIR="$BASE_DIR/tools/waymore"
-WAYMORE_BIN=""
-if [ -f "$WAYMORE_DIR/venv/bin/waymore" ]; then
-  WAYMORE_BIN="$WAYMORE_DIR/venv/bin/waymore"
-elif command -v waymore &>/dev/null; then
-  WAYMORE_BIN="waymore"
-else
-  log_info "waymore not found — installing..."
-  mkdir -p "$WAYMORE_DIR"
-  uv venv "$WAYMORE_DIR/venv" 2>/dev/null
-  uv pip install --python "$WAYMORE_DIR/venv/bin/python" waymore 2>/dev/null
-  if [ -f "$WAYMORE_DIR/venv/bin/waymore" ]; then
-    WAYMORE_BIN="$WAYMORE_DIR/venv/bin/waymore"
-    log_ok "waymore installed"
-  else
-    log_err "waymore install failed — manual: cd $WAYMORE_DIR && uv venv && source venv/bin/activate && pip install waymore"
-    exit 1
-  fi
+WAYMORE_ACTIVATE="$WAYMORE_DIR/venv/bin/activate"
+
+if [ ! -f "$WAYMORE_ACTIVATE" ]; then
+  log_err "waymore not found — run: bash scripts/setup/install.sh"
+  exit 1
 fi
 
 # ── Waymore ─────────────────────────────────────────────────────────
 log_info "Running waymore ..."
-$WAYMORE_BIN -i "$TARGET" -mode U -oU "$OUT_DIR/wayurls.txt" 2>/dev/null
+(
+  source "$WAYMORE_ACTIVATE"
+  waymore -i "$TARGET" -mode U -oU "$OUT_DIR/wayurls.txt" 2>/dev/null
+)
 NWAY=$(wc -l < "$OUT_DIR/wayurls.txt" 2>/dev/null | tr -d ' ')
 NWAY=${NWAY:-0}
 log_ok "waymore: $NWAY URLs"
