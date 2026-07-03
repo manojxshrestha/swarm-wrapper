@@ -177,4 +177,4 @@ Expected: authenticated page with user data (not 401/302 redirect to login).
 - Full methodology: `skills/browser-auth/SKILL.md`
 - Subagent prompt: `prompts/browser-auth.md`
 - Phase doc: `docs/phases/browser-auth.md`
-- Analyze agent (page discovery): `.opencode/agents/analyze.md`
+- Analyze agent (page discovery): `.swarm/agents/analyze.md`

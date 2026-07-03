@@ -170,7 +170,7 @@ brew install pandoc
 pandoc REPORT_FINAL.md \
   -o REPORT_FINAL.docx \
   --resource-path=engagement_log/poc \
-  --reference-doc=.opencode/agents/redteam-report-template/templates/reference.docx \
+  --reference-doc=.swarm/agents/redteam-report-template/templates/reference.docx \
   --toc \
   --toc-depth=2 \
   --highlight-style=tango
@@ -271,7 +271,7 @@ Each gives the client context about their real-world detection capability, which
 
 Maintain reusable boilerplate in:
 ```
-.opencode/agents/redteam-report-template/templates/
+.swarm/agents/redteam-report-template/templates/
     executive_summary.md      # Reusable exec summary skeleton
     methodology.md            # Standard methodology section
     cleanup_statement.md      # Standard cleanup language

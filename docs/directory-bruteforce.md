@@ -62,7 +62,7 @@ Results feed into the endpoint map for Phase 6 hunters and into findings for cri
 |-----------|------|---------|
 | **Script** | `scripts/tools/dir_bruteforce.sh` | ffuf wrapper — scan plan execution, evidence, reports |
 | **Skill** | `skills/dirbrute/SKILL.md` | Methodology documentation (source of truth) |
-| **Agent** | `.opencode/agents/dirbrute.md` | Subagent — produces scan plans, instructs main agent |
+| **Agent** | `.swarm/agents/dirbrute.md` | Subagent — produces scan plans, instructs main agent |
 | **Wordlists** | `wordlists/dirbust/` (23 files) | Curated wordlists per tech stack |
 | **Registry** | `agents/registry.yaml` | Registered for Phase 6 dispatch |
 

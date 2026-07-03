@@ -9,781 +9,781 @@
       "name": "analyze",
       "description": "General-purpose web page analysis agent \u2014 identifies auth mechanisms, form fields, interactive elements, tracks redirect chains, captures cookies/storage, fingerprints technology stack. Reusable across all phases (auth analysis, surface analysis, tech fingerprinting, endpoint discovery).",
       "mode": "all",
-      "path": ".opencode/agents/analyze.md"
+      "path": ".swarm/agents/analyze.md"
     },
     {
       "name": "apk-redteam-pipeline",
       "description": "Android APK red team pipeline. APK acquisition, decompile (jadx/apktool), secret grep, Frida instrumentation, certificate pinning bypass, intent analysis.",
       "mode": "subagent",
-      "path": ".opencode/agents/apk-redteam-pipeline.md"
+      "path": ".swarm/agents/apk-redteam-pipeline.md"
     },
     {
       "name": "auth",
       "description": "Pipeline Phase 2 \u2014 Authenticate to target, capture tokens, cookies, and session state",
       "mode": "all",
-      "path": ".opencode/agents/auth.md"
+      "path": ".swarm/agents/auth.md"
     },
     {
       "name": "autopilot",
       "description": "Full autonomous pipeline \u2014 scope \u2192 auth \u2192 intel \u2192 recon \u2192 surface \u2192 hunt \u2192 deepthink \u2192 exploit \u2192 search \u2192 capture \u2192 validate \u2192 report",
       "mode": "all",
-      "path": ".opencode/agents/autopilot.md"
+      "path": ".swarm/agents/autopilot.md"
     },
     {
       "name": "bb-local-toolkit",
       "description": "Complete bug bounty local toolkit \u2014 recon, pre-hunt learning, vulnerability hunting, LLM/AI security testing, A-to-B bug chaining, bypass tables, language-specific grep, and reporting workflow.",
       "mode": "subagent",
-      "path": ".opencode/agents/bb-local-toolkit.md"
+      "path": ".swarm/agents/bb-local-toolkit.md"
     },
     {
       "name": "bb-methodology",
       "description": "Bug bounty methodology orchestrator. 5-phase nonlinear workflow, mode selection (bounty/redteam/pentest/audit), scope confirmation, throttle management, payout optimization.",
       "mode": "subagent",
-      "path": ".opencode/agents/bb-methodology.md"
+      "path": ".swarm/agents/bb-methodology.md"
     },
     {
       "name": "browser-auth",
       "description": "Automated browser authentication \u2014 Google OAuth, form-based login, session capture. Called by autopilot as Phase 2b to acquire authenticated session before recon.",
       "mode": "all",
-      "path": ".opencode/agents/browser-auth.md"
+      "path": ".swarm/agents/browser-auth.md"
     },
     {
       "name": "bug-bounty",
       "description": "[Phase 0] Master orchestrator \u2014 routes to @autopilot (full auto) or @consult (interactive) for the 12-phase pipeline. Program selection, duplicate detection, payout optimization, VRT mapping, responsible disclosure, bounty hunter workflow.",
       "mode": "all",
-      "path": ".opencode/agents/bug-bounty.md"
+      "path": ".swarm/agents/bug-bounty.md"
     },
     {
       "name": "bugcrowd-reporting",
       "description": "Bugcrowd-specific reporter. VRT category mapping, severity justification, OOS rebuttal templates, Bugcrowdninja alias hygiene, friendly-tester posture guidelines.",
       "mode": "subagent",
-      "path": ".opencode/agents/bugcrowd-reporting.md"
+      "path": ".swarm/agents/bugcrowd-reporting.md"
     },
     {
       "name": "capture",
       "description": "Pipeline Phase 10 \u2014 Evidence collection: requests, screenshots, collaborator",
       "mode": "all",
-      "path": ".opencode/agents/capture.md"
+      "path": ".swarm/agents/capture.md"
     },
     {
       "name": "cloud-iam-deep",
       "description": "Cloud IAM privilege escalation auditor. AWS IAM priv-esc (24+ patterns), Azure RBAC abuse, GCP IAM misconfig, cross-account role trust, managed policy exploitation.",
       "mode": "subagent",
-      "path": ".opencode/agents/cloud-iam-deep.md"
+      "path": ".swarm/agents/cloud-iam-deep.md"
     },
     {
       "name": "consult",
       "description": "Interactive Pipeline with Suggestions \u2014 Same Phase1\u2013Phase12 pipeline as /autopilot, with user approval at every phase transition.",
       "mode": "all",
-      "path": ".opencode/agents/consult.md"
+      "path": ".swarm/agents/consult.md"
     },
     {
       "name": "credential-attack",
       "description": "Credential attack methodology \u2014 password spray, wordlist generation, breach checking, OSINT employee enumeration, rate-limit tactics, BBP legal guardrails.",
       "mode": "subagent",
-      "path": ".opencode/agents/credential-attack.md"
+      "path": ".swarm/agents/credential-attack.md"
     },
     {
       "name": "deepthink",
       "description": "Deep reasoning mode \u2014 activates when static knowledge data is insufficient, tools are missing, or analysis is blocked. Performs first-principles reasoning, chain analysis, and persistent issue tracking.",
       "mode": "all",
-      "path": ".opencode/agents/deepthink.md"
+      "path": ".swarm/agents/deepthink.md"
     },
     {
       "name": "dirbrute",
       "description": "Directory bruteforce. AI-driven ffuf wrapper with intents (api, wordpress, java, oauth, iis, full), profiles (light/standard/deep), extension targeting, and structured evidence. NOT an auto-scanner \u2014 AI decides which hosts to scan, one at a time. Primary: Phase 4 (Recon). Secondary: Phase 5 (Surface), Phase 6 (Hunt on-demand).",
       "mode": "subagent",
-      "path": ".opencode/agents/dirbrute.md"
+      "path": ".swarm/agents/dirbrute.md"
     },
     {
       "name": "enterprise-vpn-attack",
       "description": "Enterprise VPN exploitation. Cisco ASA/FTD, Fortinet FortiGate, Citrix ADC/Gateway, Palo Alto PAN-OS, Pulse Secure, SonicWall, F5 Big-IP CVEs and config weaknesses.",
       "mode": "subagent",
-      "path": ".opencode/agents/enterprise-vpn-attack.md"
+      "path": ".swarm/agents/enterprise-vpn-attack.md"
     },
     {
       "name": "evidence-hygiene",
       "description": "Evidence hygiene specialist. Cookie/PII redaction, HAR sanitization, screenshot metadata stripping, evidence chain of custody, submission proof pack.",
       "mode": "subagent",
-      "path": ".opencode/agents/evidence-hygiene.md"
+      "path": ".swarm/agents/evidence-hygiene.md"
     },
     {
       "name": "exploit",
       "description": "Pipeline Phase 8 \u2014 Deep research-driven exploitation of ALL findings from Phase 6",
       "mode": "all",
-      "path": ".opencode/agents/exploit.md"
+      "path": ".swarm/agents/exploit.md"
     },
     {
       "name": "hunt-api-misconfig",
       "description": "API security misconfiguration hunter. BOLA/BFLA, mass assignment, rate limiting bypass, API versioning attacks, excessive data exposure, JWT, prototype pollution, CORS, OData, Swagger/OpenAPI.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-api-misconfig.md"
+      "path": ".swarm/agents/hunt-api-misconfig.md"
     },
     {
       "name": "hunt-aspnet",
       "description": "ASP.NET / .NET security hunter. ViewState validation bypass, machineKey disclosure, IIS misconfig, UnvalidatedRequestValues, request validation bypass (CVE-2024-22093).",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-aspnet.md"
+      "path": ".swarm/agents/hunt-aspnet.md"
     },
     {
       "name": "hunt-ato",
       "description": "Account Takeover hunter. Password reset logic flaws, email takeover, OAuth token theft, 2FA bypass, session hijack, SSO bypass chains.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ato.md"
+      "path": ".swarm/agents/hunt-ato.md"
     },
     {
       "name": "hunt-auth-bypass",
       "description": "Authentication bypass hunter. Forced browsing, HTTP method override, parameter pollution, direct endpoint access, role-based bypass.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-auth-bypass.md"
+      "path": ".swarm/agents/hunt-auth-bypass.md"
     },
     {
       "name": "hunt-brute-force",
       "description": "Brute force and credential stuffing hunter. Rate limiting bypass (IP rotation, Content-Type switching, GraphQL batching, session cycling, endpoint aliasing), JWT brute force, 2FA bypass via brute force, password policy bypass, ReDoS.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-brute-force.md"
+      "path": ".swarm/agents/hunt-brute-force.md"
     },
     {
       "name": "hunt-business-logic",
       "description": "Business logic flaw hunter. Pricing manipulation, workflow bypass, multi-step process flaws, currency conversion exploits, loyalty/coupon abuse, KYC bypass.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-business-logic.md"
+      "path": ".swarm/agents/hunt-business-logic.md"
     },
     {
       "name": "hunt-cache-poison",
       "description": "Web cache poisoning hunter. Unkeyed inputs, CDN-specific poisoning (Cloudflare, Akamai, Fastly), cache deception, cache key injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-cache-poison.md"
+      "path": ".swarm/agents/hunt-cache-poison.md"
     },
     {
       "name": "hunt-cicd",
       "description": "CI/CD pipeline hunter. GitHub Actions injection, GitLab CI abuse, Jenkins pipeline groovy, self-hosted runner compromise, artifact poisoning, secret exposure.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-cicd.md"
+      "path": ".swarm/agents/hunt-cicd.md"
     },
     {
       "name": "hunt-clickjacking",
       "description": "Clickjacking hunter. X-Frame-Options and CSP frame-ancestors detection, UI redressing, invisible frames, button hijacking, framebusting bypass.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-clickjacking.md"
+      "path": ".swarm/agents/hunt-clickjacking.md"
     },
     {
       "name": "hunt-cloud-misconfig",
       "description": "Cloud storage misconfiguration hunter. Open S3/Azure Blob/GCP buckets, public AMIs, unsecured databases, cloud metadata exposure, snapshot sharing.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-cloud-misconfig.md"
+      "path": ".swarm/agents/hunt-cloud-misconfig.md"
     },
     {
       "name": "hunt-cors",
       "description": "CORS misconfiguration hunter. Origin reflection, wildcard origin with credentials, preflight bypass, null origin, and intranet CORS exploitation.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-cors.md"
+      "path": ".swarm/agents/hunt-cors.md"
     },
     {
       "name": "hunt-crlf",
       "description": "CRLF/Log Injection hunter. Header injection, response splitting, HTTP request smuggling via CRLF, cookie injection, XSS via log poisoning.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-crlf.md"
+      "path": ".swarm/agents/hunt-crlf.md"
     },
     {
       "name": "hunt-csrf",
       "description": "Cross-Site Request Forgery hunter. Anti-CSRF token bypass, SameSite bypass, JSON Content-Type CSRF, multi-step CSRF, and chaining to ATO.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-csrf.md"
+      "path": ".swarm/agents/hunt-csrf.md"
     },
     {
       "name": "hunt-dependency-confusion",
       "description": "Dependency Confusion hunter. Supply chain substitution, NPM/Pip/Gem/Maven package squatting, private vs public registry conflict, Dockerfile analysis.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-dependency-confusion.md"
+      "path": ".swarm/agents/hunt-dependency-confusion.md"
     },
     {
       "name": "hunt-deserialization",
       "description": "Insecure deserialization hunter. PHP unserialize, Java deserialization (ysoserial), .NET ViewState, pickle, Ruby MARSHAL, Node.js unserialize.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-deserialization.md"
+      "path": ".swarm/agents/hunt-deserialization.md"
     },
     {
       "name": "hunt-dispatch",
       "description": "Hunt dispatcher \u2014 routes to the correct hunting agent based on target fingerprinting. Mode selection, technology stack identification, agent delegation.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-dispatch.md"
+      "path": ".swarm/agents/hunt-dispatch.md"
     },
     {
       "name": "hunt-dom",
       "description": "DOM-based vulnerability hunter. DOM XSS, DOM clobbering, DOM injection, prototype pollution, trusted types bypass, client-side template injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-dom.md"
+      "path": ".swarm/agents/hunt-dom.md"
     },
     {
       "name": "hunt-file-upload",
       "description": "File upload vulnerability hunter. Unrestricted file upload, SVG XSS, polyglot files, Content-Type bypass, zip slip, race condition on upload.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-file-upload.md"
+      "path": ".swarm/agents/hunt-file-upload.md"
     },
     {
       "name": "hunt-graphql",
       "description": "GraphQL API hunter. Introspection, batching attacks, alias abuse, depth-based DoS, auth bypass, IDOR in GraphQL resolvers, custom scalar injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-graphql.md"
+      "path": ".swarm/agents/hunt-graphql.md"
     },
     {
       "name": "hunt-grpc",
       "description": "gRPC API vulnerability hunter. Server reflection, missing auth on internal endpoints, plaintext gRPC over HTTP/2, internal endpoint disclosure, proto file leakage, gRPC-Web proxy injection, HTTP/2 rapid reset DoS.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-grpc.md"
+      "path": ".swarm/agents/hunt-grpc.md"
     },
     {
       "name": "hunt-host-header",
       "description": "Host header injection hunter. Password reset poisoning, cache poisoning, SSRF via Host header, routing-based SSRF, absolute URL injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-host-header.md"
+      "path": ".swarm/agents/hunt-host-header.md"
     },
     {
       "name": "hunt-http-param-pollution",
       "description": "HTTP Parameter Pollution hunter. Duplicate parameter injection, WAF/bypass detection, framework-specific parsing differences, JSON key duplication, Content-Type cross-pollution, HTTP method override HPP, REST API parameter pollution.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-http-param-pollution.md"
+      "path": ".swarm/agents/hunt-http-param-pollution.md"
     },
     {
       "name": "hunt-http-smuggling",
       "description": "HTTP request smuggling hunter. CL.TE, TE.CL, TE.TE variations, connection reuse poisoning, cache poisoning via smuggling, WAF bypass.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-http-smuggling.md"
+      "path": ".swarm/agents/hunt-http-smuggling.md"
     },
     {
       "name": "hunt-idor",
       "description": "Insecure Direct Object Reference hunter. UUID enumeration, sequential IDs, GraphQL IDOR, multi-tenant data access, BOLA (batch IDOR, auth-header vs path-ID mismatch, /me vs /{id} inconsistency), mass assignment chaining, and parameter-based object reference bypass.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-idor.md"
+      "path": ".swarm/agents/hunt-idor.md"
     },
     {
       "name": "hunt-jwt-confusion",
       "description": "JWT algorithm confusion & signature bypass hunter. RS256\u2192HS256 confusion, none alg bypass, kid injection, jwks_uri spoofing, blank password signing, JWK embedded key, exp/nbf manipulation, claim injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-jwt-confusion.md"
+      "path": ".swarm/agents/hunt-jwt-confusion.md"
     },
     {
       "name": "hunt-k8s",
       "description": "Kubernetes security hunter. RBAC abuse, pod escape, secrets exposure, kubelet API, etcd access, admission controller bypass, container breakout chains.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-k8s.md"
+      "path": ".swarm/agents/hunt-k8s.md"
     },
     {
       "name": "hunt-laravel",
       "description": "Laravel security hunter. Debug mode exposure, APP_KEY decryption, serialization RCE, mass assignment, Blade template injection, Eloquent injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-laravel.md"
+      "path": ".swarm/agents/hunt-laravel.md"
     },
     {
       "name": "hunt-ldap",
       "description": "LDAP injection and security hunter. LDAP injection, anonymous binds, privilege escalation via LDAP, directory traversal, AD/LDAP misconfig.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ldap.md"
+      "path": ".swarm/agents/hunt-ldap.md"
     },
     {
       "name": "hunt-lfi",
       "description": "Local File Inclusion / Path Traversal hunter. Directory traversal, RFI, PHP wrappers, log poisoning, and chain to RCE.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-lfi.md"
+      "path": ".swarm/agents/hunt-lfi.md"
     },
     {
       "name": "hunt-llm-ai",
       "description": "LLM/AI security hunter. Prompt injection, RAG poisoning, model data extraction, jailbreak detection, indirect prompt injection via tools, MCP server abuse.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-llm-ai.md"
+      "path": ".swarm/agents/hunt-llm-ai.md"
     },
     {
       "name": "hunt-mass-assignment",
       "description": "Mass Assignment hunter. Extra field injection in JSON/XML bodies, ORM parameter binding bypass, admin flag escalation, framework-specific (Rails/Django/Laravel).",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-mass-assignment.md"
+      "path": ".swarm/agents/hunt-mass-assignment.md"
     },
     {
       "name": "hunt-mfa-bypass",
       "description": "MFA bypass hunter. Push fatigue, backup code reuse, token reuse, biometric bypass, SIM swap chaining, rate limiting, social engineering vectors.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-mfa-bypass.md"
+      "path": ".swarm/agents/hunt-mfa-bypass.md"
     },
     {
       "name": "hunt-misc",
       "description": "General vulnerability hunter. Catch-all for uncovered classes, emerging threats, zero-day patterns, uncommon attack surfaces, and novel vulnerability types.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-misc.md"
+      "path": ".swarm/agents/hunt-misc.md"
     },
     {
       "name": "hunt-nextjs",
       "description": "Next.js security hunter. Vercel misconfig, SSG/SSR data leakage, API route auth bypass, middleware bypass, image optimization abuse, RSC injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-nextjs.md"
+      "path": ".swarm/agents/hunt-nextjs.md"
     },
     {
       "name": "hunt-nodejs",
       "description": "Node.js/Express security hunter. Prototype pollution, unsafe eval, deserialization, dependency vulnerability, misconfigured CORS, express-session flaws.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-nodejs.md"
+      "path": ".swarm/agents/hunt-nodejs.md"
     },
     {
       "name": "hunt-nosqli",
       "description": "NoSQL injection hunter. MongoDB $where/$regex injection, CouchDB JavaScript injection, Cassandra CQL injection, DynamoDB expression injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-nosqli.md"
+      "path": ".swarm/agents/hunt-nosqli.md"
     },
     {
       "name": "hunt-ntlm-info",
       "description": "NTLM information disclosure hunter. NTLM challenge capture, relay primitives, coercion, NetNTLMv2 interception, HTTP NTLM auth exposure.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ntlm-info.md"
+      "path": ".swarm/agents/hunt-ntlm-info.md"
     },
     {
       "name": "hunt-oauth",
       "description": "OAuth 2.0 / OpenID Connect hunter. Redirect URI bypass, state nonce leakage, CSRF on OAuth flow, token leakage via Referer, implicit flow weaknesses.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-oauth.md"
+      "path": ".swarm/agents/hunt-oauth.md"
     },
     {
       "name": "hunt-open-redirect",
       "description": "Open redirect hunter. URL parser bypass, protocol confusion, CRLF injection in redirect, chaining to phishing/XSS, OAuth redirect abuse.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-open-redirect.md"
+      "path": ".swarm/agents/hunt-open-redirect.md"
     },
     {
       "name": "hunt-prototype-pollution",
       "description": "Prototype Pollution hunter. Client-side and server-side PP, __proto__ injection, constructor manipulation, script gadget exploitation, RCE chains.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-prototype-pollution.md"
+      "path": ".swarm/agents/hunt-prototype-pollution.md"
     },
     {
       "name": "hunt-race-condition",
       "description": "Race condition hunter. TOCTOU, payment race conditions, coupon/loyalty race, rate limit race, async race, database contention.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-race-condition.md"
+      "path": ".swarm/agents/hunt-race-condition.md"
     },
     {
       "name": "hunt-rce",
       "description": "Remote Code Execution hunter. Command injection (OS), eval() injection, SSTI chained to RCE, file write to RCE, dependency RCE, library injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-rce.md"
+      "path": ".swarm/agents/hunt-rce.md"
     },
     {
       "name": "hunt-saml",
       "description": "SAML SSO hunter. XML signature wrapping, assertion injection, Replay attack, recipient/audience confusion, IDP-initiated SSO abuse, certificate manipulation.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-saml.md"
+      "path": ".swarm/agents/hunt-saml.md"
     },
     {
       "name": "hunt-session",
       "description": "Session management flaw hunter. Session fixation, predictable tokens, weak cookie attributes, concurrent session handling, JWT session weaknesses.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-session.md"
+      "path": ".swarm/agents/hunt-session.md"
     },
     {
       "name": "hunt-sharepoint",
       "description": "SharePoint security hunter. SharePoint on-prem/online misconfiguration, privilege escalation, exposed web parts, workflow abuse, viewstate deserialization.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-sharepoint.md"
+      "path": ".swarm/agents/hunt-sharepoint.md"
     },
     {
       "name": "hunt-soap",
       "description": "SOAP/XML web service hunter. WSDL discovery, XXE, XML bomb, WS-Security bypass, SOAP action spoofing, XML injection, XPath injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-soap.md"
+      "path": ".swarm/agents/hunt-soap.md"
     },
     {
       "name": "hunt-source-leak",
       "description": "Source code leak hunter. .git/config exposure, .env file access, backup file disclosure, source map/reverse source map analysis, debug endpoint exposure.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-source-leak.md"
+      "path": ".swarm/agents/hunt-source-leak.md"
     },
     {
       "name": "hunt-springboot",
       "description": "Spring Boot security hunter. Actuator exposure, Spring4Shell, classpath RCE, property injection, Spring Cloud/Config vulnerabilities, SpEL injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-springboot.md"
+      "path": ".swarm/agents/hunt-springboot.md"
     },
     {
       "name": "hunt-sqli",
       "description": "SQL injection and NoSQL injection hunter. Classic SQLi, blind/time-based, second-order, ORM raw-fragment SQLi, MongoDB $regex/$where injection, CouchDB JavaScript injection, DynamoDB expression injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-sqli.md"
+      "path": ".swarm/agents/hunt-sqli.md"
     },
     {
       "name": "hunt-ssrf-cloud",
       "description": "Cloud metadata SSRF & IAM credential theft hunter. AWS IMDSv1/v2, GCP metadata, Azure IMDS, K8s SA token exfil, ECS task credentials, Lambda env vars, DigitalOcean, Linode.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ssrf-cloud.md"
+      "path": ".swarm/agents/hunt-ssrf-cloud.md"
     },
     {
       "name": "hunt-ssrf",
       "description": "Server-Side Request Forgery hunter. Cloud metadata SSRF, blind OOB SSRF, URL parser bypass, redirect-based SSRF, and chain paths to RCE.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ssrf.md"
+      "path": ".swarm/agents/hunt-ssrf.md"
     },
     {
       "name": "hunt-ssti",
       "description": "Server-Side Template Injection hunter. Jinja2, Twig, Freemarker, Velocity, Jade/Pug, ERB. Detection, context identification, RCE chains.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-ssti.md"
+      "path": ".swarm/agents/hunt-ssti.md"
     },
     {
       "name": "hunt-subdomain",
       "description": "Subdomain takeover hunter. CNAME dangling, NS delegation, Azure/DNS/CloudFront/S3 takeover, expired DNS, dead link hijacking.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-subdomain.md"
+      "path": ".swarm/agents/hunt-subdomain.md"
     },
     {
       "name": "hunt-tls-network",
       "description": "TLS/SSL and network security hunter. Weak cipher suites, outdated TLS versions, certificate validation bypass, STARTTLS injection, HTTP/2 downgrade.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-tls-network.md"
+      "path": ".swarm/agents/hunt-tls-network.md"
     },
     {
       "name": "hunt-websocket",
       "description": "WebSocket security hunter. WS message injection, origin bypass, CSWSH, WS proxy misconfig, cross-origin WebSocket hijacking, WS tunneling.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-websocket.md"
+      "path": ".swarm/agents/hunt-websocket.md"
     },
     {
       "name": "hunt-xss",
       "description": "Cross-Site Scripting hunter. Reflected, stored, and DOM-based XSS, CSP bypass, mXSS, sanitizer evasion, polyglot payloads, cache-poison XSS chains, and postMessage gadgets.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-xss.md"
+      "path": ".swarm/agents/hunt-xss.md"
     },
     {
       "name": "hunt-xxe",
       "description": "XML External Entity hunter. In-band XXE, blind OOB XXE, SVG XXE, XInclude attacks, docx/pptx XXE, SOAP XXE.",
       "mode": "subagent",
-      "path": ".opencode/agents/hunt-xxe.md"
+      "path": ".swarm/agents/hunt-xxe.md"
     },
     {
       "name": "hunt",
       "description": "Pipeline Phase 6 \u2014 Run hunt-* subagents based on surface analysis",
       "mode": "all",
-      "path": ".opencode/agents/hunt.md"
+      "path": ".swarm/agents/hunt.md"
     },
     {
       "name": "m365-entra-attack",
       "description": "Microsoft 365 / Entra ID attack chains. AADSTS error analysis, Smart Lockout math, Conditional Access bypass, token theft, device registration abuse, hybrid identity.",
       "mode": "subagent",
-      "path": ".opencode/agents/m365-entra-attack.md"
+      "path": ".swarm/agents/m365-entra-attack.md"
     },
     {
       "name": "meme-coin-audit",
       "description": "Meme coin / token audit hunter. Token rug-pull detection, honeypot analysis, liquidity lock verification, ownership renounce, proxy contract risks.",
       "mode": "subagent",
-      "path": ".opencode/agents/meme-coin-audit.md"
+      "path": ".swarm/agents/meme-coin-audit.md"
     },
     {
       "name": "mid-engagement-ir-detection",
       "description": "Mid-engagement IR/defender detection awareness. SOC detection patterns, blue team tooling, EDR telemetry, defender response playbooks, operational stealth.",
       "mode": "subagent",
-      "path": ".opencode/agents/mid-engagement-ir-detection.md"
+      "path": ".swarm/agents/mid-engagement-ir-detection.md"
     },
     {
       "name": "offensive-osint",
       "description": "Offensive OSINT gatherer. Identity fabric mapping, breached credential lookup, email/phone/social enumeration, dark web intel, organizational footprint.",
       "mode": "subagent",
-      "path": ".opencode/agents/offensive-osint.md"
+      "path": ".swarm/agents/offensive-osint.md"
     },
     {
       "name": "okta-attack",
       "description": "Okta identity platform attack chains. Okta-as-IdP misconfig, SWA injection, delegated authentication flaws, API token abuse, event hook manipulation.",
       "mode": "subagent",
-      "path": ".opencode/agents/okta-attack.md"
+      "path": ".swarm/agents/okta-attack.md"
     },
     {
       "name": "osint-methodology",
       "description": "OSINT methodology guide. Source verification, data correlation, persona tracking, geolocation, temporal analysis, OSINT tool selection framework.",
       "mode": "subagent",
-      "path": ".opencode/agents/osint-methodology.md"
+      "path": ".swarm/agents/osint-methodology.md"
     },
     {
       "name": "osint",
       "description": "Pipeline Phase 3b \u2014 OSINT: email & subdomain enumeration via theHarvester",
       "mode": "all",
-      "path": ".opencode/agents/osint.md"
+      "path": ".swarm/agents/osint.md"
     },
     {
       "name": "pintel",
       "description": "Pipeline Phase 3 \u2014 Passive Intel: WHOIS, M365/Azure, spoof check, cloud bucket enumeration",
       "mode": "all",
-      "path": ".opencode/agents/pintel.md"
+      "path": ".swarm/agents/pintel.md"
     },
     {
       "name": "recon",
       "description": "Pipeline Phase 4 \u2014 Full recon: subdomains, live hosts, crawl, params, secrets",
       "mode": "all",
-      "path": ".opencode/agents/recon.md"
+      "path": ".swarm/agents/recon.md"
     },
     {
       "name": "redteam-mindset",
       "description": "Red team operator mindset. Primary directive, anti-patterns, operational discipline, burnout avoidance, documentation hygiene, engagement closure discipline.",
       "mode": "subagent",
-      "path": ".opencode/agents/redteam-mindset.md"
+      "path": ".swarm/agents/redteam-mindset.md"
     },
     {
       "name": "redteam-report-template",
       "description": "Red team report template generator. Client-facing DOCX deliverables, Subject/Observations/Impact/Recommendation/PoC sections, embedded screenshots, executive summary.",
       "mode": "subagent",
-      "path": ".opencode/agents/redteam-report-template.md"
+      "path": ".swarm/agents/redteam-report-template.md"
     },
     {
       "name": "report-writing",
       "description": "Security report writer. HackerOne/Bugcrowd/Intigriti/Immunefi templates, impact quantification, CVSS 3.1 scoring, remediation guidance, executive summaries.",
       "mode": "subagent",
-      "path": ".opencode/agents/report-writing.md"
+      "path": ".swarm/agents/report-writing.md"
     },
     {
       "name": "report",
       "description": "Pipeline Phase 12 \u2014 Coverage check, phase gates, final report",
       "mode": "all",
-      "path": ".opencode/agents/report.md"
+      "path": ".swarm/agents/report.md"
     },
     {
       "name": "scope",
       "description": "Pipeline Phase 1 \u2014 Register target domain, scope boundaries, credentials, init engagement",
       "mode": "all",
-      "path": ".opencode/agents/scope.md"
+      "path": ".swarm/agents/scope.md"
     },
     {
       "name": "search",
       "description": "Search mode \u2014 real-time intelligence retrieval. Activates when static knowledge data is stale, missing, or insufficient. Researches CVEs, payloads, bypass techniques, and disclosed reports.",
       "mode": "all",
-      "path": ".opencode/agents/search.md"
+      "path": ".swarm/agents/search.md"
     },
     {
       "name": "security-arsenal",
       "description": "Security tool arsenal reference. Payload banks, wordlists, tool configuration profiles, one-liner collections, WAF bypass lists, encoding/decoding reference.",
       "mode": "subagent",
-      "path": ".opencode/agents/security-arsenal.md"
+      "path": ".swarm/agents/security-arsenal.md"
     },
     {
       "name": "supply-chain-attack-recon",
       "description": "Supply chain attack recon. Dependency confusion, package squatting, typosquatting, GH Actions dependency injection, SBOM mining, mirror/pypi/gem/npm registry poisoning.",
       "mode": "subagent",
-      "path": ".opencode/agents/supply-chain-attack-recon.md"
+      "path": ".swarm/agents/supply-chain-attack-recon.md"
     },
     {
       "name": "surface",
       "description": "Pipeline Phase 5 \u2014 Analyze recon output, rank P1/P2/P3 attack surface",
       "mode": "all",
-      "path": ".opencode/agents/surface.md"
+      "path": ".swarm/agents/surface.md"
     },
     {
       "name": "triage-validation",
       "description": "Finding triage and validation. 7-Question Gate: real request? accepted impact? in-scope? not admin-only? concrete? not on never-submit? Verdicts: PASS/KILL/DOWNGRADE/CHAIN-REQUIRED.",
       "mode": "subagent",
-      "path": ".opencode/agents/triage-validation.md"
+      "path": ".swarm/agents/triage-validation.md"
     },
     {
       "name": "validate",
       "description": "Pipeline Phase 11 \u2014 Re-run PoCs, classify findings, 7-Question Gate",
       "mode": "all",
-      "path": ".opencode/agents/validate.md"
+      "path": ".swarm/agents/validate.md"
     },
     {
       "name": "vmware-vcenter-attack",
       "description": "VMware vCenter exploitation chains. CVE-2021-21972 through CVE-2024-37085, vCenter to ESXI lateral movement, vCenter SSO bypass, vulnerable appliance exploitation.",
       "mode": "subagent",
-      "path": ".opencode/agents/vmware-vcenter-attack.md"
+      "path": ".swarm/agents/vmware-vcenter-attack.md"
     },
     {
       "name": "waf-bypass-akamai",
       "description": "Akamai Kona WAF bypass techniques. CVE-2025-30143 variable chaining, JSON escape unicode normalization, tagged template literals, redirect-based SSRF, origin IP discovery, HTTP/2 frame delay, payload padding.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-akamai.md"
+      "path": ".swarm/agents/waf-bypass-akamai.md"
     },
     {
       "name": "waf-bypass-aws",
       "description": "AWS WAF (WAF/Shield) bypass techniques. IP allowlist rules, rate-based rules bypass, SQLi/XSS rule evasion via encoding, size constraint bypass, regional WAF enumeration.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-aws.md"
+      "path": ".swarm/agents/waf-bypass-aws.md"
     },
     {
       "name": "waf-bypass-cloudflare",
       "description": "Cloudflare WAF bypass techniques. Known origin IP discovery (Censys/Shodan, favicon hash, SSL cert, FZDS), header spoofing (X-Forwarded-For, CF-Connecting-IP), path normalization bypass, and rate-limit evasion.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-cloudflare.md"
+      "path": ".swarm/agents/waf-bypass-cloudflare.md"
     },
     {
       "name": "waf-bypass-f5",
       "description": "F5 BIG-IP ASM WAF bypass techniques. Attack signature evasion, policy bypass via parameter obfuscation, HTTP protocol compliance bypass, iRule misconfiguration.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-f5.md"
+      "path": ".swarm/agents/waf-bypass-f5.md"
     },
     {
       "name": "waf-bypass-fastly",
       "description": "Fastly Next-Gen WAF (Signal Sciences) bypass techniques. Parameter cloaking for cache poisoning, origin IP bypass, startup probe fail-open, content-type confusion, prototype pollution, HTTP/2 frame delay.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-fastly.md"
+      "path": ".swarm/agents/waf-bypass-fastly.md"
     },
     {
       "name": "waf-bypass-imperva",
       "description": "Imperva WAF (Incapsula) bypass techniques. Known origin IP discovery, header spoofing, client classification bypass, challenge-solving automation.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-imperva.md"
+      "path": ".swarm/agents/waf-bypass-imperva.md"
     },
     {
       "name": "waf-bypass-modsecurity",
       "description": "ModSecurity WAF bypass techniques. CRS rule evasion, false positive abuse, request smuggling before WAF, protocol anomaly bypass, SecRuleEngine misconfig.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-modsecurity.md"
+      "path": ".swarm/agents/waf-bypass-modsecurity.md"
     },
     {
       "name": "waf-bypass-signalsciences",
       "description": "Signal Sciences (Fastly NGWAF) bypass techniques. JSON/HTML encoding bypass, chunked transfer encoding smuggling, payload padding, content-type confusion, parameter pollution, null byte injection.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-signalsciences.md"
+      "path": ".swarm/agents/waf-bypass-signalsciences.md"
     },
     {
       "name": "waf-bypass-sucuri",
       "description": "Sucuri WAF bypass techniques. Known origin IP via leaked DNS, header spoofing, cache-based bypass, CloudProxy misconfiguration.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-bypass-sucuri.md"
+      "path": ".swarm/agents/waf-bypass-sucuri.md"
     },
     {
       "name": "waf-encoding-obfuscation",
       "description": "WAF encoding and obfuscation bypass. Double URL encoding, Unicode normalization, mixed case, comment insertion, null bytes, UTF-8 overlong sequences, base64 padding tricks.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-encoding-obfuscation.md"
+      "path": ".swarm/agents/waf-encoding-obfuscation.md"
     },
     {
       "name": "waf-evasion-rce",
       "description": "WAF RCE/command injection evasion techniques. Backtick/pipe substitution, environment variable obfuscation, hex/octal encoding, wildcard expansion, newline injection, parameter splitting.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-evasion-rce.md"
+      "path": ".swarm/agents/waf-evasion-rce.md"
     },
     {
       "name": "waf-evasion-sqli",
       "description": "WAF SQLi evasion techniques. Heavy comment insertion, case variation, scientific notation, chunked encoding, HTTP parameter pollution, unicode encoding, CRLF+padding.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-evasion-sqli.md"
+      "path": ".swarm/agents/waf-evasion-sqli.md"
     },
     {
       "name": "waf-evasion-xss",
       "description": "WAF XSS evasion techniques. Polyglot payloads, event handler variants, SVG bypass, mutation XSS (mXSS), DOMPurify bypass, trusted types bypass, CSP bypass via JSONP/gadgets.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-evasion-xss.md"
+      "path": ".swarm/agents/waf-evasion-xss.md"
     },
     {
       "name": "waf-fingerprinting",
       "description": "WAF fingerprinting and identification. Detect Cloudflare, AWS WAF, ModSecurity, F5 ASM, Imperva, Sucuri, Akamai, and 15+ other WAFs from response headers, error pages, and blocking behavior.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-fingerprinting.md"
+      "path": ".swarm/agents/waf-fingerprinting.md"
     },
     {
       "name": "waf-header-spoofing",
       "description": "WAF header spoofing techniques. X-Forwarded-For, True-Client-IP, X-Real-IP, CF-Connecting-IP, X-Originating-IP, X-Remote-IP, X-Client-IP, Forwarded, Via, X-Forwarded-Host, X-Forwarded-Proto.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-header-spoofing.md"
+      "path": ".swarm/agents/waf-header-spoofing.md"
     },
     {
       "name": "waf-hpp-hpf",
       "description": "HTTP Parameter Pollution and HPF evasion. Duplicate parameter injection, array notation, parameter separation, HPP for WAF bypass, HPP for auth bypass, parameter clustering.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-hpp-hpf.md"
+      "path": ".swarm/agents/waf-hpp-hpf.md"
     },
     {
       "name": "waf-protocol-evasion",
       "description": "WAF protocol-level evasion techniques. HTTP/0.9 fallback, chunked transfer encoding smuggling, Content-Type confusion, method override (X-HTTP-Method-Override, X-HTTP-Method), HTTP/2 \u2192 HTTP/1.1 downgrade.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-protocol-evasion.md"
+      "path": ".swarm/agents/waf-protocol-evasion.md"
     },
     {
       "name": "waf-regex-reversing",
       "description": "WAF regex reversing and rule inference. Blind rule mapping via binary search on payload length, character class probing, alternation testing, ReDoS against the WAF itself, rule timing side-channels.",
       "mode": "subagent",
-      "path": ".opencode/agents/waf-regex-reversing.md"
+      "path": ".swarm/agents/waf-regex-reversing.md"
     },
     {
       "name": "web2-recon",
       "description": "Web recon specialist. Subdomain enumeration, technology fingerprinting, endpoint discovery, directory brute force, parameter fuzzing, WAF detection.",
       "mode": "subagent",
-      "path": ".opencode/agents/web2-recon.md"
+      "path": ".swarm/agents/web2-recon.md"
     },
     {
       "name": "web2-vuln-classes",
       "description": "Complete reference for 22 web2 bug classes with root causes, detection patterns, bypass tables, exploit techniques, and real paid examples. Covers IDOR, auth bypass, XSS, SSRF (11 IP bypass techniques), SQLi, business logic, race conditions, OAuth/OIDC, file upload (10 bypass techniques), GraphQL, LLM/AI (ASI01-ASI10 agentic framework), API misconfig (mass assignment, JWT attacks, prototype pollution, CORS), ATO taxonomy (9 paths), SSTI (Jinja2/Twig/Freemarker/ERB/Spring), subdomain takeover, cloud/infra misconfigs, HTTP smuggling (CL.TE/TE.CL/H2.CL), cache poisoning, MFA bypass (7 patterns), SAML attacks (XSW/comment injection/signature stripping), error disclosure / debug endpoints (stack trace regex per framework, chain templates), CSS injection (attribute-selector exfiltration, opacity clickjacking, @import). Use when hunting a specific vuln class or studying what makes bugs pay.",
       "mode": "all",
-      "path": ".opencode/agents/web2-vuln-classes.md"
+      "path": ".swarm/agents/web2-vuln-classes.md"
     },
     {
       "name": "web3-audit",
       "description": "Web3/blockchain audit hunter. 10 DeFi bug classes: reentrancy, flash loan, oracle manipulation, sandwich attack, MEV extraction, access control, integer overflow, signature replay.",
       "mode": "subagent",
-      "path": ".opencode/agents/web3-audit.md"
+      "path": ".swarm/agents/web3-audit.md"
     }
   ],
   "commands": [
     {
       "name": "auth",
       "description": "Authenticate to target \u2014 capture tokens, cookies, and session state",
-      "path": ".opencode/commands/auth.md"
+      "path": ".swarm/commands/auth.md"
     },
     {
       "name": "autopilot",
       "description": "Full 12-phase autonomous pipeline \u2014 scope \u2192 auth \u2192 intel \u2192 recon \u2192 surface \u2192 hunt \u2192 deepthink \u2192 exploit \u2192 search \u2192 capture \u2192 validate \u2192 report. Usage: /autopilot target.com [--paranoid|--normal|--yolo]",
-      "path": ".opencode/commands/autopilot.md"
+      "path": ".swarm/commands/autopilot.md"
     },
     {
       "name": "capture",
       "description": "Evidence collection \u2014 HTTP requests, screenshots, collaborator, PII redaction",
-      "path": ".opencode/commands/capture.md"
+      "path": ".swarm/commands/capture.md"
     },
     {
       "name": "consult",
       "description": "Interactive Phase1\u2013Phase12 pipeline with human go-ahead at each phase. Suggests next steps and alternatives. Usage: /consult target.com [--quick|--deep]",
-      "path": ".opencode/commands/consult.md"
+      "path": ".swarm/commands/consult.md"
     },
     {
       "name": "deepthink",
       "description": "First-principles gap analysis \u2014 find what automation misses",
-      "path": ".opencode/commands/deepthink.md"
+      "path": ".swarm/commands/deepthink.md"
     },
     {
       "name": "exploit",
       "description": "Deep-research exploitation with WAF bypass and chain development",
-      "path": ".opencode/commands/exploit.md"
+      "path": ".swarm/commands/exploit.md"
     },
     {
       "name": "hunt",
       "description": "Two-track active vulnerability dispatcher \u2014 Red Team or WAPT mode with hunt-dispatch skill",
-      "path": ".opencode/commands/hunt.md"
+      "path": ".swarm/commands/hunt.md"
     },
     {
       "name": "osint",
       "description": "OSINT \u2014 email & subdomain enumeration via theHarvester",
-      "path": ".opencode/commands/osint.md"
+      "path": ".swarm/commands/osint.md"
     },
     {
       "name": "recon",
       "description": "Subdomain enum, live host discovery, URL crawl, and attack surface classification",
-      "path": ".opencode/commands/recon.md"
+      "path": ".swarm/commands/recon.md"
     },
     {
       "name": "report",
       "description": "Generates submission-ready H1/Bugcrowd/Intigriti/Immunefi report with CVSS scoring",
-      "path": ".opencode/commands/report.md"
+      "path": ".swarm/commands/report.md"
     },
     {
       "name": "scope",
       "description": "Register target domain, scope boundaries, credentials, and engagement config",
-      "path": ".opencode/commands/scope.md"
+      "path": ".swarm/commands/scope.md"
     },
     {
       "name": "search",
       "description": "RAG-powered re-dispatch for uncovered vulnerability classes",
-      "path": ".opencode/commands/search.md"
+      "path": ".swarm/commands/search.md"
     },
     {
       "name": "surface",
       "description": "Reads recon output and hunt memory to rank P1/P2/Kill-List attack surface for a target",
-      "path": ".opencode/commands/surface.md"
+      "path": ".swarm/commands/surface.md"
     },
     {
       "name": "validate",
       "description": "7-Question Gate and 4-gate checklist \u2014 kills weak findings before report writing",
-      "path": ".opencode/commands/validate.md"
+      "path": ".swarm/commands/validate.md"
     }
   ],
   "mcp_tool_names": [

@@ -96,5 +96,5 @@ The deliverable is consumed by the calling phase agent. Full report format refer
 
 ## Reference
 
-- Agent: `.opencode/agents/analyze.md`
+- Agent: `.swarm/agents/analyze.md`
 - Full methodology: `skills/analyze/SKILL.md`

@@ -214,8 +214,8 @@ What the user can do to resolve this.
 
 ## Related Files
 
-- `.opencode/agents/deepthink.md` — Agent: first-principles reasoning engine
+- `.swarm/agents/deepthink.md` — Agent: first-principles reasoning engine
 - `scripts/tools/phase-deepthink.sh` — Script: creates gap analysis context from SQLite DB
 - `server/server_data.py:820` — PHASE_NAMES entry for Phase 7
 - `server/server.py:3180` — Gate check warns if phase>=7 and no findings
-- `.opencode/agents/autopilot.md:163-184` — Trigger logic and invocation flow
+- `.swarm/agents/autopilot.md:163-184` — Trigger logic and invocation flow

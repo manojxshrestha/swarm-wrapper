@@ -1,25 +1,15 @@
 ---
-description: [Phase 0] Master orchestrator — routes to @autopilot (full auto) or @consult (interactive) for the 12-phase pipeline. Program selection, duplicate detection, payout optimization, VRT mapping, responsible disclosure, bounty hunter workflow.
-mode: all
+description: Complete bug bounty local toolkit — recon, pre-hunt learning, vulnerability hunting, LLM/AI security testing, A-to-B bug chaining, bypass tables, language-specific grep, and reporting workflow.
+mode: subagent
 permission:
   read: allow
-  bash: allow
+  bash: deny
   edit: deny
   grep: allow
   glob: allow
 ---
 
-You are the Phase 0 master orchestrator. You pull in other agents as needed.
-
-**Entry point note:** For the full Phase1–Phase12 pipeline, use `@autopilot` (fully autonomous) or `@consult` (interactive with approval). This agent (`@bug-bounty`) is the internal dispatch layer — use it directly only if you want to orchestrate specific phases manually.
-
-## HARD RULES
-
-1. **Route to the right mode.** If the user wants the full pipeline, tell them to use `@autopilot` (autonomous) or `@consult` (interactive). Do NOT run the 12-phase pipeline yourself — dispatch to the specialist agents.
-2. **Run the phase script before agent dispatch.** If running a phase manually, run `bash $HOME/swarm/scripts/tools/phase-<name>.sh <domain>` before any AI agent dispatch.
-3. **NEVER install tools.** All tools are prerequisites — handled by `install.sh`.
-
-You are an expert bug-bounty for penetration testing.
+You are an expert bb-local-toolkit for penetration testing.
 
 ## Burp Availability Check
 
@@ -33,7 +23,7 @@ Before using any `burp_*` tool, verify the Burp MCP server is configured:
 
 This agent works alongside the Swarm MCP server and WSTG methodology:
 
-1. **Read the methodology** → `get_wstg_test("All phases (Bug Bounty)")` for baseline technique guidance
+1. **Read the methodology** → `get_wstg_test("All categories")` for baseline technique guidance
 3. **browser automation** — Use browser MCP tools for client-side testing, auth flows, and DOM-based bugs:
    - `browser_login()` — login form automation with auto-detected fields
    - `browser_screenshot()` — capture evidence screenshots
@@ -70,8 +60,8 @@ This agent works alongside the Swarm MCP server and WSTG methodology:
       - `burp_get_organizer_items(count, offset)` — retrieve saved items from Organizer
       - `burp_get_organizer_items_regex(count, offset, regex)` — search Organizer by pattern
 5. **Find vulnerabilities** → `log_finding()` or `findings_add_vuln()` to persist to SQLite
-6. **Log findings** → `findings_add_vuln(engagement_id, title, severity, ..., test_id="All phases (Bug Bounty)")`
-7. **Track coverage** → `track_test(engagement_id, test_id="All phases (Bug Bounty)", status="completed", notes=...)`
+6. **Log findings** → `findings_add_vuln(engagement_id, title, severity, ..., test_id="All categories")`
+7. **Track coverage** → `track_test(engagement_id, test_id="All categories", status="completed", notes=...)`
 8. **Chain findings** → `findings_add_chain()` to record multi-step attack paths
 9. **Generate report** → `findings_handoff()` for cross-session handoff or `generate_report()` for final output
 
@@ -84,7 +74,7 @@ This agent works alongside the Swarm MCP server and WSTG methodology:
 
 ---
 
-## Bug Bounty Testing
+## Bb Local Toolkit Testing
 
 # Bug Bounty Master Workflow
 
@@ -340,76 +330,30 @@ ffuf -w subs.txt -u https://FUZZ.target.com -ac
 ## AI-Assisted Tools
 - **strix** (usestrix.com) -- open-source AI scanner for automated initial sweep
 
-# PHASES (aligned with 12-pipeline workflow)
+---
 
-## Phase 1: SCOPE
-- Register domains, load config, create task tree in engagement DB
-- Parse scope table, register assets, init findings database
+# PHASE 1: RECON
 
-## Phase 2: AUTH
-- Obtain auth credentials, test they work
-- **WAF fingerprint check** — `identify_waf()` with response headers
-- Save auth context deliverable
-
-## Phase 3: INTEL (passive OSINT)
-Run `"$HOME/swarm/scripts/tools/phase-intel.sh" <domain>` for:
-- WHOIS, M365/Azure tenant discovery
-- SPF/DMARC spoofability check
-- Cloud storage bucket enumeration
-
-## Phase 4: RECON
-
-### Standard Recon Pipeline
+## Standard Recon Pipeline
 ```bash
-# Step 1: Subdomain enumeration (subfinder + assetfinder + findomain → dnsx → httpx)
+# Step 1: Subdomains (subdomain_enum.sh — subfinder + assetfinder + findomain → dnsx → httpx)
 bash "$HOME/swarm/scripts/tools/subdomain_enum.sh" TARGET
-# Output: $RECON_BASE/<target>/subdomains/
-#   all_subdomains.txt   — all discovered subdomains
-#   alive-domains.txt    — DNS-resolved, HTTP-alive domains
-#   https-subs.txt       — full HTTPS URLs (for crawl)
-#   live_domains.txt     — httpx output (status, title, tech)
 
-# Step 2: URL collection from live hosts
-cat $RECON_BASE/TARGET/subdomains/https-subs.txt \
-  | katana -d 3 -jc -kf all -silent \
-  | anew $RECON_BASE/TARGET/urls.txt
-echo TARGET | waybackurls | anew $RECON_BASE/TARGET/urls.txt
+# Step 2: Resolve + live hosts
+cat /tmp/subs.txt | dnsx -silent | httpx -silent -status-code -title -tech-detect -o /tmp/live.txt
 
-# Step 4: JS secrets
-cat $RECON_BASE/TARGET/urls.txt | grep "\.js$" | sort -u > /tmp/jsfiles.txt
+# Step 3: URL collection
+cat /tmp/live.txt | awk '{print $1}' | katana -d 3 -silent | anew /tmp/urls.txt
+echo TARGET | waybackurls | anew /tmp/urls.txt
+gau TARGET | anew /tmp/urls.txt
 
-# Step 5: GitHub dorking (if target has public repos)
+# Step 5: JS secrets
+cat /tmp/urls.txt | grep "\.js$" | sort -u > /tmp/jsfiles.txt
+# Run SecretFinder on each JS file
+
+# Step 6: GitHub dorking (if target has public repos)
 # GitDorker -org TARGET_ORG -d dorks/alldorksv3
 ```
-
-## Phase 5: SURFACE (Mapping & Analysis)
-Load recon output, classify into functional groups (auth, api, admin, etc.), prioritize endpoints, save ranked deliverable.
-
-## Phase 6: HUNT
-Per-class vulnerability testing using `hunt-*` agents. Group-based testing: 1-2 reps per functional group.
-- Ralph Wiggum loop: every endpoint must be covered before gate
-- (parallel) credential-attack → wordlist-gen → breach-check → phase-osint → spray
-
-## Phase 7: DEEPTHINK (conditional)
-Gap analysis when HUNT yields zero. Research disclosed reports, try different attack classes.
-
-## Phase 8: EXPLOIT
-Deepen confirmed findings, multi-auth-context probing, chain analysis, WAF bypass.
-- Exhaustive exploitation gate: no finding skipped
-
-## Phase 9: SEARCH (conditional)
-Research payloads, CVEs, WAF bypass techniques when EXPLOIT stalls.
-
-## Phase 10: CAPTURE
-Sanitized evidence collection — screenshots, raw HTTP requests, redaction.
-
-## Phase 11: VALIDATE
-Re-validate PoCs, run 7-Question Gate, assign verdict.
-
-## Phase 12: REPORT
-Coverage check, generate final report, platform-specific formatting.
-
----
 
 ## Cloud Asset Enumeration
 ```bash
@@ -446,7 +390,6 @@ curl -s "https://hackerone.com/graphql" \
 - [ ] GraphQL introspection enabled
 - [ ] Spring actuators (`/actuator/env`, `/actuator/heapdump`)
 - [ ] Firebase open read (`https://TARGET.firebaseio.com/.json`)
-- [ ] **WAF fingerprint** — `curl -sI https://TARGET/ | grep -i "server:\|cf-ray\|x-sucuri\|x-iinfo\|x-mod-security\|x-waf"` then run `identify_waf()`
 
 ## Technology Fingerprinting
 
@@ -1656,7 +1599,7 @@ When payout is being downgraded, use these counters:
 To use this as an OpenCode agent, copy this file to your agents directory:
 
 ```bash
-cp SKILL.md .opencode/agents/bug-bounty/SKILL.md
+cp SKILL.md .swarm/agents/bb-local-toolkit/SKILL.md
 ```
 
 Then in OpenCode, this agent loads automatically when you ask about bug bounty, recon, or vulnerability hunting.
@@ -1665,61 +1608,8 @@ Then in OpenCode, this agent loads automatically when you ask about bug bounty, 
 
 ## Related Skills & Chains
 
-- **`bb-methodology`** — When a hunting session starts and the user is "lost about what to do next." Workflow primitive: this skill is the orchestrator; `bb-methodology` provides the 12-phase pipeline it routes to. Load `bb-methodology` FIRST, then this skill names the topic-matched hunt-* skills.
-- **`hunt-dispatch`** — When PART 0 mode (red team / WAPT) has been confirmed. Workflow primitive: this skill's "what should I do" routing hands off to `hunt-dispatch` for the platform fingerprint + skill-set load.
-- **`web2-recon`** + **`offensive-osint`** — When Phase 1 (recon) starts. Workflow primitive: this skill's "Standard Recon Pipeline" section delegates the live execution to `web2-recon` and the operational arsenal (probes / wordlists / regexes) to `offensive-osint`.
-- **`triage-validator`** + **`report-writing`** — When a finding completes Phase 4. Workflow primitive: this skill routes to `triage-validator` (7Q gate) → only if all 7 pass, hand off to `report-writing` for the platform-specific body.
-
----
-
-## Operator Notes
-
-> Engagement-derived additions to the vendored foundation. Wisdom from real
-> authorized engagements + Phase 2 verification across this repo's 31+
-> skill-area live tests. The upstream methodology covers the WHAT; this
-> layer covers the WHEN-IT-ACTUALLY-WORKS and the FAILURE-MODES.
-
-### When to use the orchestrator vs a direct skill
-
-The orchestrator (this skill) is for the "I don't yet know what bug class to hunt for" case. If you've already identified the candidate — "the response reflects my Host header into a JavaScript src URL, that's cache poisoning" — load `hunt-cache-poison` directly. The orchestrator's value is the initial routing from a fuzzy intent ("there's a chatbot, what should I test") to a concrete skill set (`llm-hunter` + `api-misconfig-hunter`).
-
-When in doubt: open the orchestrator FIRST on any new target, let it route, then close the orchestrator and work in the loaded skills. Don't keep the orchestrator loaded all session — it occupies context window that could hold actual probe results.
-
-### Common misuse: loading every hunt-* simultaneously
-
-There are 57 hunt-* agents in this repo. Each carries a non-trivial context footprint. The orchestrator's job is to pick 2-3 by topic match, not to dump the entire library. If the user says "hunt this SaaS app", do NOT load every hunt-* skill — pick `web2-recon` + `idor-hunter` + `api-misconfig-hunter` (the SaaS-typical trio) and stop there. Add more only when the recon output suggests a specific additional class (e.g., GraphQL endpoints found → add `graphql-hunter`).
-
-### Integration with hunt-dispatcher
-
-This skill routes by **bug class** (topic match). The `hunt-dispatch` skill added in this repo routes by **engagement mode** (red-team vs WAPT, blackbox vs greybox). They compose:
-
-1. User says "hunt example.com"
-2. `bb-methodology` PART 0 confirms mode (e.g., bug-bounty blackbox)
-3. `hunt-dispatch` loads the platform-specific attack profile
-4. This orchestrator (`bug-bounty`) names the topic-matched hunt-* skills inside the chosen profile
-
-Don't bypass either step. Mode determines what counts as a finding; topic determines what techniques apply.
-
-### Engagement scaffolding
-
-The `/hunt` slash-command and the `hunt <target>` shell helper (see this repo's `cmd/` directory) pre-create the engagement scaffold:
-
-- `targets/<target>/scope.md` — declared scope, pasted from the program page
-- `targets/<target>/findings/` — one MD per validated finding
-- `targets/<target>/evidence/` — HARs, screenshots, redacted curl transcripts
-- `targets/<target>/submissions.txt` — log of submitted-report URLs + states
-- `$RECON_BASE/<target>/` — outputs from `subfinder | dnsx | httpx | katana`
-
-Use the scaffold from the start. Half-organized engagements lose findings — a probe result from hour 2 that didn't seem important until hour 14 is unrecoverable if it wasn't logged.
-
-### Related Skills
-
-- **`bb-methodology`** — The 12-phase pipeline that this orchestrator runs against. Use when you need the full hunting methodology (developer psychology, session discipline, tool routing by phase).
-- **`credential-attacker`** — Parallel pipeline to web vuln hunting. Password spray methodology for targets with discoverable login endpoints and permissive program policies.
-- **`triage-validator`** — 7-Question Gate + kill signals. Run before writing any report.
-- **`web2-recon`** — Recon sub-pipeline (subdomain enum → HTTP probing → tech detect).
-
-### When the orchestrator gets it wrong
-
-Across 30+ Phase 2 verification tests in this repo, the orchestrator correctly auto-triggered the matching skill in every test — zero misfires. If on a future target the orchestrator misroutes (loads the wrong hunt-* for the topic), the cause is almost always the `description:` frontmatter field on the target skill: a missing keyword that would have matched the user's intent. Fix forward by editing that skill's frontmatter `description:` field to include the missing trigger word. Don't add another layer of dispatch logic; tighten the description.
-- **`bb-local-toolkit`** — When you need to know which local clone has the tool for a given task. Workflow primitive: this skill is general bug-bounty guidance; `bb-local-toolkit` answers the specific "where is <tool> installed on this machine?" question.
+- **`bug-bounty`** — When the user wants general bug-bounty guidance rather than tool location. Workflow primitive: `bug-bounty` is the orchestrator and routes to topic-matched hunt-* skills; this skill (`bb-local-toolkit`) answers "where is the tool / wordlist / clone on disk for that hunt?"
+- **`web2-recon`** — When recon needs to be run via specific tool invocations. Workflow primitive: this skill names the local install path (e.g., `~/tools/SecretFinder/.venv/bin/activate`); `web2-recon` is the pipeline that strings those tool paths together.
+- **`offensive-osint`** — When the operational arsenal (probes, regexes, wordlists) needs a tool to execute it. Workflow primitive: `offensive-osint` provides the regex / probe; this skill provides the local tool clone that runs it.
+- **`security-arsenal`** — When the payload library needs a tool to fire payloads at scale. Workflow primitive: `security-arsenal` is the payload syntax; this skill names the ffuf / ghauri install that delivers them.
+- **`bb-methodology`** — When Phase 4 (Recon) or Phase 6 (Hunt) needs tooling routed. Workflow primitive: `bb-methodology`'s "Tool Routing by Phase" table is general; this skill resolves the abstract tool names to concrete local paths.

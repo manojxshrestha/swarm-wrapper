@@ -67,7 +67,7 @@ The core methodology engine. 88 tools organized into:
 
 ### 2. OpenCode Agents (118)
 
-Agents auto-load when you describe what you're testing. Each is a flat `.md` file at `.opencode/agents/<name>.md` with YAML frontmatter and markdown body.
+Agents auto-load when you describe what you're testing. Each is a flat `.md` file at `.swarm/agents/<name>.md` with YAML frontmatter and markdown body.
 
 | Domain | Count | Agent names |
 |--------|-------|-------------|
@@ -85,7 +85,7 @@ Agents auto-load when you describe what you're testing. Each is a flat `.md` fil
 
 ### 3. Commands (14)
 
-Slash commands in `.opencode/commands/` that route to specific agents:
+Slash commands in `.swarm/commands/` that route to specific agents:
 
 | Command | Routes to | Purpose |
 |---------|-----------|---------|
@@ -127,7 +127,7 @@ Supplementary wordlists for recon and fuzzing: API endpoints, common paths, para
 
 ### 6. Skills Reference (`skills/`)
 
-Reference copies of all agent SKILL.md files (102 total). The active versions are in `.opencode/agents/`.
+Reference copies of all agent SKILL.md files (102 total). The active versions are in `.swarm/agents/`.
 
 ### 7. MCP Configuration (`.mcp.json`)
 

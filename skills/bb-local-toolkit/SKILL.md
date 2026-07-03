@@ -1486,7 +1486,7 @@ When payout is being downgraded, use these counters:
 To use this as an OpenCode agent, copy this file to your agents directory:
 
 ```bash
-cp SKILL.md .opencode/agents/bb-local-toolkit/SKILL.md
+cp SKILL.md .swarm/agents/bb-local-toolkit/SKILL.md
 ```
 
 Then in OpenCode, this agent loads automatically when you ask about bug bounty, recon, or vulnerability hunting.

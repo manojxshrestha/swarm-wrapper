@@ -107,6 +107,6 @@ If research found new techniques or payloads:
 
 ## Related
 
-- `.opencode/agents/search.md` — Agent with 4-tier research priority
+- `.swarm/agents/search.md` — Agent with 4-tier research priority
 - `scripts/tools/phase-search.sh` — Pipeline script (researches gaps from SQLite DB)
 - `server/server_data.py:822` — PHASE_NAMES entry

@@ -69,8 +69,8 @@ Highlights:
 
 ```bash
 # Local OpenCode install
-cp SKILL.md .opencode/agents/offensive-osint/SKILL.md
-cp scripts/secret_scan.py .opencode/agents/offensive-osint/scripts/secret_scan.py
+cp SKILL.md .swarm/agents/offensive-osint/SKILL.md
+cp scripts/secret_scan.py .swarm/agents/offensive-osint/scripts/secret_scan.py
 ```
 
 The full content lives in this `SKILL.md` (or in `docs/full-skills/offensive-osint.SKILL.full.md` if this file is the structured-outline variant).

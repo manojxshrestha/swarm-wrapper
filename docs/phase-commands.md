@@ -6,7 +6,7 @@ Base paths:
 - **Phase scripts**: `$SWARM_HOME/scripts/tools/phase-<name>.sh`
 - **Sub-tool scripts**: `$SWARM_HOME/scripts/tools/<tool>.sh`
 - **Supporting scripts**: `$SWARM_HOME/scripts/<script>.sh`
-- **Agents**: `$SWARM_HOME/.opencode/agents/<agent>.md`
+- **Agents**: `$SWARM_HOME/.swarm/agents/<agent>.md`
 - **Docs**: `$SWARM_HOME/docs/phases/<name>.md`
 - **Output**: `$RECON_BASE/<domain>` (default: `$SWARM_HOME/engagements/recon/<domain>`)
 
@@ -56,7 +56,7 @@ Creates engagement directory tree (`scope/`, `intel/`, `recon/`, `crawl/`, `subd
 ## Phase 1: Scope
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-scope.sh`
-**Agent:** `@scope` — `$SWARM_HOME/.opencode/agents/scope.md`
+**Agent:** `@scope` — `$SWARM_HOME/.swarm/agents/scope.md`
 **Doc:** `$SWARM_HOME/docs/phases/scope.md`
 
 ### Sub-tool scripts called
@@ -89,7 +89,7 @@ phase_gate_check(engagement_id, phase_completed=0)
 ## Phase 2: Auth
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-auth.sh`
-**Agent:** `@auth` — `$SWARM_HOME/.opencode/agents/auth.md`
+**Agent:** `@auth` — `$SWARM_HOME/.swarm/agents/auth.md`
 **Doc:** `$SWARM_HOME/docs/phases/auth.md`
 
 ### Sub-tool scripts called
@@ -146,7 +146,7 @@ nohup bash -c "python3 '<phase-script-dir>/auto_auth.py' '$TARGET' --output-dir 
 ## Phase 3: Intel
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-intel.sh`
-**Agent:** `@pintel` — `$SWARM_HOME/.opencode/agents/pintel.md`
+**Agent:** `@pintel` — `$SWARM_HOME/.swarm/agents/pintel.md`
 **Doc:** `$SWARM_HOME/docs/phases/pintel.md`
 
 ### Sub-tool scripts called
@@ -233,7 +233,7 @@ PYTHONWARNINGS=ignore python3 "$HOME/.local/bin/cloud_enum/cloud_enum.py" \
 ## Phase 3b: OSINT (standalone)
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-osint.sh`
-**Agent:** `@osint` — `$SWARM_HOME/.opencode/agents/osint.md`
+**Agent:** `@osint` — `$SWARM_HOME/.swarm/agents/osint.md`
 **Doc:** `$SWARM_HOME/docs/phases/osint.md`
 
 ### Sub-tool scripts called
@@ -257,7 +257,7 @@ Runs theHarvester with two source sets:
 ## Phase 4: Recon
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-recon.sh`
-**Agent:** `@recon` — `$SWARM_HOME/.opencode/agents/recon.md`
+**Agent:** `@recon` — `$SWARM_HOME/.swarm/agents/recon.md`
 **Doc:** `$SWARM_HOME/docs/phases/recon.md`
 
 ### Sub-tool scripts called (all via `nohup` in parallel)
@@ -365,7 +365,7 @@ nohup bash -c "bash '<phase-script-dir>/<script>.sh' '$TARGET'" > "<logfile>" 2>
 ## Phase 5: Surface
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-surface.sh`
-**Agent:** `@surface` — `$SWARM_HOME/.opencode/agents/surface.md`
+**Agent:** `@surface` — `$SWARM_HOME/.swarm/agents/surface.md`
 **Doc:** `$SWARM_HOME/docs/phases/surface.md`
 
 ### Sub-tool scripts called
@@ -398,7 +398,7 @@ Collects all URLs from 7 recon sources, deduplicates, classifies into Tier 0 (pu
 ## Phase 6: Hunt
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-hunt.sh`
-**Agent:** `@hunt` — `$SWARM_HOME/.opencode/agents/hunt.md`
+**Agent:** `@hunt` — `$SWARM_HOME/.swarm/agents/hunt.md`
 **Sub-agents:** 56 `@hunt-*` agents + `@hunt-dispatch`
 **Doc:** `$SWARM_HOME/docs/phases/hunt.md`
 
@@ -526,7 +526,7 @@ phase_gate_check(engagement_id, phase_completed=6)
 ## Phase 7: Deepthink
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-deepthink.sh`
-**Agent:** `@deepthink` — `$SWARM_HOME/.opencode/agents/deepthink.md`
+**Agent:** `@deepthink` — `$SWARM_HOME/.swarm/agents/deepthink.md`
 **Doc:** `$SWARM_HOME/docs/phases/deepthink.md`
 
 ### Sub-tool scripts called
@@ -565,7 +565,7 @@ Conditional phase — only runs when HUNT yields zero findings or tools fail. Qu
 ## Phase 8: Exploit
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-exploit.sh`
-**Agent:** `@exploit` — `$SWARM_HOME/.opencode/agents/exploit.md`
+**Agent:** `@exploit` — `$SWARM_HOME/.swarm/agents/exploit.md`
 **Doc:** `$SWARM_HOME/docs/phases/exploit.md`
 
 ### Sub-tool scripts called
@@ -610,7 +610,7 @@ phase_gate_check(engagement_id, phase_completed=8)
 ## Phase 9: Search
 
 **Script:** `$SWARM_HOME/scripts/tools/phase-search.sh`
-**Agent:** `@search` — `$SWARM_HOME/.opencode/agents/search.md`
+**Agent:** `@search` — `$SWARM_HOME/.swarm/agents/search.md`
 **Doc:** `$SWARM_HOME/docs/phases/search.md`
 
 ### Sub-tool scripts called

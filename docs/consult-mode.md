@@ -88,5 +88,5 @@ Phase 12 (REPORT)     → suggest next → ask user → advance on approval
 
 - Pipeline: `docs/pipeline.md`
 - Phase methodology: `docs/phases/`
-- Command: `.opencode/commands/consult.md`
-- Agent: `.opencode/agents/consult.md`
+- Command: `.swarm/commands/consult.md`
+- Agent: `.swarm/agents/consult.md`

@@ -4,7 +4,7 @@
     <img src="gif/swarm.gif" alt="Swarm" width="600">
   </a>
   <br>
-  Swarm
+  Swarm-Wrapper
   <br>
 </h1>
 
@@ -314,7 +314,7 @@ Swarm agents are flat `.md` files invoked via `@agent-name`. **18 pipeline agent
 
 ```
 swarm/
-├── .opencode/
+├── .swarm/
 │   ├── agents/                    # 118 flat .md OpenCode agents
 │   │   ├── autopilot.md               # fully autonomous Phase1–Phase12 pipeline
 │   │   ├── scope.md                   # engagement scaffold/program rules

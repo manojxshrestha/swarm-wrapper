@@ -13,7 +13,7 @@ Phases:
     6 = WAF Bypass & Evasion (15)
     all = all of the above
 
-Output: .opencode/agents/<agent-dir>/SKILL.md
+Output: .swarm/agents/<agent-dir>/SKILL.md
 """
 
 import re
@@ -24,7 +24,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent.parent
 HOME = Path.home()
 BH_SKILLS = SCRIPT_DIR / "skills"
-AGENTS_DIR = SCRIPT_DIR / ".opencode/agents"
+AGENTS_DIR = SCRIPT_DIR / ".swarm/agents"
 
 # ── Phase 1: Core Web Hunters ───────────────────────────────────────────────
 PHASE_1 = {

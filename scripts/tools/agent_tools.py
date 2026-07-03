@@ -17,8 +17,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-AGENTS_DIR = REPO_ROOT / ".opencode" / "agents"
-COMMANDS_DIR = REPO_ROOT / ".opencode" / "commands"
+AGENTS_DIR = REPO_ROOT / ".swarm" / "agents"
+COMMANDS_DIR = REPO_ROOT / ".swarm" / "commands"
 SERVER_PY = REPO_ROOT / "server" / "server.py"
 INDEX_JSON = REPO_ROOT / "index.json"
 

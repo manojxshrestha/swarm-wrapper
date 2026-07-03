@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Agent/skill usage report (Phase 3) — surface candidates for pruning.
 
-Cross-references every agent file (.opencode/agents/*.md) and skill
+Cross-references every agent file (.swarm/agents/*.md) and skill
 (skills/*/SKILL.md) against what actually got used: agents referenced in the
 findings DB (vulns.tool_used / test_id) and in session_log.agent.
 
@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def list_agents() -> set[str]:
-    return {p.stem for p in (ROOT / ".opencode" / "agents").glob("*.md")}
+    return {p.stem for p in (ROOT / ".swarm" / "agents").glob("*.md")}
 
 
 def list_skills() -> set[str]:

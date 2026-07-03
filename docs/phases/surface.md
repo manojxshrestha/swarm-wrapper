@@ -165,12 +165,12 @@ Passes when:
 
 | Command | Location | Purpose |
 |---------|----------|---------|
-| `/surface` | `.opencode/commands/surface.md` | Interactive surface ranking via `recon-ranker` subagent — bypasses agent pipeline |
-| `/surface` (bughunt) | `.opencode/commands-bughunt/surface.md` | Duplicate — identical to `commands/surface.md` |
+| `/surface` | `.swarm/commands/surface.md` | Interactive surface ranking via `recon-ranker` subagent — bypasses agent pipeline |
+| `/surface` (bughunt) | `.swarm/commands-bughunt/surface.md` | Duplicate — identical to `commands/surface.md` |
 
 ## Reference
 
-- Agent: `.opencode/agents/surface.md`
+- Agent: `.swarm/agents/surface.md`
 - Pipeline doc: `docs/pipeline.md` (Phase 5 section)
 - Scoring engine: `server/endpoint_priority.py:64-164`
 - Bug report: documented per program guidelines

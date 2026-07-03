@@ -466,7 +466,7 @@ If Phase 6 produces zero confirmed findings, switch modes:
 - Research disclosed reports for similar tech stacks
 - Load 3+ additional `hunt-*` skills relevant to observed tech stack
 
-**Trigger:** Only when HUNT output is empty or blocked. See `.opencode/agents/deepthink.md`.
+**Trigger:** Only when HUNT output is empty or blocked. See `.swarm/agents/deepthink.md`.
 
 ---
 
@@ -535,7 +535,7 @@ What did you find?
 - HackerOne disclosed reports for similar tech stacks
 - OWASP cheat sheets for current attack patterns
 
-See `.opencode/agents/search.md`.
+See `.swarm/agents/search.md`.
 
 ---
 

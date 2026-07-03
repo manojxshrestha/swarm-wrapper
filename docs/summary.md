@@ -49,7 +49,7 @@ Layer 4: Validation + Reporting      — how to ship it (7-Question Gate, VRT, r
 │   ├── tool_parsers.py         CLI tool output parsers
 │   ├── tool_verification.py    Tool output quality verification
 │   └── data/                   WSTG test cases, technique guides
-├── .opencode/
+├── .swarm/
 │   ├── agents/                 118 agent definition files
 │   ├── commands-bughunt/       7 CLI entry points
 │   └── rules/                  Agent permission rules

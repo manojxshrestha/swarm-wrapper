@@ -66,6 +66,6 @@ Full 12-phase autonomous pipeline — no approval stops. Runs end-to-end: scope 
 
 - Pipeline: `docs/pipeline.md`
 - Phase methodology: `docs/phases/`
-- Command: `.opencode/commands/autopilot.md`
-- Agent: `.opencode/agents/autopilot.md`
+- Command: `.swarm/commands/autopilot.md`
+- Agent: `.swarm/agents/autopilot.md`
 - CLI: `bughunt autopilot [target]` — same pipeline from terminal

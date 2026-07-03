@@ -104,12 +104,12 @@ if ! command -v uv &>/dev/null; then
 fi
 
 # Install OpenCode if missing
-OPENCODE_BIN="$HOME/.opencode/bin/opencode"
+OPENCODE_BIN="$HOME/.swarm/bin/opencode"
 if command -v opencode &>/dev/null; then
   ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
 elif [ -x "$OPENCODE_BIN" ]; then
   info "OpenCode found at $OPENCODE_BIN — adding to PATH"
-  export PATH="$HOME/.opencode/bin:$PATH"
+  export PATH="$HOME/.swarm/bin:$PATH"
   ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
 else
   info "OpenCode not found — installing..."
@@ -118,7 +118,7 @@ else
     *zsh*)  source ~/.zshrc 2>/dev/null || true ;;
     *bash*) source ~/.bashrc 2>/dev/null || true ;;
   esac
-  export PATH="$HOME/.opencode/bin:$PATH"
+  export PATH="$HOME/.swarm/bin:$PATH"
   ok "OpenCode installed"
 fi
 
@@ -527,49 +527,49 @@ header "PHASE 8: OpenCode agents & rules"
 
 OC_AGENTS_DIR="$HOME/.config/opencode/agents"
 OC_RULES_DIR="$HOME/.config/opencode/rules"
-OC_HOME_AGENTS="$HOME/.opencode/agents"
-OC_HOME_RULES="$HOME/.opencode/rules"
+OC_HOME_AGENTS="$HOME/.swarm/agents"
+OC_HOME_RULES="$HOME/.swarm/rules"
 
 mkdir -p "$OC_AGENTS_DIR" "$OC_RULES_DIR" "$OC_HOME_AGENTS" "$OC_HOME_RULES"
 
-# Agents (.opencode/agents/*.md)
-if [ -d "$REPO_DIR/.opencode/agents" ]; then
-  for agent_file in "$REPO_DIR/.opencode/agents"/*.md; do
+# Agents (.swarm/agents/*.md)
+if [ -d "$REPO_DIR/.swarm/agents" ]; then
+  for agent_file in "$REPO_DIR/.swarm/agents"/*.md; do
     [ -f "$agent_file" ] || continue
     agent_name="$(basename "$agent_file")"
     # Symlink to ~/.config/opencode/agents/
     ln -sf "$agent_file" "$OC_AGENTS_DIR/$agent_name"
-    # Also to legacy ~/.opencode/agents/
+    # Also to legacy ~/.swarm/agents/
     ln -sf "$agent_file" "$OC_HOME_AGENTS/$agent_name"
   done
-  ok "Agents linked ($(ls "$REPO_DIR/.opencode/agents"/*.md 2>/dev/null | wc -l) files)"
+  ok "Agents linked ($(ls "$REPO_DIR/.swarm/agents"/*.md 2>/dev/null | wc -l) files)"
 fi
 
-# Rules (.opencode/rules/*.md)
-if [ -d "$REPO_DIR/.opencode/rules" ]; then
-  for rule_file in "$REPO_DIR/.opencode/rules"/*.md; do
+# Rules (.swarm/rules/*.md)
+if [ -d "$REPO_DIR/.swarm/rules" ]; then
+  for rule_file in "$REPO_DIR/.swarm/rules"/*.md; do
     [ -f "$rule_file" ] || continue
     rule_name="$(basename "$rule_file")"
     ln -sf "$rule_file" "$OC_RULES_DIR/$rule_name"
     ln -sf "$rule_file" "$OC_HOME_RULES/$rule_name"
   done
-  ok "Rules linked ($(ls "$REPO_DIR/.opencode/rules"/*.md 2>/dev/null | wc -l) files)"
+  ok "Rules linked ($(ls "$REPO_DIR/.swarm/rules"/*.md 2>/dev/null | wc -l) files)"
 fi
 
-# Commands (.opencode/commands-bughunt/*.md) → ~/.config/opencode/commands/
+# Commands (.swarm/commands-bughunt/*.md) → ~/.config/opencode/commands/
 OC_COMMANDS_DIR="$HOME/.config/opencode/commands"
-PROJECT_CMD_DIR="$REPO_DIR/.opencode/commands"
-HOME_CMD_DIR="$HOME/.opencode/commands"
+PROJECT_CMD_DIR="$REPO_DIR/.swarm/commands"
+HOME_CMD_DIR="$HOME/.swarm/commands"
 mkdir -p "$OC_COMMANDS_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
-if [ -d "$REPO_DIR/.opencode/commands-bughunt" ]; then
-  for cmd_file in "$REPO_DIR/.opencode/commands-bughunt"/*.md; do
+if [ -d "$REPO_DIR/.swarm/commands-bughunt" ]; then
+  for cmd_file in "$REPO_DIR/.swarm/commands-bughunt"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
     cp "$cmd_file" "$OC_COMMANDS_DIR/$cmd_name"
     cp "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
     cp "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
   done
-  ok "Commands installed ($(ls "$REPO_DIR/.opencode/commands-bughunt"/*.md 2>/dev/null | wc -l) files)"
+  ok "Commands installed ($(ls "$REPO_DIR/.swarm/commands-bughunt"/*.md 2>/dev/null | wc -l) files)"
 fi
 
 # Skills symlink (for manual browsing)
@@ -701,7 +701,7 @@ SWARM_MARKER="# --- Swarm config ---"
 ALIASES="
 $SWARM_MARKER
 export SWARM_HOME=\"$REPO_DIR\"
-export PATH="\$HOME/.opencode/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
+export PATH="\$HOME/.swarm/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
 alias swarm='cd \$SWARM_HOME'
 alias swarm-server='cd \$SWARM_HOME/server && UV_PROJECT_ENVIRONMENT=venv uv run server.py'
 alias swarm-browser-use='\$SWARM_HOME/server/venv/bin/python \$SWARM_HOME/server/browser_use_backend.py'

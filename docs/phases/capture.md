@@ -84,5 +84,5 @@ Never leave open pages. They accumulate memory and break subsequent phases.
 
 ## Related
 
-- `.opencode/agents/capture.md` — Agent for evidence collection
+- `.swarm/agents/capture.md` — Agent for evidence collection
 - `scripts/tools/phase-capture.sh` — Pipeline script with dual-signature support (positional and `--engagement-id`)

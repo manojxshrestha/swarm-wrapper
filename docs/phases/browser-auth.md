@@ -197,9 +197,9 @@ Saved to `engagements/<eid>/runtime/<eid>/`:
 |------|------|
 | `skills/browser-auth/SKILL.md` | Full browser auth methodology |
 | `prompts/browser-auth.md` | Subagent prompt |
-| `.opencode/agents/browser-auth.md` | Agent orchestration |
+| `.swarm/agents/browser-auth.md` | Agent orchestration |
 | `skills/analyze/SKILL.md` | Pre-auth page analysis methodology |
-| `.opencode/agents/analyze.md` | Read-only page analysis agent |
+| `.swarm/agents/analyze.md` | Read-only page analysis agent |
 | `docs/phases/auth.md` | Phase 2 (AUTH) — API-level auth + WAF detection |
 | `docs/browser-flow.md` | Browser tools technical reference |
 | `scripts/tools/auto_auth.py` | Autonomous browser auth pipeline |

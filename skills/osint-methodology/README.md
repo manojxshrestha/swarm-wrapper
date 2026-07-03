@@ -49,7 +49,7 @@ Highlights:
 
 ```bash
 # Local OpenCode install
-cp SKILL.md .opencode/agents/osint-methodology/SKILL.md
+cp SKILL.md .swarm/agents/osint-methodology/SKILL.md
 
 # Or attach to a Claude.ai project / Claude API system prompt
 # (paste contents of SKILL.md as project knowledge)

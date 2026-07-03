@@ -754,7 +754,7 @@ From `hunt-dispatch.md` — applies to all dispatched agents:
 
 ## Related Files
 
-### Agent files (in `.opencode/agents/`)
+### Agent files (in `.swarm/agents/`)
 - `hunt.md` — Main hunt orchestrator agent
 - `hunt-dispatch.md` — 4-tier dispatch engine
 - `hunt-{class}.md` — 57 total hunt agents (56 per-class + `hunt-dispatch` dispatcher)

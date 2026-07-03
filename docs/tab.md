@@ -16,20 +16,20 @@ If no `mode` is specified, OpenCode defaults to `all`.
 
 | Agent | File | Change |
 |-------|------|--------|
-| scope | `.opencode/agents/scope.md` | `subagent` → `all` |
-| auth | `.opencode/agents/auth.md` | **Created** with `mode: all` |
-| osint | `.opencode/agents/osint.md` | **Created** with `mode: all` |
-| recon | `.opencode/agents/recon.md` | `subagent` → `all` |
-| surface | `.opencode/agents/surface.md` | `subagent` → `all` |
-| hunt | `.opencode/agents/hunt.md` | `subagent` → `all` |
-| deepthink | `.opencode/agents/deepthink.md` | `subagent` → `all` |
-| exploit | `.opencode/agents/exploit.md` | `subagent` → `all` |
-| search | `.opencode/agents/search.md` | `subagent` → `all` |
-| capture | `.opencode/agents/capture.md` | `subagent` → `all` |
-| validate | `.opencode/agents/validate.md` | `subagent` → `all` |
-| report | `.opencode/agents/report.md` | `subagent` → `all` |
-| autopilot | `.opencode/agents/autopilot.md` | `subagent` → `all` |
-| consult | `.opencode/agents/consult.md` | `subagent` → `all` |
+| scope | `.swarm/agents/scope.md` | `subagent` → `all` |
+| auth | `.swarm/agents/auth.md` | **Created** with `mode: all` |
+| osint | `.swarm/agents/osint.md` | **Created** with `mode: all` |
+| recon | `.swarm/agents/recon.md` | `subagent` → `all` |
+| surface | `.swarm/agents/surface.md` | `subagent` → `all` |
+| hunt | `.swarm/agents/hunt.md` | `subagent` → `all` |
+| deepthink | `.swarm/agents/deepthink.md` | `subagent` → `all` |
+| exploit | `.swarm/agents/exploit.md` | `subagent` → `all` |
+| search | `.swarm/agents/search.md` | `subagent` → `all` |
+| capture | `.swarm/agents/capture.md` | `subagent` → `all` |
+| validate | `.swarm/agents/validate.md` | `subagent` → `all` |
+| report | `.swarm/agents/report.md` | `subagent` → `all` |
+| autopilot | `.swarm/agents/autopilot.md` | `subagent` → `all` |
+| consult | `.swarm/agents/consult.md` | `subagent` → `all` |
 
 ## How Tab Works
 

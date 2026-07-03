@@ -82,17 +82,17 @@ if ! command -v uv &>/dev/null; then
 fi
 
 # Install OpenCode if missing
-OPENCODE_BIN="$HOME/.opencode/bin/opencode"
+OPENCODE_BIN="$HOME/.swarm/bin/opencode"
 if command -v opencode &>/dev/null; then
   ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
 elif [ -x "$OPENCODE_BIN" ]; then
   info "OpenCode found at $OPENCODE_BIN — adding to PATH"
-  export PATH="$HOME/.opencode/bin:$PATH"
+  export PATH="$HOME/.swarm/bin:$PATH"
   ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
 else
   info "OpenCode not found — installing..."
   curl -fsSL https://opencode.ai/install | bash >/dev/null 2>&1
-  export PATH="$HOME/.opencode/bin:$PATH"
+  export PATH="$HOME/.swarm/bin:$PATH"
   ok "OpenCode installed"
 fi
 
@@ -210,8 +210,8 @@ OC_AGENTS_DIR="$HOME/.config/opencode/agents"
 mkdir -p "$OC_AGENTS_DIR" "$HOME/.config/opencode/rules"
 
 # Agents (flat .md files)
-if [ -d "$DST/.opencode/agents" ]; then
-  for agent_file in "$DST/.opencode/agents"/*.md; do
+if [ -d "$DST/.swarm/agents" ]; then
+  for agent_file in "$DST/.swarm/agents"/*.md; do
     [ -f "$agent_file" ] || continue
     agent_name="$(basename "$agent_file")"
     target="$OC_AGENTS_DIR/$agent_name"
@@ -225,10 +225,10 @@ if [ -d "$DST/.opencode/agents" ]; then
 fi
 
 # Legacy home-level agent links
-OC_HOME_AGENTS="$HOME/.opencode/agents"
+OC_HOME_AGENTS="$HOME/.swarm/agents"
 mkdir -p "$OC_HOME_AGENTS"
-if [ -d "$DST/.opencode/agents" ]; then
-  for agent_file in "$DST/.opencode/agents"/*.md; do
+if [ -d "$DST/.swarm/agents" ]; then
+  for agent_file in "$DST/.swarm/agents"/*.md; do
     [ -f "$agent_file" ] || continue
     agent_name="$(basename "$agent_file")"
     target="$OC_HOME_AGENTS/$agent_name"
@@ -237,8 +237,8 @@ if [ -d "$DST/.opencode/agents" ]; then
 fi
 
 # Rules
-if [ -d "$DST/.opencode/rules" ]; then
-  for rule_file in "$DST/.opencode/rules"/*.md; do
+if [ -d "$DST/.swarm/rules" ]; then
+  for rule_file in "$DST/.swarm/rules"/*.md; do
     [ -f "$rule_file" ] || continue
     rule_name="$(basename "$rule_file")"
     target="$HOME/.config/opencode/rules/$rule_name"
@@ -247,13 +247,13 @@ if [ -d "$DST/.opencode/rules" ]; then
   done
 fi
 
-# Commands (.opencode/commands-bughunt/*.md) → all 3 locations
-if [ -d "$DST/.opencode/commands-bughunt" ]; then
+# Commands (.swarm/commands-bughunt/*.md) → all 3 locations
+if [ -d "$DST/.swarm/commands-bughunt" ]; then
   OC_CMD_DIR="$HOME/.config/opencode/commands"
-  PROJECT_CMD_DIR="$DST/.opencode/commands"
-  HOME_CMD_DIR="$HOME/.opencode/commands"
+  PROJECT_CMD_DIR="$DST/.swarm/commands"
+  HOME_CMD_DIR="$HOME/.swarm/commands"
   mkdir -p "$OC_CMD_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
-  for cmd_file in "$DST/.opencode/commands-bughunt"/*.md; do
+  for cmd_file in "$DST/.swarm/commands-bughunt"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
     cp "$cmd_file" "$OC_CMD_DIR/$cmd_name"
@@ -305,7 +305,7 @@ SWARM_CONFIG_MARKER="# --- Swarm config ---"
 ALIASES="
 $SWARM_CONFIG_MARKER
 export SWARM_HOME=\"$DST\"
-export PATH="\$HOME/.opencode/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
+export PATH="\$HOME/.swarm/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
 alias swarm='cd \$SWARM_HOME'
 alias swarm-server='cd \$SWARM_HOME/server && UV_PROJECT_ENVIRONMENT=venv uv run server.py'
 alias swarm-browser-use='\$SWARM_HOME/server/venv/bin/python \$SWARM_HOME/server/browser_use_backend.py'

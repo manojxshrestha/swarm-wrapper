@@ -238,16 +238,16 @@ router_v2 = APIRouter(prefix="/api/v2", dependencies=[Depends(auth_check)])
 ## See Also
 
 - `agents/registry.yaml` — All hunt agent registrations
-- `.opencode/agents/hunt-api-misconfig.md` — API misconfig agent
-- `.opencode/agents/hunt-graphql.md` — GraphQL testing agent
-- `.opencode/agents/hunt-grpc.md` — gRPC API security agent
-- `.opencode/agents/hunt-soap.md` — SOAP/XML testing agent
-- `.opencode/agents/hunt-idor.md` — IDOR/BOLA agent
-- `.opencode/agents/hunt-brute-force.md` — Rate limiting/brute force agent
-- `.opencode/agents/hunt-http-param-pollution.md` — HPP agent
-- `.opencode/agents/hunt-cors.md` — CORS misconfiguration agent
-- `.opencode/agents/hunt-csrf.md` — CSRF agent
-- `.opencode/agents/hunt-websocket.md` — WebSocket security agent
-- `.opencode/agents/hunt-mass-assignment.md` — Mass assignment agent
+- `.swarm/agents/hunt-api-misconfig.md` — API misconfig agent
+- `.swarm/agents/hunt-graphql.md` — GraphQL testing agent
+- `.swarm/agents/hunt-grpc.md` — gRPC API security agent
+- `.swarm/agents/hunt-soap.md` — SOAP/XML testing agent
+- `.swarm/agents/hunt-idor.md` — IDOR/BOLA agent
+- `.swarm/agents/hunt-brute-force.md` — Rate limiting/brute force agent
+- `.swarm/agents/hunt-http-param-pollution.md` — HPP agent
+- `.swarm/agents/hunt-cors.md` — CORS misconfiguration agent
+- `.swarm/agents/hunt-csrf.md` — CSRF agent
+- `.swarm/agents/hunt-websocket.md` — WebSocket security agent
+- `.swarm/agents/hunt-mass-assignment.md` — Mass assignment agent
 - `docs/pipeline.md` — Phase 6 (hunt) pipeline flow
 - `docs/summary.md` — Anchored session summary

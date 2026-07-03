@@ -127,7 +127,7 @@ nohup bash -c "python3 'auto_auth.py' '$TARGET' --output-dir '$OUT_DIR'" > auto_
 **References:**
 - `docs/phases/browser-auth.md` — Phase 2b methodology
 - `skills/browser-auth/SKILL.md` — Full browser auth methodology
-- `.opencode/agents/browser-auth.md` — Agent orchestration prompt
+- `.swarm/agents/browser-auth.md` — Agent orchestration prompt
 - `prompts/browser-auth.md` — Subagent prompt
 
 ---

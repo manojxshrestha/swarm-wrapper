@@ -15,7 +15,7 @@ configs/*.yaml
 
 # Dependencies
 node_modules/
-.opencode/node_modules/
+.swarm/node_modules/
 venv/
 .venv/
 browser-use-env/
