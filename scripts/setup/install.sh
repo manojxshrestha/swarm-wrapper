@@ -702,10 +702,6 @@ ALIASES="
 $SWARM_MARKER
 export SWARM_HOME=\"$REPO_DIR\"
 export PATH="\$HOME/.swarm/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
-alias swarm='cd \$SWARM_HOME'
-alias swarm-server='cd \$SWARM_HOME/server && UV_PROJECT_ENVIRONMENT=venv uv run server.py'
-alias swarm-browser-use='\$SWARM_HOME/server/venv/bin/python \$SWARM_HOME/server/browser_use_backend.py'
-alias swarm-update='cd \$SWARM_HOME && git pull'
 alias swarm-recon='bash \$SWARM_HOME/scripts/tools/auto_recon.sh'
 alias connect-burp='bash \$SWARM_HOME/scripts/connect-burp.sh'
 # full-hunt removed — legacy auto-scan script. Use AI-driven pipeline instead.

@@ -236,13 +236,15 @@ if [ -d "$DST/.swarm/agents" ]; then
   done
 fi
 
-# Rules
+# Rules → opencode and swarm
+SWARM_RULES_DIR="$HOME/.swarm/rules"
+mkdir -p "$SWARM_RULES_DIR" "$HOME/.config/opencode/rules"
 if [ -d "$DST/.swarm/rules" ]; then
   for rule_file in "$DST/.swarm/rules"/*.md; do
     [ -f "$rule_file" ] || continue
     rule_name="$(basename "$rule_file")"
-    target="$HOME/.config/opencode/rules/$rule_name"
-    ln -sf "$rule_file" "$target"
+    ln -sf "$rule_file" "$HOME/.config/opencode/rules/$rule_name"
+    ln -sf "$rule_file" "$SWARM_RULES_DIR/$rule_name"
     ok "Rule $rule_name — linked"
   done
 fi
@@ -305,11 +307,7 @@ SWARM_CONFIG_MARKER="# --- Swarm config ---"
 ALIASES="
 $SWARM_CONFIG_MARKER
 export SWARM_HOME=\"$DST\"
-export PATH="\$HOME/.swarm/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH"
-alias swarm='cd \$SWARM_HOME'
-alias swarm-server='cd \$SWARM_HOME/server && UV_PROJECT_ENVIRONMENT=venv uv run server.py'
-alias swarm-browser-use='\$SWARM_HOME/server/venv/bin/python \$SWARM_HOME/server/browser_use_backend.py'
-alias swarm-update='cd \$SWARM_HOME && git pull'
+export PATH=\"\$HOME/.swarm/bin:\$HOME/go/bin:\$HOME/.local/bin:\$PATH\"
 alias swarm-recon='bash \$SWARM_HOME/scripts/tools/auto_recon.sh'
 alias connect-burp='bash \$SWARM_HOME/scripts/connect-burp.sh'
 # full-hunt removed — legacy auto-scan script. Use AI-driven pipeline instead.
