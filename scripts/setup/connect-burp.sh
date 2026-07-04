@@ -5,13 +5,24 @@
 #   WSL2        → Deploys burp_proxy.py on Windows, bridges Burp MCP through 9872
 #   Native Linux → Connects directly to Burp MCP on 127.0.0.1:9876
 #
-# Always toggles OpenCode config + starts WSTG MCP server.
+# Always toggles Swarm config + starts WSTG MCP server.
 #
 # Usage: bash scripts/connect-burp.sh
 # ═══════════════════════════════════════════════════════════════════════════════
 
 DST="$(cd "$(dirname "$0")/../.." && pwd)"
-CONFIG="$HOME/.config/opencode/opencode.json"
+# Try to find Swarm project (look for swarm CLI binary)
+SWARM_DIR="${SWARM_DIR:-}"
+if [ -z "$SWARM_DIR" ]; then
+  for d in "$HOME/swarm" "/opt/swarm" "/usr/local/share/swarm"; do
+    [ -f "$d/swarm" ] && { SWARM_DIR="$d"; break; }
+  done
+fi
+if [ -z "$SWARM_DIR" ]; then
+  SWARM_DIR="$HOME/swarm"
+  warn "Swarm project not detected — using $SWARM_DIR"
+fi
+CONFIG="${SWARM_DIR}/.swarm/settings.local.json"
 
 # ── Platform detection ───────────────────────────────────────────────────────
 IS_WSL=false
@@ -19,32 +30,42 @@ if [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] || [ -n "${WSL_DISTRO_NAME:-}" ]; 
   IS_WSL=true
 fi
 
-# ── Toggle OpenCode config helper ────────────────────────────────────────────
-toggle_opencode_burp() {
+# ── Toggle Swarm .mcp.json helper ────────────────────────────────────────
+toggle_swarm_burp() {
   python3 <<PYEOF
 import json, os
 
-base = os.path.expanduser("~/.config/opencode")
-cp = os.path.join(base, "opencode.json")
-if not os.path.exists(cp):
-    cp = os.path.join(base, "opencode.jsonc")
-if not os.path.exists(cp):
-    print("[-] No OpenCode config found (opencode.json / opencode.jsonc)")
-    exit(0)
+dst = os.environ.get("DST", "")
+mcp_path = os.path.join(dst, ".mcp.json")
+bridge = os.environ.get("BRIDGE_SCRIPT", "")
 
-with open(cp) as f:
-    cfg = json.load(f)
-burp = cfg.get("mcp", {}).get("burp")
-if burp:
-    del cfg["mcp"]["burp"]
-    with open(cp, "w") as f:
-        json.dump(cfg, f, indent=2)
-    cfg["mcp"]["burp"] = burp
-    with open(cp, "w") as f:
-        json.dump(cfg, f, indent=2)
-    print("[+] Burp MCP entry toggled — restart OpenCode")
+# Read existing .mcp.json or start fresh
+if os.path.exists(mcp_path):
+    with open(mcp_path) as f:
+        cfg = json.load(f)
 else:
-    print("[-] No burp entry in MCP config")
+    cfg = {}
+
+burp = cfg.get("mcpServers", {}).get("burp")
+if burp:
+    # Toggle: remove and re-add to force a reconnect
+    del cfg["mcpServers"]["burp"]
+    with open(mcp_path, "w") as f:
+        json.dump(cfg, f, indent=2)
+    cfg.setdefault("mcpServers", {})["burp"] = burp
+    with open(mcp_path, "w") as f:
+        json.dump(cfg, f, indent=2)
+    print(f"[+] Burp MCP entry toggled in {mcp_path} — restart Swarm")
+else:
+    # Add burp entry
+    cfg.setdefault("mcpServers", {})["burp"] = {
+        "type": "stdio",
+        "command": "python3",
+        "args": [bridge]
+    }
+    with open(mcp_path, "w") as f:
+        json.dump(cfg, f, indent=2)
+    print(f"[+] Burp MCP entry added to {mcp_path}")
 PYEOF
 }
 
@@ -72,7 +93,7 @@ print_done() {
   echo -e "${BOLD}${G}╔══════════════════════════════════════╗${N}"
   echo -e "${BOLD}${G}║     Connection Complete                 ║${N}"
   echo -e "${BOLD}${G}╚══════════════════════════════════════╝${N}"
-  echo "  Restart OpenCode for changes to take effect."
+  echo "  Restart Swarm for changes to take effect."
   echo ""
 }
 
@@ -121,7 +142,7 @@ if ! $IS_WSL; then
     ok "Burp MCP is listening on 127.0.0.1:9876"
   fi
 
-  toggle_opencode_burp
+  DST="$DST" BRIDGE_SCRIPT="" toggle_swarm_burp
   start_wstg_server
   print_done
   exit 0
@@ -308,34 +329,9 @@ else
 fi
 rm -f /tmp/burp_sse_test.txt
 
-# ── Step 5: Toggle OpenCode config ────────────────────────────────────────────
-info "Toggling Burp MCP in OpenCode config..."
-python3 << PYEOF
-import json, os
-
-base = os.path.expanduser("~/.config/opencode")
-cp = os.path.join(base, "opencode.json")
-if not os.path.exists(cp):
-    cp = os.path.join(base, "opencode.jsonc")
-if not os.path.exists(cp):
-    print("[-] No OpenCode config found (opencode.json / opencode.jsonc)")
-    exit(0)
-
-with open(cp) as f:
-    cfg = json.load(f)
-
-burp = cfg.get("mcp", {}).get("burp")
-if burp:
-    del cfg["mcp"]["burp"]
-    with open(cp, "w") as f:
-        json.dump(cfg, f, indent=2)
-    cfg["mcp"]["burp"] = burp
-    with open(cp, "w") as f:
-        json.dump(cfg, f, indent=2)
-    print("[+] Burp MCP entry toggled — restart OpenCode")
-else:
-    print("[-] No burp entry in MCP config")
-PYEOF
+# ── Step 5: Toggle Swarm .mcp.json ─────────────────────────────────────────
+info "Adding Burp MCP to .mcp.json..."
+DST="$DST" BRIDGE_SCRIPT="$PROXY_SRC" toggle_swarm_burp
 
 # ── Step 6: Restart WSTG server ──────────────────────────────────────────────
 info "Starting Swarm WSTG MCP server (background)..."
@@ -354,6 +350,6 @@ echo -e "${BOLD}${G}╔═══════════════════
 echo -e "${BOLD}${G}║     Connection Complete                 ║${N}"
 echo -e "${BOLD}${G}╚══════════════════════════════════════╝${N}"
 echo ""
-echo "  Chain: OpenCode → burp-mcp-bridge → $WIN_IP:$WIN_PROXY_PORT → Burp MCP"
-echo "  Restart OpenCode for changes to take effect."
+echo "  Chain: Swarm → burp-mcp-bridge → $WIN_IP:$WIN_PROXY_PORT → Burp MCP"
+echo "  Restart Swarm for changes to take effect."
 echo ""

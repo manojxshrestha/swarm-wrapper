@@ -653,7 +653,6 @@ mcp["wstg"] = {
 
 # ── Write config ───────────────────────────────────────────────────────────
 config = {
-    "$schema": "https://opencode.ai/config.json",
     "mcp": mcp
 }
 

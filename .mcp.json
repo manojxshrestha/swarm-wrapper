@@ -2,11 +2,16 @@
   "mcpServers": {
     "wstg": {
       "command": "server/venv/bin/python3",
-      "args": ["server/server.py"]
+      "args": [
+        "server/server.py"
+      ]
     },
     "burp": {
       "command": "uv",
-      "args": ["run", "scripts/burp-mcp-bridge.py"],
+      "args": [
+        "run",
+        "scripts/burp-mcp-bridge.py"
+      ],
       "env": {
         "UV_PROJECT_ENVIRONMENT": "venv"
       }

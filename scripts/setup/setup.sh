@@ -6,16 +6,16 @@
 # Run install.sh first for full tool installation + MCP config.
 #
 # What this script does:
-#   - Checks prerequisites (go, python3, git, curl, uv, opencode)
+#   - Checks prerequisites (go, python3, git, curl, uv)
 #   - Verifies Python venv exists
-#   - Symlinks OpenCode agents, commands, rules
+#   - Symlinks Swarm agents, commands, rules
 #   - Adds shell aliases
 #   - Verifies installation state
 #
 # What it does NOT do (use install.sh instead):
 #   - Install Go/Python/cargo security tools
 #   - Clone GF patterns
-#   - Create or overwrite opencode.json (MCP config)
+#   - Create or overwrite .mcp.json (MCP config)
 #   - Install Playwright Chromium
 #   - Install system packages (apt/brew)
 #
@@ -25,7 +25,7 @@
 set -euo pipefail
 
 DST="$(cd "$(dirname "$(readlink -f "$0")")/../.." && pwd | tr -d '\n')"
-OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json"
+SWARM_CONFIG="$DST/.mcp.json"
 BACKUP_DIR="$HOME/.swarm/backups/$(date +%Y%m%d-%H%M%S)"
 LOG_FILE="$HOME/.swarm/install.log"
 
@@ -37,7 +37,7 @@ err(){  echo -e "${R}[✗]${N} $*"; }
 info(){ echo -e "${C}[*]${N} $*"; }
 header(){ echo -e "\n${BOLD}${B}════════════════════════════════════════${N}"; echo -e "${BOLD}$*${N}"; echo -e "${B}════════════════════════════════════════${N}"; }
 
-mkdir -p "$HOME/.swarm" "$HOME/.config/opencode"
+mkdir -p "$HOME/.swarm" "$DST"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
@@ -81,19 +81,17 @@ if ! command -v uv &>/dev/null; then
   export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 fi
 
-# Install OpenCode if missing
-OPENCODE_BIN="$HOME/.swarm/bin/opencode"
-if command -v opencode &>/dev/null; then
-  ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
-elif [ -x "$OPENCODE_BIN" ]; then
-  info "OpenCode found at $OPENCODE_BIN — adding to PATH"
-  export PATH="$HOME/.swarm/bin:$PATH"
-  ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
+# Check swarm binary
+SWARM_BIN=""
+for p in "$DST/swarm" "$HOME/.local/bin/swarm" "$HOME/.swarm/bin/swarm"; do
+  [ -f "$p" ] && { SWARM_BIN="$p"; break; }
+done
+if [ -n "$SWARM_BIN" ]; then
+  ok "Swarm binary found — $SWARM_BIN"
+  export PATH="$(dirname "$SWARM_BIN"):$PATH"
 else
-  info "OpenCode not found — installing..."
-  curl -fsSL https://opencode.ai/install | bash >/dev/null 2>&1
-  export PATH="$HOME/.swarm/bin:$PATH"
-  ok "OpenCode installed"
+  info "Swarm binary not found — build it: cd $DST && bun run build"
+  export PATH="$DST:$PATH"
 fi
 
 
@@ -141,135 +139,95 @@ if "$_PW_VENV/bin/python" -c "import playwright" 2>/dev/null; then
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 3: OpenCode config — verify, don't overwrite
+# PHASE 3: Swarm .mcp.json — verify, don't overwrite
 # ═══════════════════════════════════════════════════════════════════════════════
-header "PHASE 3: OpenCode configuration"
+header "PHASE 3: Swarm MCP configuration"
 
-if [ -f "$OPENCODE_CONFIG" ]; then
-  ok "OpenCode config exists — not modifying"
+if [ -f "$SWARM_CONFIG" ]; then
+  ok "Swarm MCP config exists — $SWARM_CONFIG"
 else
-  info "OpenCode config — generating..."
+  info "Swarm MCP config — generating .mcp.json..."
   export REPO_DIR="$DST"
   python3 << 'PYEOF'
 import json, os
 repo = os.environ['REPO_DIR']
-home = os.path.expanduser("~")
-config_path = os.path.join(home, ".config", "opencode", "opencode.json")
+mcp_path = os.path.join(repo, ".mcp.json")
 
 # Detect WSL
 is_wsl = os.path.exists("/proc/sys/fs/binfmt_misc/WSLInterop") or bool(os.environ.get("WSL_DISTRO_NAME"))
 
-mcp = {}
+mcp_servers = {}
 
-# Burp Suite MCP
-if is_wsl:
-    bridge_script = os.path.join(repo, "scripts", "burp-mcp-bridge.py")
-    mcp["burp"] = {
-        "type": "local",
-        "command": ["bash", "-c", f"cd {repo}/server && UV_PROJECT_ENVIRONMENT=venv exec uv run ../scripts/burp-mcp-bridge.py"]
-    }
-else:
-    mcp["burp"] = {
-        "type": "remote",
-        "url": "http://127.0.0.1:9876/",
-        "enabled": True
+# Burp Suite MCP via bridge script
+bridge_script = os.path.join(repo, "scripts", "burp-mcp-bridge.py")
+if os.path.exists(bridge_script):
+    mcp_servers["burp"] = {
+        "type": "stdio",
+        "command": "python3",
+        "args": [bridge_script]
     }
 
 # WSTG server
-mcp["wstg"] = {
-    "type": "local",
-    "prompt": "You are a Swarm WSTG penetration testing MCP server.",
-    "command": [
-        "bash",
+mcp_servers["wstg"] = {
+    "type": "stdio",
+    "command": "bash",
+    "args": [
         "-c",
         f"cd {repo}/server && UV_PROJECT_ENVIRONMENT=venv exec uv run server.py"
     ]
 }
 
-# Write config
+# Write .mcp.json
 config = {
-    "$schema": "https://opencode.ai/config.json",
-    "mcp": mcp
+    "mcpServers": mcp_servers
 }
 
-os.makedirs(os.path.dirname(config_path), exist_ok=True)
-with open(config_path, "w") as f:
+with open(mcp_path, "w") as f:
     json.dump(config, f, indent=2)
 
-print("[+] OpenCode config generated")
+print(f"[+] .mcp.json generated at {mcp_path}")
 PYEOF
-  ok "OpenCode config — generated"
+  ok "Swarm MCP config — generated ($SWARM_CONFIG)"
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 4: OpenCode agents, rules, commands, skills
+# PHASE 4: Swarm agents, rules, commands
 # ═══════════════════════════════════════════════════════════════════════════════
-header "PHASE 4: OpenCode agents, rules"
+header "PHASE 4: Swarm agents, rules"
 
-OC_AGENTS_DIR="$HOME/.config/opencode/agents"
-mkdir -p "$OC_AGENTS_DIR" "$HOME/.config/opencode/rules"
-
-# Agents (flat .md files)
+# Agents → .swarm/agents (symlink from project)
 if [ -d "$DST/.swarm/agents" ]; then
   for agent_file in "$DST/.swarm/agents"/*.md; do
     [ -f "$agent_file" ] || continue
-    agent_name="$(basename "$agent_file")"
-    target="$OC_AGENTS_DIR/$agent_name"
-    if [ -L "$target" ] && [ "$(readlink "$target")" = "$agent_file" ]; then
-      ok "Agent $agent_name — already linked"
-    else
-      ln -sf "$agent_file" "$target"
-      ok "Agent $agent_name — linked"
-    fi
+    ok "Agent $(basename "$agent_file") — available"
   done
 fi
 
-# Legacy home-level agent links
-OC_HOME_AGENTS="$HOME/.swarm/agents"
-mkdir -p "$OC_HOME_AGENTS"
-if [ -d "$DST/.swarm/agents" ]; then
-  for agent_file in "$DST/.swarm/agents"/*.md; do
-    [ -f "$agent_file" ] || continue
-    agent_name="$(basename "$agent_file")"
-    target="$OC_HOME_AGENTS/$agent_name"
-    ln -sf "$agent_file" "$target"
-  done
-fi
-
-# Rules → opencode and swarm
-SWARM_RULES_DIR="$HOME/.swarm/rules"
-mkdir -p "$SWARM_RULES_DIR" "$HOME/.config/opencode/rules"
+# Rules → .swarm/rules
+mkdir -p "$DST/.swarm/rules"
 if [ -d "$DST/.swarm/rules" ]; then
   for rule_file in "$DST/.swarm/rules"/*.md; do
     [ -f "$rule_file" ] || continue
-    rule_name="$(basename "$rule_file")"
-    ln -sf "$rule_file" "$HOME/.config/opencode/rules/$rule_name"
-    ln -sf "$rule_file" "$SWARM_RULES_DIR/$rule_name"
-    ok "Rule $rule_name — linked"
+    ok "Rule $(basename "$rule_file") — available"
   done
 fi
 
-# Commands (.swarm/commands-bughunt/*.md) → all 3 locations
+# Commands (.swarm/commands-bughunt/*.md) → .swarm/commands
 if [ -d "$DST/.swarm/commands-bughunt" ]; then
-  OC_CMD_DIR="$HOME/.config/opencode/commands"
   PROJECT_CMD_DIR="$DST/.swarm/commands"
-  HOME_CMD_DIR="$HOME/.swarm/commands"
-  mkdir -p "$OC_CMD_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
+  mkdir -p "$PROJECT_CMD_DIR"
   for cmd_file in "$DST/.swarm/commands-bughunt"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
-    cp "$cmd_file" "$OC_CMD_DIR/$cmd_name"
     cp "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
-    cp "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
     ok "Command $cmd_name — installed"
   done
 fi
 
-# Skills symlink (for manual browse)
+# Skills symlink
 SKILLS_LINK="$HOME/.swarm/skills"
-mkdir -p "$HOME/.swarm"
 [ -L "$SKILLS_LINK" ] && rm "$SKILLS_LINK"
-ln -s "$DST/skills" "$SKILLS_LINK"
+ln -s "$DST/skills" "$SKILLS_LINK" 2>/dev/null || true
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PHASE 5: Shell aliases
@@ -340,11 +298,11 @@ else
   err "Swarm server venv — missing (run install.sh first)"
 fi
 
-# OpenCode config
-if [ -f "$OPENCODE_CONFIG" ]; then
-  ok "OpenCode config — $OPENCODE_CONFIG"
+# Swarm MCP config
+if [ -f "$SWARM_CONFIG" ]; then
+  ok "Swarm MCP config — $SWARM_CONFIG"
 else
-  warn "OpenCode config — not found"
+  warn "Swarm MCP config — not found (run connect-burp.sh)"
 fi
 
 # Playwright
@@ -380,8 +338,8 @@ echo "    connect-burp        — Connect/reconnect Burp MCP bridge"
     echo "    swarm-browser      — Run browser_driver.py (legacy headed Chromium CLI)"
     echo "    swarm-browser-use  — Run browser_use_backend.py (browser-use debug CLI)"
 echo ""
-echo "  OpenCode:"
-echo "    opencode            — Launch OpenCode with Swarm"
+echo "  Swarm:"
+echo "    swarm               — Launch Swarm CLI"
 echo ""
 echo "  To install tools: bash scripts/install.sh"
 echo ""
