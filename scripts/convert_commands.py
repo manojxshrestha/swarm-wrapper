@@ -5,7 +5,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent.parent
 HOME = Path.home()
-BH_COMMANDS = SCRIPT_DIR / ".swarm/commands-bughunt"
+BH_COMMANDS = SCRIPT_DIR / ".swarm/commands"
 OC_COMMANDS = SCRIPT_DIR / ".swarm/commands"
 
 # Each command: (filename, description, agent, subtask)

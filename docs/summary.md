@@ -51,7 +51,7 @@ Layer 4: Validation + Reporting      — how to ship it (7-Question Gate, VRT, r
 │   └── data/                   WSTG test cases, technique guides
 ├── .swarm/
 │   ├── agents/                 118 agent definition files
-│   ├── commands-bughunt/       7 CLI entry points
+│   ├── commands/                 7 CLI entry points
 │   └── rules/                  Agent permission rules
 ├── .mcp.json                   MCP server config (wstg via server/venv/bin/python3, burp via uv run)
 ├── knowledge/                  Consolidated reference data

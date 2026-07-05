@@ -166,7 +166,6 @@ Passes when:
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `/surface` | `.swarm/commands/surface.md` | Interactive surface ranking via `recon-ranker` subagent — bypasses agent pipeline |
-| `/surface` (bughunt) | `.swarm/commands-bughunt/surface.md` | Duplicate — identical to `commands/surface.md` |
 
 ## Reference
 
