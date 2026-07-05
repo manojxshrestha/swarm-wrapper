@@ -68,7 +68,7 @@ Highlights:
 ## Loading
 
 ```bash
-# Local OpenCode install
+# Local Swarm install
 cp SKILL.md .swarm/agents/offensive-osint/SKILL.md
 cp scripts/secret_scan.py .swarm/agents/offensive-osint/scripts/secret_scan.py
 ```

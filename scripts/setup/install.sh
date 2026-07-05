@@ -4,7 +4,7 @@
 #
 # A single script to install everything:
 #   - System dependencies (libpcap, build-essential, etc.)
-#   - OpenCode agents, rules, skills
+#   - Swarm agents, rules, skills
 #   - Go CLI security tools (subfinder, httpx, ffuf, gf, naabu, etc.)
 #   - GF patterns, SecLists wordlists
 #   - Playwright Chromium browser
@@ -40,7 +40,7 @@ err(){  echo -e "${R}[✗]${N} $*"; }
 info(){ echo -e "${C}[*]${N} $*"; }
 header(){ echo -e "\n${BOLD}${B}════════════════════════════════════════${N}"; echo -e "${BOLD}$*${N}"; echo -e "${B}════════════════════════════════════════${N}"; }
 
-mkdir -p "$HOME/.swarm" "$HOME/.config/opencode"
+mkdir -p "$HOME/.swarm" "$HOME/.config/swarm"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 # ── Platform detection ──────────────────────────────────────────────────────
@@ -101,25 +101,6 @@ if ! command -v uv &>/dev/null; then
   else
     warn "uv install failed — see $LOG_FILE for details"
   fi
-fi
-
-# Install OpenCode if missing
-OPENCODE_BIN="$HOME/.swarm/bin/opencode"
-if command -v opencode &>/dev/null; then
-  ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
-elif [ -x "$OPENCODE_BIN" ]; then
-  info "OpenCode found at $OPENCODE_BIN — adding to PATH"
-  export PATH="$HOME/.swarm/bin:$PATH"
-  ok "OpenCode — already installed ($(opencode --version 2>/dev/null || echo 'unknown'))"
-else
-  info "OpenCode not found — installing..."
-  curl -fsSL https://opencode.ai/install | bash >/dev/null 2>&1
-  case "$SHELL" in
-    *zsh*)  source ~/.zshrc 2>/dev/null || true ;;
-    *bash*) source ~/.bashrc 2>/dev/null || true ;;
-  esac
-  export PATH="$HOME/.swarm/bin:$PATH"
-  ok "OpenCode installed"
 fi
 
 export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
@@ -521,12 +502,12 @@ else
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 8: OpenCode agents + rules
+# PHASE 8: Swarm agents + rules
 # ═══════════════════════════════════════════════════════════════════════════════
-header "PHASE 8: OpenCode agents & rules"
+header "PHASE 8: Swarm agents & rules"
 
-OC_AGENTS_DIR="$HOME/.config/opencode/agents"
-OC_RULES_DIR="$HOME/.config/opencode/rules"
+OC_AGENTS_DIR="$HOME/.config/swarm/agents"
+OC_RULES_DIR="$HOME/.config/swarm/rules"
 OC_HOME_AGENTS="$HOME/.swarm/agents"
 OC_HOME_RULES="$HOME/.swarm/rules"
 
@@ -537,7 +518,7 @@ if [ -d "$REPO_DIR/.swarm/agents" ]; then
   for agent_file in "$REPO_DIR/.swarm/agents"/*.md; do
     [ -f "$agent_file" ] || continue
     agent_name="$(basename "$agent_file")"
-    # Symlink to ~/.config/opencode/agents/
+    # Symlink to ~/.config/swarm/agents/
     ln -sf "$agent_file" "$OC_AGENTS_DIR/$agent_name"
     # Also to legacy ~/.swarm/agents/
     ln -sf "$agent_file" "$OC_HOME_AGENTS/$agent_name"
@@ -556,8 +537,8 @@ if [ -d "$REPO_DIR/.swarm/rules" ]; then
   ok "Rules linked ($(ls "$REPO_DIR/.swarm/rules"/*.md 2>/dev/null | wc -l) files)"
 fi
 
-# Commands (.swarm/commands-bughunt/*.md) → ~/.config/opencode/commands/
-OC_COMMANDS_DIR="$HOME/.config/opencode/commands"
+# Commands (.swarm/commands-bughunt/*.md) → ~/.config/swarm/commands/
+OC_COMMANDS_DIR="$HOME/.config/swarm/commands"
 PROJECT_CMD_DIR="$REPO_DIR/.swarm/commands"
 HOME_CMD_DIR="$HOME/.swarm/commands"
 mkdir -p "$OC_COMMANDS_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
@@ -580,16 +561,16 @@ ln -s "$REPO_DIR/skills" "$SWARM_SKILLS"
 ok "Skills linked at $SWARM_SKILLS"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 9: OpenCode config (MCP servers)
+# PHASE 9: Swarm config (MCP servers)
 # ═══════════════════════════════════════════════════════════════════════════════
-header "PHASE 9: OpenCode MCP configuration"
+header "PHASE 9: Swarm MCP configuration"
 
-OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json"
+SWARM_CONFIG="$HOME/.config/swarm/swarm.json"
 
 # Backup existing config
-if [ -f "$OPENCODE_CONFIG" ]; then
+if [ -f "$SWARM_CONFIG" ]; then
   mkdir -p "$BACKUP_DIR"
-  cp "$OPENCODE_CONFIG" "$BACKUP_DIR/opencode.json"
+  cp "$SWARM_CONFIG" "$BACKUP_DIR/swarm.json"
   info "Backed up existing config → $BACKUP_DIR/"
 fi
 
@@ -608,7 +589,7 @@ import json, os, shutil, sys
 
 repo = os.environ['REPO_DIR']
 home = os.path.expanduser("~")
-config_path = os.path.join(home, ".config", "opencode", "opencode.json")
+config_path = os.path.join(home, ".config", "swarm", "swarm.json")
 
 # ── Platform detection ─────────────────────────────────────────────────────
 is_wsl = os.path.exists("/proc/sys/fs/binfmt_misc/WSLInterop") or bool(os.environ.get("WSL_DISTRO_NAME"))
@@ -770,9 +751,9 @@ else
   warn "Playwright — not installed (re-run install.sh)"
 fi
 
-# OpenCode config
-if [ -f "$OPENCODE_CONFIG" ]; then
-  ok "OpenCode config — $OPENCODE_CONFIG"
+# Swarm config
+if [ -f "$SWARM_CONFIG" ]; then
+  ok "Swarm config — $SWARM_CONFIG"
 fi
 
 # GF patterns
@@ -789,12 +770,12 @@ echo -e "${BOLD}${G}
   ╚══════════════════════════════════════════════════════╝${N}"
 echo ""
 echo "  Commands:   swarm, swarm-server, swarm-update, swarm-recon, swarm-browser"
-echo "  OpenCode:   opencode  (launches with Swarm pre-configured)"
-  echo "  Agents:     87 OpenCode agents"
+echo "  Swarm CLI:   swarm  (launches with Swarm pre-configured)"
+  echo "  Agents:     87 Swarm agents"
   echo "  Tools:      $($QUICK && echo 'skipped (re-run without --quick)' || echo '25 essential tools')"
 echo ""
 echo "  Quick start:"
-echo "    1. opencode"
+echo "    1. swarm"
 echo "    2. /hunt example.com"
 echo ""
 echo "  Log:      $LOG_FILE"

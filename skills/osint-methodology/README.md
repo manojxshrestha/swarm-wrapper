@@ -48,10 +48,10 @@ Highlights:
 ## Loading
 
 ```bash
-# Local OpenCode install
+# Local Swarm install
 cp SKILL.md .swarm/agents/osint-methodology/SKILL.md
 
-# Or attach to a Claude.ai project / Claude API system prompt
+# Or attach to a Swarm project / Swarm API system prompt
 # (paste contents of SKILL.md as project knowledge)
 ```
 

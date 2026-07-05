@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  Swarm is a self-contained OpenCode agent bundle + MCP server for bug hunting,
+  Swarm is a self-contained agent bundle + MCP server for bug hunting,
   external red-team work, and authorized pentests — <b>118 agents</b> · <b>88 MCP tools</b> ·
   OWASP WSTG v4.2 · OWASP Top 10 · OWASP API Security Top 10 · OWASP ASI ·
   OWASP CRS/WAF bypass · CWE · MITRE ATT&CK · NIST · CVSS 3.1/4.0 ·
@@ -40,11 +40,11 @@
 
 Swarm is an LLM-powered security toolkit that provides the complete OWASP Web Security Testing Guide methodology + OWASP Top 10 · OWASP API Security Top 10 · OWASP ASI · WAF/CRS bypass · CWE · MITRE ATT&CK · NIST · CVSS as an MCP server — 109 WSTG test cases across 12 categories, payload libraries, and the full pentest lifecycle. It pairs with Burp Suite's MCP server for request execution, or runs standalone as a reference knowledge base.
 
-Swarm works with any LLM provider that OpenCode supports — OpenAI GPT-4o/5.x, Anthropic Claude, OpenRouter, GitHub Copilot, Cloudflare Workers AI, DeepSeek, local models via Ollama, and more. The model is configured in OpenCode, not in Swarm. Swarm doesn't restrict which provider or model you use.
+Swarm works with any LLM provider that Swarm supports — OpenAI GPT-4o/5.x, Anthropic Claude, OpenRouter, GitHub Copilot, Cloudflare Workers AI, DeepSeek, local models via Ollama, and more. The model is configured in Swarm, not in Swarm. Swarm doesn't restrict which provider or model you use.
 
 Four layers stack:
 
-- **Methodology + agents** — *how to think.* 12-phase pipeline (scope→auth→intel→recon→surface→hunt→deepthink→exploit→search→capture→validate→report), critical-thinking framework, developer-psychology heuristics, anomaly detection patterns, and the red-team operator-discipline corrections (when scope is "external red team" not "bug hunting / WAPT"). Available as auto-loading OpenCode agents.
+- **Methodology + agents** — *how to think.* 12-phase pipeline (scope→auth→intel→recon→surface→hunt→deepthink→exploit→search→capture→validate→report), critical-thinking framework, developer-psychology heuristics, anomaly detection patterns, and the red-team operator-discipline corrections (when scope is "external red team" not "bug hunting / WAPT"). Available as auto-loading Swarm agents.
 - **57 `@hunt-*` agents** — *what to look for in webapps.* Per-class detection patterns, payloads, bypass tables, and chain templates — curated from OWASP WSTG v4.2 methodology across 25 vulnerability classes, plus 20+ framework/surface skills (Next.js, Spring Boot, Laravel, Kubernetes, CI/CD, WebSocket, deserialization, ...).
 - **Credential-attack pipeline** — *password spray as a parallel branch to web vuln hunting.* 4-stage pipeline: company-specific wordlist generation (cewler + hashcat rules) → HIBP k-anonymity breach ranking → OSINT employee discovery (theHarvester + username-anarchy) → low-rate spray (http-form / oauth / o365 / okta). Legal guardrails, lockout math, and spray → authenticated hunt chain template.
 - **Enterprise platform attack chains** — *what to look for on the perimeter.* M365/Entra ID, Okta, cloud IAM, VMware vCenter, enterprise VPN, SharePoint, ASP.NET, NTLM, APK red-team pipeline, supply-chain recon — current CVE chains, AADSTS error references, version-fingerprint matrices, and post-credential escalation paths.
@@ -88,9 +88,9 @@ If you're running an internal red team that includes domain-takeover chains via 
 
 ## Capability Map
 
-118 agents group into 18 pipeline agents + 57 `@hunt-*` + 43 specialty (enterprise attack, OSINT, red-team ops, reporting, WAF bypass, auth-session, browser). Agents auto-load when their description keywords match what you're describing to OpenCode.
+118 agents group into 18 pipeline agents + 57 `@hunt-*` + 43 specialty (enterprise attack, OSINT, red-team ops, reporting, WAF bypass, auth-session, browser). Agents auto-load when their description keywords match what you're describing to Swarm.
 
-> **OpenCode vs Swarm:** `/plan` and `/build` are OpenCode's built-in modes. Swarm adds 12 pipeline phases below — invoke via `@agent-name` or let `@autopilot`/`@consult` run them sequentially.
+> **CLI vs Swarm:** `/plan` and `/build` are Swarm CLI's built-in modes. Swarm adds 12 pipeline phases below — invoke via `@agent-name` or let `@autopilot`/`@consult` run them sequentially.
 
 | # | Phase | Agent | What it does |
 |---|-------|-------|-------------|
@@ -315,7 +315,7 @@ Swarm agents are flat `.md` files invoked via `@agent-name`. **18 pipeline agent
 ```
 swarm/
 ├── .swarm/
-│   ├── agents/                    # 118 flat .md OpenCode agents
+│   ├── agents/                    # 118 flat .md Swarm agents
 │   │   ├── autopilot.md               # fully autonomous Phase1–Phase12 pipeline
 │   │   ├── scope.md                   # engagement scaffold/program rules
 │   │   ├── recon.md                   # recon orchestration
@@ -347,7 +347,7 @@ swarm/
 │   │   ├── triage-validation.md       # 7-Question Gate
 │   │   ├── web2-recon.md              # subdomain enum, host discovery
 │   │   └── web2-vuln-classes.md       # 22 bug class reference
-│   └── opencode.json                # OpenCode configuration
+│   └── swarm.json                # Swarm configuration
 ├── server/
 │   ├── server.py                    # MCP server (88 tools) + 14 server modules
 │   ├── findings_db.py               # 7-table SQLite findings database
@@ -365,7 +365,7 @@ swarm/
 │   ├── bughunt.py                   # terminal-native CLI
 │   ├── hunt.sh                      # engagement-folder scaffolder
 │   ├── install.sh                   # tool installer (Go/Python/pipx/Cargo)
-│   ├── setup.sh                     # Swarm + OpenCode config
+│   ├── setup.sh                     # Swarm config
 │   ├── convert_skills.py            # agent-conversion utility
 │   ├── convert_commands.py          # command-conversion utility
 │   ├── connect-burp.sh             # Burp MCP connection
@@ -613,7 +613,7 @@ One NO = KILL. Move on. This single discipline separates productive researchers 
 ## Architecture
 
 ```
-MCP client (OpenCode / Claude Desktop / etc.)
+MCP client (Swarm CLI / Claude Desktop / etc.)
   ├── swarm (this server) — WSTG methodology, engagement management, reporting
   └── burp MCP server      — request sending, scanning, intruder, proxy history
 ```
@@ -624,12 +624,12 @@ Swarm provides the methodology ("what to test and how to exploit it"), Burp prov
 
 1. **Knowledge layer** — WSTG v4.2 (109 tests, 12 categories) + payload libraries and WAF bypass references
 2. **Engagement layer** — scope registration, findings database, test tracking, phase gates, QA review, reporting
-3. **Agent layer** — 118 OpenCode agents: 18 pipeline agents, 57 `@hunt-*` agents, 43 specialty agents
+3. **Agent layer** — 118 Swarm agents: 18 pipeline agents, 57 `@hunt-*` agents, 43 specialty agents
 
 ### Integration points
 
 - **Burp Suite MCP** — direct request execution, proxy history, scanner, intruder
-- **OpenCode** — agent auto-loading, conversational hunting workflow
+- **Swarm CLI** — agent auto-loading, conversational hunting workflow
 - **CLI** — `bughunt` deterministic runner for CI/CD / scripted recon
 
 ---
@@ -641,7 +641,7 @@ Swarm provides the methodology ("what to test and how to exploit it"), Burp prov
 | What | Why | Verify with |
 |---|---|---|
 | Python 3.11+ | MCP server runtime | `python3 --version` |
-| OpenCode CLI | Agent host | `opencode --version` |
+| Swarm CLI | Agent host | `swarm --version` |
 | Chromium (headed browser) | Browser automation for client-side testing, auth flows, screenshot capture | `bash $HOME/swarm/scripts/setup/setup.sh` |
 | Burp Suite (optional) | Request execution partner | — |
 
@@ -655,7 +655,7 @@ cd swarm
 # Step 1 — Install security tools (Go/Python/pipx/Cargo, Playwright)
 bash $HOME/swarm/scripts/install.sh
 
-# Step 2 — Set up Swarm with OpenCode (symlink agents/rules, build opencode.json, add aliases)
+# Step 2 — Set up Swarm (symlink agents/rules, build swarm.json, add aliases)
 bash $HOME/swarm/scripts/setup.sh
 
 # Step 3 (optional) — Configure Burp Suite MCP and run reconnect helper
@@ -712,7 +712,7 @@ cd server && python3 -m pytest tests/ -v --tb=short
 
 ### Your first hunt
 
-Once installed, open OpenCode in the project directory and describe your target:
+Once installed, open Swarm in the project directory and describe your target:
 
 ```text
 > Swarm engagement on [target] — HackerOne program with web app, API, mobile, and cloud.
@@ -768,7 +768,7 @@ Each category has a dedicated prompt file (`prompts/<category>.md`) with test li
 
 ## MCP Tools (93 total)
 
-Full tool reference: `index.json` — tools are auto-discovered by OpenCode.
+Full tool reference: `index.json` — tools are auto-discovered by Swarm.
 
 ### Knowledge Base
 - `list_wstg_categories` / `list_tests_in_category` / `get_wstg_test`
@@ -904,13 +904,13 @@ If Burp Suite closes, the `burp` MCP server disconnects. Run the reconnect helpe
 bash $HOME/swarm/scripts/connect-burp.sh
 ```
 
-This kills stale proxy processes, checks port 9876, toggles the Burp MCP entry in `opencode.json`, and restarts the WSTG MCP server.
+This kills stale proxy processes, checks port 9876, toggles the Burp MCP entry in `swarm.json`, and restarts the WSTG MCP server.
 
 ### Manual fix
 
 1. From Windows cmd as Administrator: `taskkill /PID <PID> /F` (find PID with `netstat -ano | findstr :9876`)
 2. Restart Burp Suite → Extensions → MCP → Enable
-3. In OpenCode, remove and re-add the `burp` MCP server
+3. In Swarm, remove and re-add the `burp` MCP server
 
 ---
 
@@ -988,7 +988,7 @@ The per-class `@hunt-*` agents address gap-zero (*"what should I look for in web
 ---
 
 ## About
-Swarm is a collection of bug hunting and GenAI security research workflows built from real-world experience across bug bounty programs and authorized penetration tests. The techniques, methodologies, and tradecraft have been packaged into OpenCode agents to streamline reconnaissance, testing, and research. Swarm is platform-agnostic and can be integrated into existing workflows or used independently, depending on the engagement.
+Swarm is a collection of bug hunting and GenAI security research workflows built from real-world experience across bug bounty programs and authorized penetration tests. The techniques, methodologies, and tradecraft have been packaged into Swarm agents to streamline reconnaissance, testing, and research. Swarm is platform-agnostic and can be integrated into existing workflows or used independently, depending on the engagement.
 
 
 
