@@ -13,18 +13,18 @@ After the `browser_use.mcp` server process was killed (SIGKILL), all browser-use
 list and never came back.
 
 ### Root Cause
-OpenCode spawns MCP server subprocesses at session start from `.mcp.json`. When a subprocess
-dies, **OpenCode does not auto-restart it**. The tools are only registered during the initial
+Swarm spawns MCP server subprocesses at session start from `.mcp.json`. When a subprocess
+dies, **Swarm does not auto-restart it**. The tools are only registered during the initial
 handshake. There is no built-in `restart` command.
 
 ```
-opencode mcp list     # shows "connected" even with dead process
-opencode mcp add      # adds to global config but doesn't restart
+swarm mcp list     # shows "connected" even with dead process
+swarm mcp add      # adds to global config but doesn't restart
 ```
 
 ### Related Files
 - `.mcp.json` — project-level MCP config (the canonical source)
-- `~/.config/opencode/opencode.jsonc` — global MCP config (modified by `opencode mcp add`)
+- `~/.config/swarm/swarm.jsonc` — global MCP config (modified by `swarm mcp add`)
 
 ### Fix
 We abandoned the MCP tools entirely and built a standalone Python script

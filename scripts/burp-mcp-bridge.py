@@ -5,7 +5,7 @@
 #   WSL2        → Gets Windows host IP from default gateway, connects via burp_proxy.py (port 9872)
 #   Native      → Connects directly to 127.0.0.1:9876 (Kali/Parrot/Ubuntu/macOS)
 #
-# Usage (invoked by opencode.json mcp.burp entry):
+# Usage (invoked by swarm.json mcp.burp entry):
 #   python3 burp-mcp-bridge.py
 #
 # Zero external dependencies — uses only Python stdlib.

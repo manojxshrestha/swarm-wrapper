@@ -41,10 +41,10 @@ graph TB
         direction LR
         BURP["Burp Suite MCP<br/>HTTP request execution"]:::external
         BROWSER["Browser Agent<br/>headed Chromium · Playwright"]:::external
-        LLM["OpenCode / LLM<br/>agent host"]:::external
+        LLM["Swarm / LLM<br/>agent host"]:::external
     end
 
-    OPERATORS -->|"open via OpenCode"| LLM
+    OPERATORS -->|"open via Swarm"| LLM
     LLM <-->|"MCP protocol"| MCP
     MCP --> RBAC
     RBAC --> LOCK

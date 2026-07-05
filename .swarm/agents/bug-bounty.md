@@ -1216,7 +1216,7 @@ sisakulint findings are **potentially exploitable** — not confirmed bugs. Ever
 
 #### 7. AI Agent Security
 
-**Gate question:** Is an AI agent (Gemini CLI, OpenCode, Cline, Codex) invoked in a workflow where external users can influence the prompt?
+**Gate question:** Is an AI agent (Gemini CLI, Swarm, Cline, Codex) invoked in a workflow where external users can influence the prompt?
 
 **Verification depth:**
 1. **Trigger + prompt source** — `issues: opened` → AI triage bot reads `github.event.issue.body`. The body IS the prompt. HTML comments (`<!-- ignore previous instructions -->`) are invisible in GitHub UI but included in the API response and thus in the AI prompt.
@@ -1653,13 +1653,13 @@ When payout is being downgraded, use these counters:
 
 # Installation
 
-To use this as an OpenCode agent, copy this file to your agents directory:
+To use this as an Swarm agent, copy this file to your agents directory:
 
 ```bash
 cp SKILL.md .swarm/agents/bug-bounty/SKILL.md
 ```
 
-Then in OpenCode, this agent loads automatically when you ask about bug bounty, recon, or vulnerability hunting.
+Then in Swarm, this agent loads automatically when you ask about bug bounty, recon, or vulnerability hunting.
 
 ---
 

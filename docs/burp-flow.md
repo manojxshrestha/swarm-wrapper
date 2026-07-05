@@ -8,7 +8,7 @@ Swarm pairs with [Burp Suite's MCP Server](https://github.com/PortSwigger/burp-m
 
 1. Install the [Burp MCP Server](https://github.com/PortSwigger/burp-mcp) extension in Burp Suite (Extender → Extensions → MCP → Server)
 2. The server starts on `localhost:9876` by default
-3. Add to your OpenCode config:
+3. Add to your Swarm config:
 
 ```json
 {

@@ -7,7 +7,7 @@ Swarm is a **script-driven** security testing pipeline. Bash scripts run each ph
 Two interfaces work together:
 
 1. **Pipeline Scripts** (`scripts/pipeline.sh` + `scripts/tools/phase-*.sh`) — automate the 12-phase pipeline: scope → auth → intel → recon → surface → hunt → exploit → validate → report
-2. **OpenCode Agents** — provide per-class bug hunting tradecraft, enterprise platform attack chains, and analysis *within* each phase via `@agent-name`
+2. **Swarm Agents** — provide per-class bug hunting tradecraft, enterprise platform attack chains, and analysis *within* each phase via `@agent-name`
 
 Together they turn an LLM into a methodical bug hunter: the pipeline tells it *what order to do things in*, the agents tell it *what to look for and how*, and Burp Suite provides *HTTP request execution*.
 
@@ -368,7 +368,7 @@ graph TB
     classDef refs fill:#e0f2f1,stroke:#333,stroke-width:2px,color:#000
 
     Pipeline["pipeline.sh (or manual phase-*.sh)"]:::orchestrator
-    Agent["OpenCode Agent - reads script output, loads tradecraft"]:::agent
+    Agent["Swarm Agent - reads script output, loads tradecraft"]:::agent
     User["User reviews results, calls agent: @pintel / @recon / @hunt"]:::user
     MCP["MCP Server - get_wstg_test, log_finding, track_test"]:::tool
     Burp["Burp Suite MCP Server - sends HTTP requests"]:::tool
@@ -405,7 +405,7 @@ bash $HOME/swarm/scripts/pipeline.sh target.com 3-6
 bash $HOME/swarm/scripts/tools/phase-recon.sh target.com
 
 # Call AI agent to analyze results
-# In OpenCode: @recon analyze the recon output for target.com
+# In Swarm: @recon analyze the recon output for target.com
 ```
 
 ---

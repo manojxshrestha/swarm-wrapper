@@ -161,9 +161,9 @@ Browser → Burp Proxy → Target
 2. Connects via `Browser.connect(cdp_url=ws_url)`
 3. Attaches watchdogs via `Browser.attach_all_watchdogs()` (required for DOM scanning)
 
-### Decision-maker: OpenCode AI (brain)
+### Decision-maker: Swarm AI (brain)
 
-browser-use provides the execution engine; OpenCode's LLM drives the observe→decide→act loop by calling `browser_analyze()` → analyzing elements → calling `browser_act()` to interact.
+browser-use provides the execution engine; Swarm's LLM drives the observe→decide→act loop by calling `browser_analyze()` → analyzing elements → calling `browser_act()` to interact.
 
 ### DOM Scanning
 
@@ -214,22 +214,22 @@ Requires browser-use[core] + Playwright + Chromium (installed in `.venv/`). See 
 
 ## Agent Type Caching
 
-New agent types (like `analyze`, `browser-auth`) are only recognized after an opencode session restart. This is because opencode caches the agent registry at session start from `~/.config/opencode/agents/`.
+New agent types (like `analyze`, `browser-auth`) are only recognized after an swarm session restart. This is because swarm caches the agent registry at session start from `~/.config/swarm/agents/`.
 
 ### Workaround
 
 If you create a new agent file and need to use it in the current session:
 
 ```bash
-# Option 1: Restart opencode (guaranteed to work)
-# Exit and re-launch opencode
+# Option 1: Restart swarm (guaranteed to work)
+# Exit and re-launch swarm
 
 # Option 2: Force-load the agent content via general subagent
 # Use @general or @deepthink with the agent's methodology injected into
 # the prompt instead of relying on auto-detection
 
 # Option 3: Symlink the agent (if it exists but isn't detected)
-ls ~/.config/opencode/agents/ | grep <agent-name>
+ls ~/.config/swarm/agents/ | grep <agent-name>
 ```
 
 The `analyze` and `browser-auth` agents are already registered in the agent registry and will auto-load in new sessions. For any new agents created mid-session, use Option 2 (dispatch with methodology injected).

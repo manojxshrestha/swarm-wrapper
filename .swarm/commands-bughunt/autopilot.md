@@ -19,17 +19,17 @@ Autonomous hunt loop with deterministic scope safety and configurable checkpoint
 
 ## Session Isolation (Important)
 
-**Start a fresh OpenCode session per target.** OpenCode accumulates context across a session —
+**Start a fresh Swarm session per target.** Swarm accumulates context across a session —
 testing multiple targets in one session causes cross-contamination where findings, payloads,
 and tech stack assumptions from target A bleed into target B.
 
 Best practice:
 ```bash
 # Terminal 1: target A
-opencode  →  /autopilot targetA.com
+swarm  →  /autopilot targetA.com
 
 # Terminal 2: target B (separate process)
-opencode  →  /autopilot targetB.com
+swarm  →  /autopilot targetB.com
 ```
 
 If you must test multiple targets in one session, run `/pickup target.com` at the start of
@@ -43,7 +43,7 @@ Use `--quick` for faster, lower-cost scans (skips deep fuzzing):
 /hunt target.com --vuln-class idor   # single bug class — lowest token use
 ```
 
-For long hunts, run `/compact` (OpenCode built-in) periodically to compress context
+For long hunts, run `/compact` (Swarm built-in) periodically to compress context
 without losing findings.
 
 ## What This Does

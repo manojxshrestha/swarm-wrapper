@@ -1657,7 +1657,7 @@ The package is the source of truth — the report is the human-readable view. An
 
 ## 32. Skill Self-Test
 
-Drop these prompts into a fresh OpenCode session to verify the agent loads and behaves correctly. Pass criteria: expected sections referenced, no hallucinated content, scope-check invoked when needed.
+Drop these prompts into a fresh Swarm session to verify the agent loads and behaves correctly. Pass criteria: expected sections referenced, no hallucinated content, scope-check invoked when needed.
 
 1. *"I'm doing external recon on [target] (in-scope bug bounty). Where do I start?"* → §0, §1, §7, §7.5, §11.
 2. *"How do I tell if a target uses Entra, Okta, or ADFS without active probing?"* → §11.2-11.4 + companion skill §22.

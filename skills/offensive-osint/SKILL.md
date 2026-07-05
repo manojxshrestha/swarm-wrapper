@@ -208,7 +208,7 @@ When emitting a HIGH/CRITICAL API endpoint finding (score ≥ 70), include a one
 
 ## 49. Skill Self-Test
 
-Drop these prompts into a fresh OpenCode session to verify the agent loads correctly.
+Drop these prompts into a fresh Swarm session to verify the agent loads correctly.
 
 1. *"What paths should I probe to find Swagger or OpenAPI specs on a webapp?"* → §16.1.
 2. *"Give me the GraphQL introspection query I should POST."* → §16.2.

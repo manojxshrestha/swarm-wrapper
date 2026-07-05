@@ -1,6 +1,6 @@
 """Swarm browser automation MCP tools.
 
-Uses **browser-use** (Browser class) for browser operations and **opencode AI**
+Uses **browser-use** (Browser class) for browser operations and **swarm AI**
 as the decision-maker (via browser-auth subagent). The browser persists across
 calls via CDP on port 9222.
 

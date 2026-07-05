@@ -4700,7 +4700,7 @@ def save_checkpoint(engagement_id: str, description: str = "") -> str:
 @mcp.tool()
 def resume_engagement(engagement_id: str) -> str:
     """Resume an engagement from its latest checkpoint.
-    Returns the checkpoint state so OpenCode/Swarm can pick up where it left off.
+    Returns the checkpoint state so Swarm/Swarm can pick up where it left off.
 
     Args:
         engagement_id: The engagement identifier

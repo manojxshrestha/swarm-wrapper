@@ -8,11 +8,11 @@ A practical guide to using the 118-agent Swarm bundle + WSTG MCP server for bug 
 
 ## 0. Brand new? Start here
 
-This section is for people who have **never used the bundle before, never used OpenCode, or never done bug hunting**. If you're already comfortable with any of those, skim to Section 1.
+This section is for people who have **never used the bundle before, never used Swarm, or never done bug hunting**. If you're already comfortable with any of those, skim to Section 1.
 
 ### What is this bundle, in plain English?
 
-It's a collection of 118 OpenCode agents + 88 MCP tools that turn OpenCode into a methodical bug-hunting assistant.
+It's a collection of 118 Swarm agents + 88 MCP tools that turn Swarm into a methodical bug-hunting assistant.
 
 Without the bundle, asking the LLM *"is this XSS?"* gets you a generic answer. With the bundle installed, the same question loads the `hunt-xss` agent — which contains specific detection patterns from disclosed reports, the exact payloads that have worked, and a validation gate that prevents you from filing a false-positive bug report.
 
@@ -20,7 +20,7 @@ You don't "learn" the bundle. You install it once, then describe what you're tes
 
 ### What you DO need before starting
 
-1. **OpenCode installed** — the CLI app, not a browser chat.
+1. **Swarm installed** — the CLI app, not a browser chat.
 2. **A target you're authorized to test** — meaning either: (a) you own it, (b) it's on a bug bounty program's in-scope list, (c) you have a signed pentest engagement letter, or (d) it's a deliberately-vulnerable practice site (OWASP Juice Shop, Vulnweb, HackTheBox, etc.).
 3. **The Swarm MCP server running** — see README.md for setup.
 4. **Headed browser (Playwright)** — for client-side testing, screenshot capture, and auth flows. See [`docs/browser-flow.md`](docs/browser-flow.md) for setup and usage. Quick install:
@@ -53,7 +53,7 @@ If this is your first time, **do not point this at a real bug bounty program yet
 ```bash
 # Start an engagement
 cd /path/to/swarm
-opencode
+swarm
 ```
 
 Then describe what you want to do:
@@ -117,7 +117,7 @@ Beyond the agents themselves, the stack enforces three habits that separate prod
 
 ### Step 1 — Program intake
 
-Start OpenCode in the project directory and describe your target:
+Start Swarm in the project directory and describe your target:
 
 > *"Starting Swarm engagement on [target] — enterprise bug bounty program with web, API, mobile, and cloud in scope. Run scope intake, register assets via MCP."*
 
@@ -210,7 +210,7 @@ Once submitted, use the MCP server to log the finding via `log_finding()` and ap
 
 ## 4. MCP Server Integration
 
-Swarm's WSTG MCP server provides 88 tools for methodology, tracking, and engagement management alongside the OpenCode agents.
+Swarm's WSTG MCP server provides 88 tools for methodology, tracking, and engagement management alongside the Swarm agents.
 
 ### Typical workflow with MCP + agents
 
@@ -232,7 +232,7 @@ Swarm's WSTG MCP server provides 88 tools for methodology, tracking, and engagem
 
 | Task / question | Agent(s) |
 |---|---|
-| "I want to start a new engagement" | Start OpenCode, describe target → `bug-bounty` loads |
+| "I want to start a new engagement" | Start Swarm, describe target → `bug-bounty` loads |
 | "How should I plan this hunt?" | `bug-bounty` + `osint-methodology` |
 | "Find subdomains / endpoints / leaked secrets" | `offensive-osint` + `web2-recon` |
 | "Which tool from my local stack does X?" | `bb-local-toolkit` (skill) |

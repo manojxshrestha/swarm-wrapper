@@ -110,7 +110,7 @@ N4[Tool dependent]:::tools
 
 
 O1[Deployment]:::feature
-O2[Self hosted MCP<br/>OpenCode]:::swarm
+O2[Self hosted MCP<br/>Swarm]:::swarm
 O3[CLI + SaaS platform]:::strix
 O4[Docker MCP servers]:::tools
 

@@ -25,7 +25,7 @@ You orchestrate the full 12-phase pipeline by running each phase's script direct
 7. **Use browser** for auth, OAuth flows, SPA testing, and PoC evidence. See [Browser Testing](../docs/browser-flow.md).
 8. **Track every phase with todowrite.** Create a todo list at startup, update after each phase.
 9. **Rate limits:** 1 req/sec for testing, 10 req/sec for recon. **Circuit breaker:** stop hammering if 5 consecutive 403/429/timeout on same host.
-10. **Session isolation:** One target per OpenCode session. Never mix targets in the same session.
+10. **Session isolation:** One target per Swarm session. Never mix targets in the same session.
 11. **Run each phase's script before dispatching its AI agent.** Run `bash $HOME/swarm/scripts/tools/phase-<name>.sh <domain>` first — it sets up directories, compiles context, and prepares the data the agent consumes. If a phase script fails, investigate the error and fix it before proceeding. Phase methodology references are in `docs/phases/`.
 
 ## Task Tracking

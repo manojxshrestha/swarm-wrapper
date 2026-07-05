@@ -1,16 +1,16 @@
 # Architecture
 
-Swarm is a dual-interface security testing platform: an **MCP server** (88 tools for methodology, tracking, findings management, browser automation) and an **OpenCode agent bundle** (118 auto-loading agents for bug hunting tradecraft, enterprise attack, and WAF bypass).
+Swarm is a dual-interface security testing platform: an **MCP server** (88 tools for methodology, tracking, findings management, browser automation) and an **Swarm agent bundle** (118 auto-loading agents for bug hunting tradecraft, enterprise attack, and WAF bypass).
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    USER (OpenCode / LLM)                 │
+│                    USER (Swarm / LLM)                 │
 └──────────────────────┬──────────────────────────────────┘
                        │
           ┌────────────┴────────────┐
           ▼                         ▼
 ┌──────────────────┐    ┌──────────────────────────┐
-│  Swarm MCP      │    │  OpenCode Agents (117)   │
+│  Swarm MCP      │    │  Swarm Agents (117)   │
 │  Server (88 tools)│    │                         │
 │  ──────────────── │    │  ──────────────────────  │
 │  • WSTG v4.2 · OWASP Top 10 · OWASP API Top 10 · OWASP ASI · WAF/CRS · CWE · MITRE ATT&CK · NIST · CVSS · PortSwigger · Payload libraries     │    │  • hunt-xss, hunt-sqli   │
@@ -65,7 +65,7 @@ The core methodology engine. 88 tools organized into:
 | Findings Database | 13 | SQLite-backed CRUD + graph |
 | Utility | 9 | Status, audit, prioritize, verify |
 
-### 2. OpenCode Agents (118)
+### 2. Swarm Agents (118)
 
 Agents auto-load when you describe what you're testing. Each is a flat `.md` file at `.swarm/agents/<name>.md` with YAML frontmatter and markdown body.
 
@@ -131,7 +131,7 @@ Reference copies of all agent SKILL.md files (102 total). The active versions ar
 
 ### 7. MCP Configuration (`.mcp.json`)
 
-The project `.mcp.json` registers 2 MCP servers for OpenCode integration:
+The project `.mcp.json` registers 2 MCP servers for Swarm integration:
 
 | Server | Tools | Purpose |
 |--------|-------|---------|
@@ -147,7 +147,7 @@ These are relative-path servers — no installation needed beyond the project cl
 ## How agents auto-trigger
 
 1. You describe what you're testing in plain English
-2. OpenCode scans the `description` field in each agent's YAML frontmatter
+2. Swarm scans the `description` field in each agent's YAML frontmatter
 3. Matching agents load into context
 4. The LLM uses the agent's content to guide testing
 

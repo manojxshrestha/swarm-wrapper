@@ -67,7 +67,7 @@ After the script completes successfully, you should see:
 - ✅ Burp MCP running
 - ✅ Python proxy started
 - ✅ Proxy verification successful
-- ✅ OpenCode configuration updated
+- ✅ Swarm configuration updated
 - ✅ WSTG MCP server started
 
-Finally, **restart OpenCode** and begin using the Burp MCP integration.
+Finally, **restart Swarm** and begin using the Burp MCP integration.

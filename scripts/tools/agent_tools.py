@@ -44,7 +44,7 @@ EXTERNAL_TOOLS = {
     "burp_send_http2_request", "burp_set_active_editor_contents",
     "burp_url_encode", "burp_url_decode",
     "burp_generate_random_string", "burp_set_proxy_intercept_state",
-    # OpenCode built-in tools
+    # Swarm built-in tools
     "websearch", "webfetch", "task",
 }
 

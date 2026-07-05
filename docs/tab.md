@@ -1,6 +1,6 @@
 # Tab Mode — Agent Switching
 
-In OpenCode, pressing **Tab** cycles through **primary agents**. Only agents with `mode: all` or `mode: primary` appear in the Tab switcher.
+In Swarm, pressing **Tab** cycles through **primary agents**. Only agents with `mode: all` or `mode: primary` appear in the Tab switcher.
 
 ## The Problem
 
@@ -10,7 +10,7 @@ In OpenCode, pressing **Tab** cycles through **primary agents**. Only agents wit
 
 Changed `mode: subagent` → `mode: all` in 12 existing agent files, and created 2 missing ones (`auth.md`, `osint.md`) with `mode: all`.
 
-If no `mode` is specified, OpenCode defaults to `all`.
+If no `mode` is specified, Swarm defaults to `all`.
 
 ## Agents Changed
 

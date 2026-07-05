@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert BH skills to OpenCode agents for Swarm.
+"""Convert BH skills to Swarm agents for Swarm.
 
 Usage:
     python3 convert_skills.py <phase> [--dry-run]
@@ -879,7 +879,7 @@ This agent works alongside the Swarm MCP server and WSTG methodology:
 
 
 def convert_skill(skill_dir: str, config: dict, dry_run: bool = False) -> str:
-    """Convert a single BH skill to OpenCode agent."""
+    """Convert a single BH skill to Swarm agent."""
     skill_path = BH_SKILLS / skill_dir / "SKILL.md"
     if not skill_path.exists():
         print(f"  [SKIP] {skill_path} not found")
@@ -968,8 +968,8 @@ def _rewrite_refs(body: str) -> str:
 
 def _fix_tool_refs(body: str) -> str:
     """Replace old tool refs with Swarm MCP equivalents."""
-    body = body.replace("`claude`", "`opencode`")
-    body = body.replace("Claude Code", "OpenCode")
+    body = body.replace("`claude`", "`swarm`")
+    body = body.replace("Claude Code", "Swarm")
     return body
 
 

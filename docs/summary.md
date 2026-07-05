@@ -2,7 +2,7 @@
 
 ## Overview
 
-Swarm is a self-contained OpenCode agent bundle + WSTG MCP server for offensive security: bug hunting, external red-team engagements, and authorized penetration tests. It provides the complete OWASP Web Security Testing Guide methodology as an MCP server with 88 tools, paired with 118 autonomous agents covering vulnerability hunting, enterprise platform attacks, WAF bypass, and full engagement lifecycle management.
+Swarm is a self-contained Swarm agent bundle + WSTG MCP server for offensive security: bug hunting, external red-team engagements, and authorized penetration tests. It provides the complete OWASP Web Security Testing Guide methodology as an MCP server with 88 tools, paired with 118 autonomous agents covering vulnerability hunting, enterprise platform attacks, WAF bypass, and full engagement lifecycle management.
 
 **Goal:** Turn an LLM into an autonomous, methodical, reference-informed bug hunter that can run a full penetration test from scope to report — discovering subdomains, crawling endpoints, fingerprinting WAFs, dispatching per-class exploit agents, validating PoCs, capturing redacted evidence, and generating a submission-ready report — without human intervention between phases. The pipeline is modeled on real bug bounty workflows: triage by attack surface, read disclosed reports for technique guidance, bypass WAFs before exploiting, and run every finding through a 7-Question Gate before drafting.
 

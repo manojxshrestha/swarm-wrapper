@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert BH commands to OpenCode commands for Swarm."""
+"""Convert BH commands to Swarm commands for Swarm."""
 
 from pathlib import Path
 
@@ -49,7 +49,7 @@ def convert_command(name: str, description: str, agent: str | None, subtask: boo
     body = _fix_tool_refs(body)
     body = _fix_browser_refs(body)
 
-    # Build OpenCode frontmatter
+    # Build Swarm frontmatter
     fm = f"---\ndescription: {description}\n"
     if agent:
         fm += f"agent: {agent}\n"
@@ -116,8 +116,8 @@ def _rewrite_refs(body: str) -> str:
 
 
 def _fix_tool_refs(body: str) -> str:
-    body = body.replace("`claude`", "`opencode`")
-    body = body.replace("Claude Code", "OpenCode")
+    body = body.replace("`claude`", "`swarm`")
+    body = body.replace("Claude Code", "Swarm")
     return body
 
 
@@ -161,7 +161,7 @@ def _fix_browser_refs(body: str) -> str:
 def main():
     OC_COMMANDS.mkdir(parents=True, exist_ok=True)
     print(f"\n{'='*50}")
-    print("Converting BH commands → OpenCode commands")
+    print("Converting BH commands → Swarm commands")
     print(f"{'='*50}")
     converted = 0
     for name, desc, agent, subtask in COMMANDS:

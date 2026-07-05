@@ -171,7 +171,7 @@ Consult resources in priority order. Stop once the gap is filled.
 | 12 | **PayloadForge** | `https://github.com/Juguitos/payloadforge` | 204 curated payloads, 13 mutation techniques, 7 WAF profiles |
 | 13 | **BypassBurrito** | `https://github.com/Su1ph3r/bypassburrito` | LLM-powered WAF bypass gen — 13 supported WAFs |
 
-Use OpenCode's built-in web search or `curl` to fetch:
+Use Swarm's built-in web search or `curl` to fetch:
 ```bash
 curl -s "https://nvd.nist.gov/vuln/detail/CVE-2026-xxxx"    # CVE details
 curl -s "https://hacktricks.wiki/en/pentesting-web/..."      # technique guide
