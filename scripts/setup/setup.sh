@@ -190,6 +190,65 @@ PYEOF
   ok "Swarm MCP config — generated ($SWARM_CONFIG)"
 fi
 
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 3b: Merge .mcp.json into project settings.local.json
+# ══════════════════════════════════════════════════════════════════════════════
+header "PHASE 3b: Merge MCP config into project settings"
+
+SETTINGS="$DST/.swarm/settings.local.json"
+WRAPPER_MCP="$SWARM_CONFIG"
+
+python3 - "$DST" "$SETTINGS" "$WRAPPER_MCP" <<'PYEOF'
+import json
+import sys
+
+dst = sys.argv[1]
+settings_path = sys.argv[2]
+wrapper_mcp_path = sys.argv[3]
+
+# Read existing settings (or start fresh)
+try:
+    with open(settings_path) as f:
+        settings = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    settings = {}
+
+if 'mcpServers' not in settings:
+    settings['mcpServers'] = {}
+
+def _is_relpath(s: str) -> bool:
+    """True if s looks like a relative file path (not a bare command, flag, or absolute path)."""
+    return not s.startswith('/') and ('/' in s or s.startswith('.'))
+
+# Merge the wrapper's MCP server configs
+try:
+    with open(wrapper_mcp_path) as f:
+        wrapper_mcp = json.load(f)
+    for name, cfg in wrapper_mcp.get('mcpServers', {}).items():
+        # Resolve relative paths to absolute
+        if _is_relpath(cfg.get('command', '')):
+            cfg['command'] = f'{dst}/{cfg["command"]}'
+        if 'args' in cfg:
+            cfg['args'] = [
+                f'{dst}/{a}' if _is_relpath(a) else a
+                for a in cfg['args']
+            ]
+        settings['mcpServers'][name] = cfg
+except (FileNotFoundError, json.JSONDecodeError):
+    pass  # wrapper .mcp.json not found or invalid, skip auto-config
+
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+
+print(f"[+] MCP servers merged into {settings_path}")
+PYEOF
+
+chmod 600 "$SETTINGS"
+ok "MCP servers merged into $SETTINGS"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 4: Swarm agents, rules, commands
 # ═══════════════════════════════════════════════════════════════════════════════
 # PHASE 4: Swarm agents, rules, commands
 # ═══════════════════════════════════════════════════════════════════════════════
