@@ -537,20 +537,20 @@ if [ -d "$REPO_DIR/.swarm/rules" ]; then
   ok "Rules linked ($(ls "$REPO_DIR/.swarm/rules"/*.md 2>/dev/null | wc -l) files)"
 fi
 
-# Commands (.swarm/commands-bughunt/*.md) → ~/.config/swarm/commands/
+# Commands (.swarm/commands/*.md) → ~/.config/swarm/commands/
 OC_COMMANDS_DIR="$HOME/.config/swarm/commands"
 PROJECT_CMD_DIR="$REPO_DIR/.swarm/commands"
 HOME_CMD_DIR="$HOME/.swarm/commands"
 mkdir -p "$OC_COMMANDS_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
-if [ -d "$REPO_DIR/.swarm/commands-bughunt" ]; then
-  for cmd_file in "$REPO_DIR/.swarm/commands-bughunt"/*.md; do
+if [ -d "$REPO_DIR/.swarm/commands" ]; then
+  for cmd_file in "$REPO_DIR/.swarm/commands"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
-    cp "$cmd_file" "$OC_COMMANDS_DIR/$cmd_name"
-    cp "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
-    cp "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
+    ln -sf "$cmd_file" "$OC_COMMANDS_DIR/$cmd_name"
+    ln -sf "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
+    ln -sf "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
   done
-  ok "Commands installed ($(ls "$REPO_DIR/.swarm/commands-bughunt"/*.md 2>/dev/null | wc -l) files)"
+  ok "Commands linked ($(ls "$REPO_DIR/.swarm/commands"/*.md 2>/dev/null | wc -l) files)"
 fi
 
 # Skills symlink (for manual browsing)

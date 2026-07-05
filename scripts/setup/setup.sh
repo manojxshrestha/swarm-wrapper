@@ -271,11 +271,11 @@ if [ -d "$DST/.swarm/rules" ]; then
   done
 fi
 
-# Commands (.swarm/commands-bughunt/*.md) → .swarm/commands
-if [ -d "$DST/.swarm/commands-bughunt" ]; then
+# Commands (.swarm/commands/*.md) → .swarm/commands
+if [ -d "$DST/.swarm/commands" ]; then
   PROJECT_CMD_DIR="$DST/.swarm/commands"
   mkdir -p "$PROJECT_CMD_DIR"
-  for cmd_file in "$DST/.swarm/commands-bughunt"/*.md; do
+  for cmd_file in "$DST/.swarm/commands"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
     cp "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
