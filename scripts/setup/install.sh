@@ -272,28 +272,26 @@ if ! $QUICK; then
     local name="$1"
     local repo="$2"
     local main_script="$3"
-    local target_dir="$TOOLS_DIR/$name"
+    local src_dir="$TOOLS_DIR/${name}-src"
 
-    if [ -d "$target_dir/.git" ]; then
+    if [ -d "$src_dir/.git" ]; then
       ok "$name — already installed"
       return 0
     fi
 
     info "Installing $name..."
-    git clone --depth 1 "https://github.com/$repo.git" "$target_dir" 2>/dev/null || {
+    git clone --depth 1 "https://github.com/$repo.git" "$src_dir" 2>/dev/null || {
       warn "$name — git clone failed"
       return 1
     }
 
-    if [ -f "$target_dir/requirements.txt" ]; then
-      uv venv "$target_dir/venv" &>/dev/null || true
-      uv pip install --python "$target_dir/venv/bin/python" -r "$target_dir/requirements.txt" 2>/dev/null || true
+    if [ -f "$src_dir/requirements.txt" ]; then
+      uv venv "$src_dir/venv" &>/dev/null || true
+      uv pip install --python "$src_dir/venv/bin/python" -r "$src_dir/requirements.txt" 2>/dev/null || true
     fi
 
-    if [ -n "$main_script" ] && [ -f "$target_dir/$main_script" ]; then
-      # Remove the cloned directory so we can replace it with a symlink to the main script
-      rm -rf "$target_dir"
-      ln -sf "$target_dir/$main_script" "$TOOLS_DIR/$name" 2>/dev/null || true
+    if [ -n "$main_script" ] && [ -f "$src_dir/$main_script" ]; then
+      ln -sf "$src_dir/$main_script" "$TOOLS_DIR/$name" 2>/dev/null || true
     fi
 
     ok "$name installed"
@@ -539,18 +537,16 @@ fi
 
 # Commands (.swarm/commands/*.md) → ~/.config/swarm/commands/
 OC_COMMANDS_DIR="$HOME/.config/swarm/commands"
-PROJECT_CMD_DIR="$REPO_DIR/.swarm/commands"
 HOME_CMD_DIR="$HOME/.swarm/commands"
-mkdir -p "$OC_COMMANDS_DIR" "$PROJECT_CMD_DIR" "$HOME_CMD_DIR"
+mkdir -p "$OC_COMMANDS_DIR" "$HOME_CMD_DIR"
 if [ -d "$REPO_DIR/.swarm/commands" ]; then
   for cmd_file in "$REPO_DIR/.swarm/commands"/*.md; do
     [ -f "$cmd_file" ] || continue
     cmd_name="$(basename "$cmd_file")"
-    ln -sf "$cmd_file" "$OC_COMMANDS_DIR/$cmd_name"
-    ln -sf "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
-    ln -sf "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
+    cp "$cmd_file" "$OC_COMMANDS_DIR/$cmd_name"
+    cp "$cmd_file" "$HOME_CMD_DIR/$cmd_name"
   done
-  ok "Commands linked ($(ls "$REPO_DIR/.swarm/commands"/*.md 2>/dev/null | wc -l) files)"
+  ok "Commands installed ($(ls "$REPO_DIR/.swarm/commands"/*.md 2>/dev/null | wc -l) files)"
 fi
 
 # Skills symlink (for manual browsing)
@@ -716,15 +712,17 @@ if ! $QUICK; then
       warn "$tool — not in PATH"
     fi
   done
-  # Python scanner tools (installed as cloned repos, available via direct venv activation)
+  # Python scanner tools (installed as cloned repos + symlinks in PATH)
   for tool in sqlmap commix sstimap smuggler; do
-    if [ -f "$TOOLS_DIR/$tool/$tool.py" ]; then
+    if command -v "$tool" &>/dev/null; then
       ok "$tool — found"
+    elif [ -f "$TOOLS_DIR/${tool}-src/$tool.py" ]; then
+      ok "$tool — found (source)"
     else
       warn "$tool — not installed"
     fi
   done
-  if [ -f "$TOOLS_DIR/corscanner/cors_scan.py" ]; then
+  if command -v cors_scan.py &>/dev/null || [ -f "$TOOLS_DIR/corscanner-src/cors_scan.py" ]; then
     ok "corscanner — found"
   else
     warn "corscanner — not installed"
