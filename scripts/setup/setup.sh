@@ -191,14 +191,17 @@ PYEOF
 fi
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PHASE 3b: Merge .mcp.json into project settings.local.json
+# PHASE 3b: Merge .mcp.json into Swarm CLI settings.local.json
 # ══════════════════════════════════════════════════════════════════════════════
-header "PHASE 3b: Merge MCP config into project settings"
+header "PHASE 3b: Merge MCP config into Swarm CLI settings"
 
-SETTINGS="$DST/.swarm/settings.local.json"
+SWARM_CLI_DIR="${SWARM_CLI_DIR:-$HOME/swarm}"
+SETTINGS_PATH="$SWARM_CLI_DIR/.swarm/settings.local.json"
 WRAPPER_MCP="$SWARM_CONFIG"
 
-python3 - "$DST" "$SETTINGS" "$WRAPPER_MCP" <<'PYEOF'
+mkdir -p "$(dirname "$SETTINGS_PATH")"
+
+python3 - "$DST" "$SETTINGS_PATH" "$WRAPPER_MCP" <<'PYEOF'
 import json
 import sys
 
@@ -225,7 +228,6 @@ try:
     with open(wrapper_mcp_path) as f:
         wrapper_mcp = json.load(f)
     for name, cfg in wrapper_mcp.get('mcpServers', {}).items():
-        # Resolve relative paths to absolute
         if _is_relpath(cfg.get('command', '')):
             cfg['command'] = f'{dst}/{cfg["command"]}'
         if 'args' in cfg:
@@ -235,7 +237,7 @@ try:
             ]
         settings['mcpServers'][name] = cfg
 except (FileNotFoundError, json.JSONDecodeError):
-    pass  # wrapper .mcp.json not found or invalid, skip auto-config
+    pass
 
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
@@ -244,8 +246,8 @@ with open(settings_path, 'w') as f:
 print(f"[+] MCP servers merged into {settings_path}")
 PYEOF
 
-chmod 600 "$SETTINGS"
-ok "MCP servers merged into $SETTINGS"
+chmod 600 "$SETTINGS_PATH"
+ok "MCP servers merged into $SETTINGS_PATH"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PHASE 4: Swarm agents, rules, commands
@@ -271,15 +273,11 @@ if [ -d "$DST/.swarm/rules" ]; then
   done
 fi
 
-# Commands (.swarm/commands/*.md) → .swarm/commands
+# Commands (.swarm/commands/*.md) — verify availability (symlinked from swarm-wrapper)
 if [ -d "$DST/.swarm/commands" ]; then
-  PROJECT_CMD_DIR="$DST/.swarm/commands"
-  mkdir -p "$PROJECT_CMD_DIR"
   for cmd_file in "$DST/.swarm/commands"/*.md; do
     [ -f "$cmd_file" ] || continue
-    cmd_name="$(basename "$cmd_file")"
-    cp "$cmd_file" "$PROJECT_CMD_DIR/$cmd_name"
-    ok "Command $cmd_name — installed"
+    ok "Command $(basename "$cmd_file") — available"
   done
 fi
 

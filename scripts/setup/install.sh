@@ -557,22 +557,22 @@ ln -s "$REPO_DIR/skills" "$SWARM_SKILLS"
 ok "Skills linked at $SWARM_SKILLS"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 9: Swarm config (MCP servers)
+# PHASE 9: Swarm CLI MCP configuration
 # ═══════════════════════════════════════════════════════════════════════════════
-header "PHASE 9: Swarm MCP configuration"
+header "PHASE 9: Swarm CLI MCP configuration"
 
-SWARM_CONFIG="$HOME/.config/swarm/swarm.json"
+SWARM_CLI_DIR="${SWARM_CLI_DIR:-$HOME/swarm}"
+SETTINGS_PATH="$SWARM_CLI_DIR/.swarm/settings.local.json"
 
-# Backup existing config
-if [ -f "$SWARM_CONFIG" ]; then
+# Backup existing settings
+if [ -f "$SETTINGS_PATH" ]; then
   mkdir -p "$BACKUP_DIR"
-  cp "$SWARM_CONFIG" "$BACKUP_DIR/swarm.json"
-  info "Backed up existing config → $BACKUP_DIR/"
+  cp "$SETTINGS_PATH" "$BACKUP_DIR/settings.local.json"
+  info "Backed up existing Swarm CLI settings → $BACKUP_DIR/"
 fi
 
-# Build MCP config
+# Build MCP config and merge into Swarm CLI settings
 export REPO_DIR
-# Add nvm Node.js to PATH for npm/npx resolution
 export NVM_DIR="$HOME/.nvm"
 if [ -s "$NVM_DIR/nvm.sh" ]; then
   \. "$NVM_DIR/nvm.sh" 2>/dev/null
@@ -581,36 +581,28 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 fi
 
 python3 << 'PYEOF'
-import json, os, shutil, sys
+import json, os, sys
 
 repo = os.environ['REPO_DIR']
 home = os.path.expanduser("~")
-config_path = os.path.join(home, ".config", "swarm", "swarm.json")
+swarm_cli_dir = os.environ.get("SWARM_CLI_DIR", os.path.join(home, "swarm"))
+settings_path = os.path.join(swarm_cli_dir, ".swarm", "settings.local.json")
 
 # ── Platform detection ─────────────────────────────────────────────────────
 is_wsl = os.path.exists("/proc/sys/fs/binfmt_misc/WSLInterop") or bool(os.environ.get("WSL_DISTRO_NAME"))
-distro_id = ""
-if os.path.exists("/etc/os-release"):
-    with open("/etc/os-release") as f:
-        for line in f:
-            if line.startswith("ID="):
-                distro_id = line.split("=", 1)[1].strip().strip('"')
-                break
 
-mcp = {}
+mcp_servers = {}
 
 # ── Burp Suite MCP ─────────────────────────────────────────────────────────
 if is_wsl:
-    # WSL: Burp runs on Windows — use bridge script to auto-detect gateway IP
     bridge_script = os.path.join(repo, "scripts", "burp-mcp-bridge.py")
-    mcp["burp"] = {
+    mcp_servers["burp"] = {
         "type": "local",
         "command": ["bash", "-c", f"cd {repo}/server && UV_PROJECT_ENVIRONMENT=venv exec uv run ../scripts/burp-mcp-bridge.py"]
     }
     sys.stderr.write("[install] WSL detected → Burp MCP via bridge script\n")
 else:
-    # Native Linux / macOS: Burp runs on localhost
-    mcp["burp"] = {
+    mcp_servers["burp"] = {
         "type": "remote",
         "url": "http://127.0.0.1:9876/",
         "enabled": True
@@ -618,7 +610,7 @@ else:
     sys.stderr.write("[install] Native Linux/macOS → Burp MCP remote :9876\n")
 
 # ── WSTG server ────────────────────────────────────────────────────────────
-mcp["wstg"] = {
+mcp_servers["wstg"] = {
     "type": "local",
     "prompt": "You are a Swarm WSTG penetration testing MCP server.",
     "command": [
@@ -628,16 +620,24 @@ mcp["wstg"] = {
     ]
 }
 
-# ── Write config ───────────────────────────────────────────────────────────
-config = {
-    "mcp": mcp
-}
+# ── Read/merge into Swarm CLI settings.local.json ─────────────────────────
+try:
+    with open(settings_path) as f:
+        settings = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    settings = {}
 
-os.makedirs(os.path.dirname(config_path), exist_ok=True)
-with open(config_path, "w") as f:
-    json.dump(config, f, indent=2)
+if 'mcpServers' not in settings:
+    settings['mcpServers'] = {}
 
-print("[+] WSTG MCP server configured")
+settings['mcpServers'].update(mcp_servers)
+
+os.makedirs(os.path.dirname(settings_path), exist_ok=True)
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+
+print(f"[+] MCP servers merged into {settings_path}")
 PYEOF
 
 # ═══════════════════════════════════════════════════════════════════════════════
