@@ -222,6 +222,17 @@ grep "^https://" live_urls.txt > https-subs.txt
 - `https-subs.txt` — HTTPS-only URLs for downstream tools
 - `subdomain_enum.log` — full run log
 
+### Sub-phase 4a.5: DNS Bruteforce (sequential, subdomain_enum MUST complete first)
+
+**`dns_bruteforce.sh`** (`scripts/tools/dns_bruteforce.sh`):
+```bash
+bash "$SCRIPT_DIR/dns_bruteforce.sh" "$TARGET"
+```
+Runs `puredns bruteforce` with curated wordlists (20K subdomains) against the target domain. Runs immediately after `subdomain_enum.sh` — not in the parallel module pool.
+
+**Output:**
+- `dns_bruteforce.txt` — resolved subdomains from wordlist bruteforce
+
 ### Sub-phase 4b: Web Crawling (3 parallel, nohup + wait)
 
 **gospider** (`scripts/tools/web_gospider.sh`):
@@ -259,24 +270,17 @@ The merge runs **only after** sub-phase 4b's `wait` completes, guaranteeing all 
 - `crawl/merged-crawl.txt` — merged URLs from all crawlers
 - `crawl/crawledurls.txt` — final URL list (always populated, even if fallback to root domain)
 
-### Sub-phase 4c: Recon Modules (7 parallel, nohup + wait)
+### Sub-phase 4c: Recon Modules (6 parallel, nohup + wait)
 
 ```bash
-for module in dns_bruteforce param_extract cariddi_scan vhost_fuzz zone_transfer github_dork s3_buckets; do
+for module in param_extract cariddi_scan vhost_fuzz zone_transfer github_dork s3_buckets; do
   nohup bash -c "bash '$SCRIPT_DIR/${module}.sh' '$TARGET'" > "${module}.log" 2>&1 &
 done
 ```
 
-All seven launch in parallel. The orchestrator waits for **every PID** before printing "Phase 4 complete" — no orphan background processes, no race conditions with Phase 5.
+All six launch in parallel. The orchestrator waits for **every PID** before printing "Phase 4 complete" — no orphan background processes, no race conditions with Phase 5.
 
 Each module:
-
-**`dns_bruteforce.sh` — DNS brute-force enumeration**
-```bash
-puredns resolve all_subdomains.txt -r resolvers.txt | sort -u > resolved.txt
-puredns bruteforce wordlist.txt "$TARGET" | sort -u >> all_subdomains.txt
-```
-Probes thousands of DNS names via puredns + massdns with curated wordlists.
 
 **`param_extract.sh` — GF-pattern parameter extraction**
 ```bash

@@ -6900,6 +6900,23 @@ def _ensure_probe_flags(command: str) -> str:
     return command.replace("curl", "curl " + " ".join(extra), 1)
 
 
+def _extract_curl_body(stdout: str, cmd: str) -> str:
+    """Strip HTTP response headers from curl -i/--include output.
+
+    When -i is used, curl dumps headers + body to stdout.  The body starts
+    after the first blank line (CRLF-CRLF) that separates headers from body.
+    When -i is not present stdout is already body-only.
+    """
+    if "curl" not in cmd:
+        return stdout
+    if "-i" not in cmd and "--include" not in cmd:
+        return stdout
+    idx = stdout.find("\r\n\r\n")
+    if idx == -1:
+        return stdout
+    return stdout[idx + 4 :]
+
+
 def _run_curl(cmd: str) -> dict:
     """Execute a curl/shell probe and return a structured response dict:
     {ok_conn, status, body, elapsed_ms, returncode, err}."""
@@ -6911,15 +6928,16 @@ def _run_curl(cmd: str) -> dict:
     elapsed_ms = (time.time() - start) * 1000
     stdout = r.stdout or ""
     stderr = r.stderr or ""
+    body = _extract_curl_body(stdout, cmd)
     if "curl: (" in stderr:
-        return {"ok_conn": False, "status": None, "body": stdout, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": "curl error"}
+        return {"ok_conn": False, "status": None, "body": body, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": "curl error"}
     m = re.search(r"HTTP/[\d.]+ (\d+)", stdout) or re.search(r"HTTP/[\d.]+ (\d+)", stderr)
     status = m.group(1) if m else None
     if status == "000":
-        return {"ok_conn": False, "status": "000", "body": stdout, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": "status 000"}
+        return {"ok_conn": False, "status": "000", "body": body, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": "status 000"}
     # For non-curl commands, a non-zero exit means the probe did not run cleanly.
     ok_conn = True if "curl" in cmd else (r.returncode == 0)
-    return {"ok_conn": ok_conn, "status": status, "body": stdout, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": ""}
+    return {"ok_conn": ok_conn, "status": status, "body": body, "elapsed_ms": elapsed_ms, "returncode": r.returncode, "err": ""}
 
 
 def _consensus_oracle(vuln_class: str, payload: str, resp: dict, control: dict | None) -> bool:

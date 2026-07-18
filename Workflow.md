@@ -72,7 +72,7 @@ ORCHESTRATOR(0) → SCOPE(1) → AUTH(2) → INTEL(3) → RECON(4) → SURFACE(5
 
 | Step | Action | What Happens |
 |------|--------|--------------|
-| 1 | `@recon` or `bash $HOME/swarm/scripts/tools/phase-recon.sh <target>` | Full recon pipeline: subdomain_enum → gospider/katana/waymore crawl → merge → dns_bruteforce → param_extract → cariddi → vhost_fuzz → zone_transfer → github_dork → s3_buckets |
+| 1 | `@recon` or `bash $HOME/swarm/scripts/tools/phase-recon.sh <target>` | Full recon pipeline: subdomain_enum → dns_bruteforce → gospider/katana/waymore crawl → merge → param_extract → cariddi → vhost_fuzz → zone_transfer → github_dork → s3_buckets |
 | 3 | Inspect results | Attack surface understood |
 | 4 | For deeper recon | `@web2-recon`, `@offensive-osint`, `@osint-methodology` |
 

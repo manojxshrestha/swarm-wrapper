@@ -80,6 +80,35 @@ log_ok "    subdomains/alive-domains.txt   — ${N_ALIVE:-0} alive hosts"
 log_info ""
 
 # ------------------------------------------------------------------
+# Sub-phase 4a.5: DNS Bruteforce (mandatory, always runs)
+# ------------------------------------------------------------------
+log_info "── Sub-phase 4a.5: DNS Bruteforce ──"
+log_info "  Script:   scripts/tools/dns_bruteforce.sh"
+
+if [ "$ROOT_ONLY" = true ]; then
+  log_info "  Root-only mode — skipping DNS bruteforce"
+elif [ -f "$SCRIPT_DIR/dns_bruteforce.sh" ]; then
+  log_info "  Running..."
+  bash "$SCRIPT_DIR/dns_bruteforce.sh" "$TARGET" 2>&1 | tee -a "$OUT_DIR/dns_bruteforce.log"
+  _dns_exit=$?
+  if [ $_dns_exit -eq 0 ]; then
+    log_ok "  dns_bruteforce: OK"
+  else
+    log_warn "  dns_bruteforce: exit $_dns_exit (resolver/wordlist issue?)"
+  fi
+  _DNS_OUT="$OUT_DIR/dns_bruteforce.txt"
+  if [ -s "$_DNS_OUT" ]; then
+    N_DNS=$(wc -l < "$_DNS_OUT" | tr -d ' ')
+    log_ok "  dns_bruteforce.txt — $N_DNS new subdomains discovered"
+  else
+    log_warn "  dns_bruteforce.txt: empty or missing — no bruteforce results"
+  fi
+else
+  log_warn "  dns_bruteforce.sh not found — skipping"
+fi
+log_info ""
+
+# ------------------------------------------------------------------
 # Sub-phase 4b: Web Crawling (3 parallel crawlers)
 # ------------------------------------------------------------------
 log_info "── Sub-phase 4b: Web Crawling (3 parallel crawlers) ──"
@@ -174,10 +203,9 @@ if [ -f "$SCRIPT_DIR/extracturls.sh" ]; then
 fi
 
 # ------------------------------------------------------------------
-# Sub-phase 4d: Recon Modules (7 parallel)
+# Sub-phase 4d: Recon Modules (6 parallel)
 # ------------------------------------------------------------------
-log_info "── Sub-phase 4d: Recon Modules (7 parallel) ──"
-log_info "  dns_bruteforce → scripts/tools/dns_bruteforce.sh"
+log_info "── Sub-phase 4d: Recon Modules (6 parallel) ──"
 log_info "  param_extract  → scripts/tools/param_extract.sh"
 log_info "  cariddi_scan   → scripts/tools/cariddi_scan.sh"
 log_info "  vhost_fuzz     → scripts/tools/vhost_fuzz.sh"
@@ -189,7 +217,7 @@ MODULE_NAMES=()
 MODULE_PIDS=()
 MODULE_SKIPPED=()
 
-for _module in dns_bruteforce param_extract cariddi_scan vhost_fuzz zone_transfer github_dork s3_buckets; do
+for _module in param_extract cariddi_scan vhost_fuzz zone_transfer github_dork s3_buckets; do
   if [ ! -f "$SCRIPT_DIR/${_module}.sh" ]; then
     log_warn "  ${_module}: script not found, skipped"   # P-M2: log instead of silent skip
     continue

@@ -13,9 +13,9 @@
 #        ./tools/phase-capture.sh <engagement_id> <domain> [output_dir]
 # =============================================================================
 set -euo pipefail
-_scope_guard "$TARGET"   # Phase 6: abort if target is out of scope
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/_env.sh"
+_scope_guard "$TARGET"   # Phase 6: abort if target is out of scope
 
 # Support both positional and --engagement-id signatures
 if [ $# -ge 3 ]; then

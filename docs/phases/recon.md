@@ -185,7 +185,7 @@ $RECON_BASE/<target>/
 │   ├── https-subs.txt             # HTTPS-only URLs
 │   ├── live_domains.txt           # httpx raw output (status + tech + title + server)
 │   ├── live_urls.txt              # live URLs (protocol+host)
-│   └── dns_bruteforce.txt         # puredns brute-force results
+├── dns_bruteforce.txt             # puredns brute-force results
 ├── crawl/
 │   ├── waygauurls.txt             # waymore + gau URLs
 │   ├── gospider.txt               # gospider crawl

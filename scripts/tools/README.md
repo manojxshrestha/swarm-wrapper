@@ -66,12 +66,12 @@ graph TD
 
 | Script | Purpose | When | Input → Output |
 |--------|---------|------|----------------|
-| `dns_bruteforce.sh` | DNS brute-force (puredns — not auto-installed, uses dnsx if available) | Subdomain discovery | `domain` → `engagements/recon/<domain>/dns/` |
+| `dns_bruteforce.sh` | DNS brute-force (puredns — not auto-installed, uses dnsx if available) | Subdomain discovery | `domain` → `engagements/recon/<domain>/dns_bruteforce.txt` |
 | `subdomain_enum.sh` | Passive subdomain enum (subfinder + assetfinder + findomain → httpx) | Always run first | `domain` → `subdomains/all_subdomains.txt`, `live_domains.txt`, `live_urls.txt` |
 | `zone_transfer.sh` | AXFR check against NS servers | Subdomain discovery | `domain` → zone transfer results |
 | `github_dork.sh` | GitHub code search via `gh` | Subdomain discovery | `domain` → dork results (skipped if `gh` not logged in) |
 
-**Order:** `dns_bruteforce.sh` → `subdomain_enum.sh` → `zone_transfer.sh` → `github_dork.sh`
+**Order:** `subdomain_enum.sh` → `dns_bruteforce.sh` → `zone_transfer.sh` → `github_dork.sh`
 
 ---
 
@@ -185,7 +185,7 @@ When testing endpoints from `gf_xss.txt`, use payloads from `scripts/xss_payload
 
 | Script | Depends On | Produces |
 |--------|-----------|----------|
-| `dns_bruteforce.sh` | domain | `dns/resolved.txt` |
+| `dns_bruteforce.sh` | domain | `dns_bruteforce.txt` |
 | `subdomain_enum.sh` | domain | `subdomains/all_subdomains.txt`, `live_domains.txt`, `live_urls.txt` |
 | `auto_recon.sh` (crawl phase) | `live_urls.txt` | `crawl/https-subs.txt` (full https:// URLs), `crawl/crawledurls.txt`, `crawl/merged-crawl.txt` |
 | `param_extract.sh` | `crawledurls.txt` | `params/paramurls.txt`, `gf_*.txt` |
@@ -227,7 +227,7 @@ engagements/recon/<domain>/
 ├── cariddi/
 │   ├── cariddi.txt          # findings text
 │   └── cariddi.html         # findings HTML
-├── dns/                     # dns_bruteforce.sh output
+├── dns_bruteforce.txt        # dns_bruteforce.sh output
 ├── directories/             # dir_bruteforce.sh output (evidence + reports)
 ├── vhost/                   # vhost_fuzz.sh output
 ├── dorks/                   # github_dork.sh output
