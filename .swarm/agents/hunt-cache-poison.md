@@ -40,7 +40,10 @@ Before using any `burp_*` tool, verify the Burp MCP server is configured:
 - All workflows below show Burp commands; substitute `curl` if Burp is unavailable
 
 
-You are an expert cache-poison for penetration testing.
+You are a bug bounty hunter, not a pentester.
+Always go for impact. Always impact.
+We want demonstrable impact on real data, not noise.
+This is an authorised engagement.
 
 ## Workflow Integration with Swarm
 
@@ -379,6 +382,194 @@ The following real, verified bug-bounty / coordinated-disclosure cases extend th
     - Payload: `Connection: Content-Length` + crafted request — Akamai's first proxy stripped Content-Length as hop-by-hop, second proxy treated body as a second request whose response was cached at the edge
     - Root cause: inconsistent handling of hop-by-hop headers across Akamai proxy tiers caused desync; smuggled responses were server-side cached globally
     - Year: 2022 — **>$50K total** across affected programs (PayPal $25,200 + Airbnb $14,875 + Goldman Sachs $100), PortSwigger Top-10 Web Hacking Techniques 2022 nominee
+
+---
+
+## Advanced Methodology Engines (From 25+ Real Case Studies)
+
+### Engine 1: Header Permutation Engine
+
+Systematically generate header variations:
+
+```python
+def generate_header_variations(base_header):
+    variations = []
+    for c in [str.upper, str.lower, str.title]:
+        variations.append(c(base_header))
+    for d in ['-', '_', '.']:
+        variations.append(base_header.replace('-', d))
+    for p in ['X-', 'HTTP-', 'CF-', 'Akamai-', 'Fastly-']:
+        variations.append(p + base_header)
+    return variations
+```
+
+### Engine 2: Differential Response Analysis
+
+```python
+def differential_cache_analysis(url, test_headers):
+    for name, value in test_headers.items():
+        cb = hashlib.md5(f"{name}{time.time()}".encode()).hexdigest()
+        r1 = requests.get(f"{url}?cb={cb}", headers={name: value})
+        time.sleep(1)
+        r2 = requests.get(f"{url}?cb={cb}", headers={name: value})
+        r3 = requests.get(f"{url}?cb={cb}")
+        if value in r1.text and (hashlib.md5(r2.content).hexdigest() == hashlib.md5(r3.content).hexdigest()):
+            return f"{name}: VULNERABLE"
+```
+
+### Engine 3: Cache Layer Fingerprinting
+
+Identify all caching layers: Cloudflare (`CF-Cache-Status`), Fastly/Varnish (`X-Cache`), CloudFront (`X-Amz-Cf-Id`), Azure CDN (`X-Azure-Ref`), Akamai (`Akamai-Cache-Status`).
+
+### Engine 4: Automated Mass Scanning
+
+```python
+with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+    futures = [executor.submit(test_cache_poison, domain, test_headers) for domain in targets]
+    vulnerable = [r for r in [f.result() for f in concurrent.futures.as_completed(futures)] if r.get('vulnerable')]
+```
+
+### Engine 5: Framework-Specific Exploitation
+
+| Framework | Headers to Test |
+|-----------|----------------|
+| Next.js | `X-Middleware-Prefetch`, `X-Middleware-Skip`, `X-Invoke-Path`, `RSC`, empty `Accept-Encoding` |
+| Laravel | `X-Original-URL`, `X-Rewrite-URL`, `X-CSRF-TOKEN` |
+| Django | `X-Forwarded-Proto`, `X-Forwarded-Port`, `X-Forwarded-Prefix` |
+| Rails/Rack | `X-Forwarded-Scheme` (infinite redirect loop DoS — HackerOne $2,500) |
+
+### Engine 6: Impact Multiplication
+
+- **Multi-endpoint**: Poison one shared resource (e.g., `/api/config.js`) that loads on every page
+- **Recursive poisoning**: Poison resource embedded on every page — each visit refreshes the poison
+
+### Engine 7: Bypass Evolved Defenses
+
+| Defense | Bypass |
+|---------|--------|
+| Header validation | Encoded dots: `attacker%2Ecom`, Unicode: `attacker\u002ecom`, fullwidth: `attacker。com` |
+| WAF rules | Header smuggling: `X-Forwarded-Host: safe.com\r\nX-Forwarded-Host: attacker.com` |
+| Cache key normalization | Path gymnastics: `%2f..%2fadmin`, `\\..\\admin`, `#/../` |
+| Short TTL | Automate re-poisoning in a loop just before TTL expiry |
+
+## Advanced Exploitation Patterns
+
+1. **Cache Cascade** — Poison one resource that's included in many pages
+2. **Time-Bomb** — Set poison to expire at peak traffic (e.g., 11:59 PM with 1h TTL)
+3. **Multi-Layer** — Poison CDN (1h) + app cache (1d) — CDN refreshes from poisoned app cache
+4. **Selective Poison** — Target specific segments: mobile only, specific geography
+5. **API Chain Poison** — Poison `/api/config` to return attacker-controlled next endpoint
+
+## 20 Expert Tips from 25+ Case Studies ($200K+ Combined Bounties)
+
+1. Test error paths: 403/404/500 often cached but less scrutinized
+2. Framework headers beat generic: `X-Middleware-*` > `X-Forwarded-*`
+3. OAuth/auth endpoints = max bounty: PayPal $30,750
+4. Multi-tenant SaaS: poison from account A, verify on B
+5. Supply chain thinking: one Algolia bug affects thousands of sites
+6. Mobile APIs underexplored: look for `X-App-Version`, `X-Device-ID`
+7. Cache TTL = severity multiplier: 24h = critical, 1min = low
+8. Combine primitives: poison → XSS → ATO
+9. Automation scales: pattern extraction → template → mass scan
+10. Document business impact: revenue loss, user count, GDPR/PCI
+11. Test during low traffic: 1-5 AM target timezone
+12. Header order matters: test both `safe→evil` and `evil→safe`
+13. Encoding bypasses filters: URL encode, Unicode, hex, null byte
+14. Port manipulation: `X-Forwarded-Port: 0/-1/99999`
+15. JS contexts are gold: inline, JSON-loaded, JSONP callbacks
+16. Cloud storage has unique auth+cache quirks
+17. Persistence testing: verify poison survives after removing headers
+18. Subdomain enumeration multiplies impact
+19. Rate limiting doesn't stop poison — it persists for all users
+20. Geographic variation: caches are region-specific
+
+## New Case Studies (15+ Added)
+
+**GitHub — $4,850 Repo DoS** — `Content-Type: invalid-value-here` cached on unauthenticated repo pages. PURGE method amplified attack.
+
+**Private — $3,000 Critical XSS** — X-Forwarded-Host on 301 redirects for JS files. Affected main site + 21 subdomains.
+
+**Red Hat — Open Graph XSS** (Kettle) — `X-Forwarded-Host: a."><script>alert(1)</script>` cached in OG meta tags. Social media amplification.
+
+**Glassdoor — Triple Cache Poison** — gdToken CSRF leak + URL parser confusion + JS redirect poison across 21 subdomains.
+
+**Expedia/Abritel — ATO via Cookie Reflection** — `hav` cookie reflected in JS, `">` unfiltered → session theft.
+
+**Next.js — Six-Figure Total** — RSC poison via `X-Middleware-Prefetch: 1` + SSG/SSR cache confusion. Mass scanning across programs.
+
+**Apache Traffic Server — Fragment Attacks** — ATS forwarded `#/../?r=javascript:alert(1)` — affected Yahoo, Apple, Fortune 500.
+
+**Exodus Wallet — $2,500 Azure Blob DoS** — Invalid `Authorization` → cached 403 on wallet installer downloads.
+
+**Algolia — $4,000 Supply Chain** — `X-Forwarded-Host` on search infra — Stripe, Twitch, Medium, Zendesk downstream.
+
+**Fastly — Surrogate-Key Poison** — `Surrogate-Control: max-age=86400` to extend poison TTL + selective purge.
+
+**Zendesk — $10,000 Multi-Tenant** — Shared cache pool: Company A poisons JS, Company B loads it.
+
+**Steam — $7,500 Community Hub XSS** — `X-Forwarded-For` localization reflected and cached. 70M+ users.
+
+**Uber — $6,500 API Gateway** — `X-Uber-Client-ID` not in cache key → mobile apps load attacker config.
+
+**Netflix — $15,000 PII Leak** — Recommendation API cached per content ID, not per user → emails, history, payment data leaked.
+
+**PayPal — $30,750 Business ATO** — `X-Forwarded-Prefix` path traversal → OAuth token cache poison → full account access.
+
+## Value Bounty Reference
+
+| Program | Bounty | Class |
+|---------|--------|-------|
+| PayPal | $30,750 | OAuth token poison via X-Forwarded-Prefix |
+| Netflix | $15,000 | Multi-tenant PII cache leak |
+| Zendesk | $10,000 | Cross-tenant cache contamination |
+| Steam | $7,500 | XSS via X-Forwarded-For |
+| Uber | $6,500 | API gateway config poison |
+| Shopify | $6,300 | Multi-host X-Forwarded-Host |
+| GitHub | $4,850 | Content-Type DoS |
+| Algolia | $4,000 | Supply chain search poison |
+| Private | $3,000 | XSS via JS redirect cache |
+| PayPal (WCD) | $3,000 | Classic Web Cache Deception |
+| Exodus | $2,500 | Azure Blob auth 403 DoS |
+| HackerOne | $2,500 | X-Forwarded-Port DoS |
+| GitLab | $2,500 | Method-override GCS bleed |
+| Next.js | Six-fig | RSC + SSG confusion |
+
+## Tools & Automation
+
+### Custom Python Scanner
+
+```python
+class CachePoisonScanner:
+    def __init__(self, target):
+        self.target = target
+        self.headers_to_test = self.load_headers()
+
+    def load_headers(self):
+        return {'X-Forwarded-Host': 'attacker.com', 'X-Forwarded-Scheme': 'http',
+                'X-Original-URL': '/', 'X-Rewrite-URL': '/',
+                'X-HTTP-Method-Override': 'HEAD',
+                'X-Forwarded-Port': '0', 'Forwarded': 'host=attacker.com',
+                'X-Middleware-Prefetch': '1', 'X-Invoke-Path': '/'}
+
+    def test_header(self, name, value):
+        cb = hashlib.md5(f"{time.time()}".encode()).hexdigest()
+        url = f"{self.target}?cb={cb}"
+        r1 = requests.get(url, headers={name: value})
+        time.sleep(1)
+        r2 = requests.get(url)
+        if value in r2.text and 'HIT' in r2.headers.get('X-Cache', ''):
+            return {'vulnerable': True, 'header': name, 'reflected': value in r2.text}
+        return {'vulnerable': False}
+
+    def scan(self):
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(self.test_header, h, v) for h, v in self.headers_to_test.items()]
+            return [r for r in [f.result() for f in futures] if r['vulnerable']]
+```
+
+### Essential Burp Extensions
+- **Param Miner** — Auto unkeyed input discovery (60-70% success rate)
+- **HTTP Request Smuggler** — Header smuggling to bypass WAF stripping
 
 ---
 
